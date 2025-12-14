@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 16% 93%;
+    --secondary-foreground: 215 25% 15%;
+
+    --muted: 210 16% 96%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 210 16% 93%;
+    --accent-foreground: 215 25% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 217 91% 60%;
+
+    --radius: 8px;
+
+    /* Status colors */
+    --status-todo: 210 16% 93%;
+    --status-todo-foreground: 215 25% 15%;
+    --status-progress: 217 91% 60%;
+    --status-progress-foreground: 0 0% 100%;
+    --status-resolved: 142 76% 36%;
+    --status-resolved-foreground: 0 0% 100%;
+    --status-archived: 215 15% 50%;
+    --status-archived-foreground: 0 0% 100%;
+
+    /* Priority colors */
+    --priority-low: 142 76% 36%;
+    --priority-low-foreground: 0 0% 100%;
+    --priority-medium: 45 93% 47%;
+    --priority-medium-foreground: 0 0% 100%;
+    --priority-high: 25 95% 53%;
+    --priority-high-foreground: 0 0% 100%;
+    --priority-urgent: 0 84% 60%;
+    --priority-urgent-foreground: 0 0% 100%;
+
+    /* Type colors */
+    --type-bug: 0 84% 60%;
+    --type-feature: 217 91% 60%;
+    --type-question: 45 93% 47%;
+    --type-documentation: 142 76% 36%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 215 28% 10%;
+    --foreground: 210 16% 93%;
+
+    --card: 215 28% 12%;
+    --card-foreground: 210 16% 93%;
+
+    --popover: 215 28% 12%;
+    --popover-foreground: 210 16% 93%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 20% 20%;
+    --secondary-foreground: 210 16% 93%;
+
+    --muted: 215 20% 20%;
+    --muted-foreground: 215 15% 60%;
+
+    --accent: 215 20% 20%;
+    --accent-foreground: 210 16% 93%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 20% 20%;
+    --input: 215 20% 20%;
+    --ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
