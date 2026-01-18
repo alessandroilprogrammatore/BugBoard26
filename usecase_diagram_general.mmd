@@ -1,0 +1,64 @@
+graph TB
+    %% ATTORI (Stick Figures UML Standard)
+    Guest(("Utente non registrato"))
+    User(("Utente registrato"))
+    ReadOnly(("Utente ReadOnly"))
+    Admin(("Admin"))
+    System(("Sistema"))
+
+    %% SISTEMA (Rettangolo UML Standard)
+    BugBoard26["BugBoard26"]
+
+    %% CASI D'USO (Ovali UML Standard)
+    UC1["Autenticazione e Registrazione"]
+    UC2["Gestione Bug"]
+    UC3["Gestione Profilo"]
+    UC4["Gestione Utenti"]
+    UC5["Analytics e Report"]
+    UC6["Processi Automatici"]
+
+    %% SOTTOCASI D'USO
+    UC2_1["Visualizzare Bug"]
+    UC2_2["Creare Bug"]
+    UC2_3["Modificare Bug"]
+    UC2_4["Commenti e Allegati"]
+
+    %% LAYOUT GERARCHICO (come nella foto)
+    %% Attori posizionati gerarchicamente
+    Guest
+    User
+    ReadOnly
+    Admin
+    System
+
+    %% Sistema al centro
+    BugBoard26
+
+    %% Casi d'uso organizzati
+    UC1 --- UC2
+    UC2 --- UC3
+    UC2 --- UC4
+    UC2 --- UC5
+
+    %% Sottocasi
+    UC2 --- UC2_1
+    UC2 --- UC2_2
+    UC2 --- UC2_3
+    UC2 --- UC2_4
+
+    %% Processi automatici
+    UC6 --- System
+
+    %% RELAZIONI ATTORI -> CASI D'USO
+    Guest -.-> UC1
+    User -.-> UC1
+    User -.-> UC2
+    User -.-> UC3
+    ReadOnly -.-> UC1
+    ReadOnly -.-> UC2
+    Admin -.-> UC1
+    Admin -.-> UC2
+    Admin -.-> UC3
+    Admin -.-> UC4
+    Admin -.-> UC5
+    System -.-> UC6

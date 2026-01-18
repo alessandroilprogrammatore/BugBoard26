@@ -1,0 +1,68 @@
+% ============================================================
+% REQUISITI NON FUNZIONALI E DI SISTEMA - BugBoard26
+% Includere con \input{requisiti_non_funzionali}
+% ============================================================
+
+\section{Requisiti Non Funzionali e di Sistema}
+
+I requisiti non funzionali definiscono le caratteristiche qualitative che il sistema BugBoard26 deve possedere, indipendentemente dalle funzionalità specifiche implementate.
+
+% ------------------------------------------------------------
+\subsection{Usabilità}
+
+\begin{itemize}
+    \item \textbf{RNF-U1 --- Interfaccia responsiva}: L'interfaccia deve essere fruibile su dispositivi desktop, tablet e mobile senza perdita di funzionalità. Il layout si adatta automaticamente alla larghezza dello schermo.
+    \item \textbf{RNF-U2 --- Feedback immediato}: Ogni operazione che richiede elaborazione (es.\ creazione bug, caricamento allegati) deve fornire un feedback visivo all'utente entro 500\,ms (es.\ spinner, messaggio di conferma o di errore).
+    \item \textbf{RNF-U3 --- Messaggi di errore chiari}: I messaggi di errore devono indicare la causa del problema e suggerire un'azione correttiva, senza esporre dettagli tecnici interni.
+    \item \textbf{RNF-U4 --- Accessibilità}: L'interfaccia deve rispettare le linee guida WCAG 2.1 livello AA, garantendo contrasti adeguati e compatibilità con tecnologie assistive.
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Prestazioni}
+
+\begin{itemize}
+    \item \textbf{RNF-P1 --- Tempo di risposta API}: Le richieste API standard (lista bug, dettaglio bug, login) devono avere un tempo di risposta inferiore a 500\,ms in condizioni normali di carico.
+    \item \textbf{RNF-P2 --- Paginazione}: La lista dei bug è paginata (default 20 elementi per pagina) per evitare il caricamento di dataset molto grandi.
+    \item \textbf{RNF-P3 --- Dimensione allegati}: I file immagine caricati non possono superare 5\,MB ciascuno. Formati accettati: JPEG, PNG, GIF, WebP.
+    \item \textbf{RNF-P4 --- Generazione report}: La generazione di un report mensile deve completarsi entro 10 secondi per dataset fino a 10\,000 bug.
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Sicurezza}
+
+\begin{itemize}
+    \item \textbf{RNF-S1 --- Autenticazione}: Tutti gli endpoint (eccetto login e registrazione) richiedono un token JWT valido. Il token ha una durata configurabile (default: 8 ore).
+    \item \textbf{RNF-S2 --- Autorizzazione per ruolo}: Le operazioni privilegiate (gestione utenti, report, assegnazione bug) sono accessibili esclusivamente agli utenti con ruolo ADMIN.
+    \item \textbf{RNF-S3 --- Validazione input}: Tutti i dati in input (lato client e lato server) sono validati prima dell'elaborazione. I file caricati sono verificati per tipo MIME e dimensione.
+    \item \textbf{RNF-S4 --- Trasmissione sicura}: In produzione, tutte le comunicazioni tra client e server avvengono tramite HTTPS. I cookie di sessione sono configurati con i flag \texttt{Secure} e \texttt{SameSite}.
+    \item \textbf{RNF-S5 --- Password}: Le password degli utenti sono memorizzate nel database in forma hash (bcrypt). Non vengono mai restituite nelle risposte API.
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Affidabilità e Disponibilità}
+
+\begin{itemize}
+    \item \textbf{RNF-A1 --- Gestione degli errori}: Il backend restituisce codici HTTP appropriati (400, 401, 403, 404, 500) con messaggi descrittivi. Il frontend mostra notifiche comprensibili per l'utente.
+    \item \textbf{RNF-A2 --- Persistenza dei dati}: I dati sono persistiti su database relazionale (H2 in sviluppo, sostituibile con PostgreSQL in produzione). Nessuna operazione di scrittura avviene esclusivamente in memoria volatile.
+    \item \textbf{RNF-A3 --- Storico immutabile}: La tabella \textit{History} non permette cancellazione o modifica dei record; ogni cambiamento genera un nuovo record.
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Manutenibilità e Portabilità}
+
+\begin{itemize}
+    \item \textbf{RNF-M1 --- Containerizzazione}: L'applicazione è distribuita tramite Docker (Dockerfile per frontend e backend; \texttt{docker-compose.yml} per l'avvio integrato).
+    \item \textbf{RNF-M2 --- Separazione frontend/backend}: Frontend e backend sono componenti indipendenti che comunicano esclusivamente tramite API REST. Questa architettura consente di aggiornare o sostituire ciascun componente separatamente.
+    \item \textbf{RNF-M3 --- Configurabilità}: I parametri critici (URL del database, segreto JWT, porta del server, origine CORS) sono configurabili tramite variabili d'ambiente senza modificare il codice sorgente.
+    \item \textbf{RNF-M4 --- Documentazione API}: Gli endpoint REST sono documentati tramite SpringDoc/OpenAPI (Swagger UI), accessibile in fase di sviluppo.
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Vincoli di Sistema}
+
+\begin{itemize}
+    \item \textbf{RNF-VS1 --- Tecnologie frontend}: React 18, TypeScript, Vite, Tailwind CSS, Radix UI, React Query, React Router.
+    \item \textbf{RNF-VS2 --- Tecnologie backend}: Java 23, Spring Boot 3.3, Spring Security, Spring Data JPA, database H2 (sviluppo).
+    \item \textbf{RNF-VS3 --- Browser supportati}: Le ultime due versioni stabili di Chrome, Firefox, Edge e Safari.
+    \item \textbf{RNF-VS4 --- Requisiti server}: JDK 23+, Maven 3.8+, Node.js 18+ per la build del frontend.
+\end{itemize}

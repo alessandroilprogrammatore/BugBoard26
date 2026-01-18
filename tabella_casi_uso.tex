@@ -1,0 +1,138 @@
+\section{Tabella dei Casi d'Uso}
+
+\begin{longtable}{|p{3cm}|p{11cm}|}
+\hline
+\textbf{Attore} & \textbf{Casi d'uso} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Attore} & \textbf{Casi d'uso} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+
+Utente non registrato &
+\begin{itemize}[leftmargin=*,nosep,nolistsep]
+    \item Registrazione al sistema tramite email
+    \item Visualizzazione informazioni pubbliche dell'applicazione
+    \item Accesso alla pagina di login
+\end{itemize} \\
+\hline
+
+Utente registrato (USER) &
+\begin{itemize}[leftmargin=*,nosep,nolistsep]
+    \item Login/logout al sistema
+    \item Visualizzazione lista bug con filtri (tipo, stato, priorità, label)
+    \item Visualizzazione dettagli singolo bug
+    \item Creazione nuovo bug
+    \item Modifica bug propri o assegnati
+    \item Aggiunta commenti ai bug
+    \item Upload allegati immagini ai bug
+    \item Assegnazione bug ad altri utenti
+    \item Archiviazione bug risolti
+    \item Marcatura bug come duplicati
+    \item Visualizzazione storico modifiche bug
+    \item Gestione profilo personale
+    \item Cambio password
+\end{itemize} \\
+\hline
+
+Utente ReadOnly &
+\begin{itemize}[leftmargin=*,nosep,nolistsep]
+    \item Login al sistema
+    \item Visualizzazione lista bug con filtri
+    \item Visualizzazione dettagli singolo bug
+    \item Visualizzazione commenti e allegati
+    \item Visualizzazione storico modifiche
+    \item Visualizzazione profilo proprio (sola lettura)
+\end{itemize} \\
+\hline
+
+Admin &
+\begin{itemize}[leftmargin=*,nosep,nolistsep]
+    \item Tutti i casi d'uso dell'Utente registrato
+    \item Gestione completa utenti (visualizzazione, modifica ruoli, disabilitazione)
+    \item Visualizzazione metriche di sistema
+    \item Generazione report mensili
+    \item Esportazione dati in formato Excel
+    \item Accesso completo a tutti i bug del sistema
+    \item Gestione label e categorie
+    \item Configurazione parametri di sistema
+\end{itemize} \\
+\hline
+
+Sistema &
+\begin{itemize}[leftmargin=*,nosep,nolistsep]
+    \item Invio notifiche automatiche su cambiamenti bug
+    \item Archiviazione automatica bug dopo periodo di inattività
+    \item Generazione automatica storico modifiche
+    \item Validazione automatica allegati (tipo e dimensione)
+    \item Pulizia automatica dati obsoleti
+    \item Backup automatico dati
+\end{itemize} \\
+\hline
+\caption{Tabella completa dei casi d'uso per BugBoard26}
+\label{tab:casi_uso}
+\end{longtable}
+
+\subsection{Descrizione dettagliata dei casi d'uso}
+
+\subsubsection{Utente non registrato}
+\begin{itemize}
+    \item \textbf{Registrazione al sistema tramite email}: L'utente può creare un nuovo account fornendo email, password e informazioni personali. Il sistema invia una email di conferma per verificare l'indirizzo.
+    \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking.
+    \item \textbf{Accesso alla pagina di login}: Possibilità di accedere al sistema utilizzando credenziali esistenti.
+\end{itemize}
+
+\subsubsection{Utente registrato (USER)}
+\begin{itemize}
+    \item \textbf{Login/logout al sistema}: Autenticazione tramite credenziali email/password con generazione di token JWT per sessioni sicure.
+    \item \textbf{Visualizzazione lista bug con filtri}: Consultazione dell'elenco completo dei bug con possibilità di filtrare per tipo, stato, priorità, label e ricerca testuale.
+    \item \textbf{Visualizzazione dettagli singolo bug}: Accesso completo alle informazioni di un bug specifico, inclusi descrizione, commenti, allegati e storico modifiche.
+    \item \textbf{Creazione nuovo bug}: Inserimento di una nuova segnalazione con descrizione dettagliata, assegnazione priorità, tipo e label appropriate.
+    \item \textbf{Modifica bug propri o assegnati}: Possibilità di aggiornare informazioni, stato e dettagli dei bug creati dall'utente o assegnati al suo account.
+    \item \textbf{Aggiunta commenti ai bug}: Inserimento di commenti testuali per fornire aggiornamenti, soluzioni o richiedere chiarimenti.
+    \item \textbf{Upload allegati immagini ai bug}: Caricamento di immagini (JPEG, PNG, GIF, WebP) fino a 5MB per documentare visivamente il problema.
+    \item \textbf{Assegnazione bug ad altri utenti}: Trasferimento della responsabilità di un bug a un altro utente registrato nel sistema.
+    \item \textbf{Archiviazione bug risolti}: Spostamento dei bug risolti in stato archiviato per mantenere pulita la lista attiva.
+    \item \textbf{Marcatura bug come duplicati}: Collegamento di un bug a un altro esistente quando viene identificato come duplicato.
+    \item \textbf{Visualizzazione storico modifiche bug}: Consultazione cronologica di tutte le modifiche apportate a un bug nel tempo.
+    \item \textbf{Gestione profilo personale}: Modifica delle informazioni personali, preferenze e impostazioni dell'account.
+    \item \textbf{Cambio password}: Aggiornamento della password di accesso con validazione di sicurezza.
+\end{itemize}
+
+\subsubsection{Utente ReadOnly}
+\begin{itemize}
+    \item \textbf{Login al sistema}: Accesso con credenziali per utenti con privilegi di sola lettura.
+    \item \textbf{Visualizzazione lista bug con filtri}: Consultazione dell'elenco bug con possibilità di applicare filtri di ricerca.
+    \item \textbf{Visualizzazione dettagli singolo bug}: Accesso in sola lettura alle informazioni complete di un bug.
+    \item \textbf{Visualizzazione commenti e allegati}: Lettura di tutti i commenti e download/visualizzazione degli allegati associati.
+    \item \textbf{Visualizzazione storico modifiche}: Consultazione della cronologia delle modifiche senza possibilità di intervento.
+    \item \textbf{Visualizzazione profilo proprio}: Accesso limitato alle informazioni del proprio profilo utente.
+\end{itemize}
+
+\subsubsection{Admin}
+\begin{itemize}
+    \item \textbf{Tutti i casi d'uso dell'Utente registrato}: L'amministratore eredita tutte le funzionalità dell'utente standard.
+    \item \textbf{Gestione completa utenti}: Creazione, modifica, disabilitazione e gestione ruoli degli utenti del sistema.
+    \item \textbf{Visualizzazione metriche di sistema}: Accesso a dashboard con statistiche, grafici e KPI del sistema.
+    \item \textbf{Generazione report mensili}: Creazione di report dettagliati sull'attività del sistema per periodo specificato.
+    \item \textbf{Esportazione dati in formato Excel}: Estrazione completa dei dati in formato spreadsheet per analisi esterne.
+    \item \textbf{Accesso completo a tutti i bug}: Possibilità di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
+    \item \textbf{Gestione label e categorie}: Creazione, modifica ed eliminazione delle etichette e categorie di classificazione.
+    \item \textbf{Configurazione parametri di sistema}: Modifica delle impostazioni globali, limiti e comportamenti dell'applicazione.
+\end{itemize}
+
+\subsubsection{Sistema}
+\begin{itemize}
+    \item \textbf{Invio notifiche automatiche}: Meccanismo automatico di notifica via email o push per aggiornamenti sui bug seguiti.
+    \item \textbf{Archiviazione automatica}: Processo schedulato per archiviare automaticamente bug inattivi dopo un periodo configurabile.
+    \item \textbf{Generazione automatica storico}: Registrazione automatica di ogni modifica apportata ai bug nel database.
+    \item \textbf{Validazione automatica allegati}: Controllo automatico di tipo, dimensione e sicurezza dei file caricati.
+    \item \textbf{Pulizia automatica dati obsoleti}: Eliminazione periodica di dati temporanei, cache e informazioni non più necessarie.
+    \item \textbf{Backup automatico dati}: Salvataggio automatico periodico del database e dei file allegati per disaster recovery.
+\end{itemize}
+

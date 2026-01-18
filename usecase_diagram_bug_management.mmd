@@ -1,0 +1,41 @@
+graph TB
+    %% ATTORI
+    User(("Utente registrato"))
+    ReadOnly(("Utente ReadOnly"))
+    Admin(("Admin"))
+
+    %% CASI D'USO GESTIONE BUG
+    UC_VL["Visualizzare lista bug"]
+    UC_VD["Visualizzare dettagli bug"]
+    UC_CB["Creare nuovo bug"]
+    UC_MB["Modificare bug"]
+    UC_AC["Aggiungere commenti"]
+    UC_UA["Caricare allegati"]
+
+    %% LAYOUT GERARCHICO
+    User
+    ReadOnly
+    Admin
+
+    %% Organizzazione casi d'uso
+    UC_VL --- UC_VD
+    UC_CB --- UC_MB
+    UC_AC --- UC_UA
+
+    %% RELAZIONI ATTORI -> CASI D'USO
+    User -.-> UC_VL
+    User -.-> UC_VD
+    User -.-> UC_CB
+    User -.-> UC_MB
+    User -.-> UC_AC
+    User -.-> UC_UA
+
+    ReadOnly -.-> UC_VL
+    ReadOnly -.-> UC_VD
+
+    Admin -.-> UC_VL
+    Admin -.-> UC_VD
+    Admin -.-> UC_CB
+    Admin -.-> UC_MB
+    Admin -.-> UC_AC
+    Admin -.-> UC_UA
