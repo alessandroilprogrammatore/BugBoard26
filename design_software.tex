@@ -1,0 +1,288 @@
+% design_software.tex — Documento di Design del Software
+
+\section{Design del Software}
+
+\subsection{Schema per la persistenza dati}
+
+Il database relazionale è gestito tramite JPA/Hibernate con strategia
+\texttt{ddl-auto=update}. Di seguito lo schema entità-relazione con tutte le
+tabelle, colonne e vincoli.
+
+\subsubsection{Tabella \texttt{users}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{email} & VARCHAR & UNIQUE, NOT NULL & Indirizzo email \\
+\hline
+\texttt{password\_hash} & CHAR(60) & NOT NULL & Hash BCrypt \\
+\hline
+\texttt{name} & VARCHAR & NOT NULL & Nome visualizzato \\
+\hline
+\texttt{role} & VARCHAR & NOT NULL & Enum: ADMIN, USER, READONLY \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Data di registrazione \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Tabella \texttt{bugs}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{title} & VARCHAR & NOT NULL & Titolo del bug \\
+\hline
+\texttt{description} & TEXT & NOT NULL & Descrizione dettagliata \\
+\hline
+\texttt{type} & VARCHAR & NOT NULL & Enum: QUESTION, BUG, DOCUMENTATION, FEATURE \\
+\hline
+\texttt{status} & VARCHAR & & Enum: TODO, IN\_PROGRESS, RESOLVED, ARCHIVED \\
+\hline
+\texttt{priority} & VARCHAR & & Enum: LOW, MEDIUM, HIGH, URGENT \\
+\hline
+\texttt{archived} & BOOLEAN & default false & Flag di archiviazione \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Data di creazione \\
+\hline
+\texttt{deadline} & TIMESTAMP & nullable & Scadenza opzionale \\
+\hline
+\texttt{duplicate\_of} & UUID & FK $\rightarrow$ bugs.id & Bug duplicato (self-ref) \\
+\hline
+\texttt{created\_by} & UUID & FK $\rightarrow$ users.id & Creatore \\
+\hline
+\texttt{assignee\_id} & UUID & FK $\rightarrow$ users.id & Assegnatario \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Tabella \texttt{comments}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{text} & TEXT & NOT NULL & Testo del commento \\
+\hline
+\texttt{bug\_id} & UUID & FK $\rightarrow$ bugs.id, NOT NULL & Bug associato \\
+\hline
+\texttt{author\_id} & UUID & FK $\rightarrow$ users.id, NOT NULL & Autore \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Data di creazione \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Tabella \texttt{history}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{bug\_id} & UUID & FK $\rightarrow$ bugs.id, NOT NULL & Bug associato \\
+\hline
+\texttt{who\_id} & UUID & FK $\rightarrow$ users.id, NOT NULL & Utente esecutore \\
+\hline
+\texttt{action} & VARCHAR & NOT NULL & Enum: CREATE, UPDATE, ASSIGN, COMMENT, ARCHIVE, DUPLICATE, LABELS\_SET, ATTACHMENT\_UPLOADED \\
+\hline
+\texttt{details} & TEXT & nullable & Dettagli del cambiamento \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Timestamp dell'azione \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Tabella \texttt{labels}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{name} & VARCHAR & UNIQUE, NOT NULL & Nome della label \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Data di creazione \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Tabella di join \texttt{bug\_labels}}
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{bug\_id} & UUID & FK $\rightarrow$ bugs.id & Relazione molti-a-molti Bug $\leftrightarrow$ Label \\
+\hline
+\texttt{label\_id} & UUID & FK $\rightarrow$ labels.id & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Diagramma E-R semplificato}
+
+\begin{verbatim}
+  users 1 ---< N bugs        (createdBy)
+  users 1 ---< N bugs        (assignee)
+  bugs  1 ---< N comments
+  bugs  1 ---< N history
+  users 1 ---< N comments    (author)
+  users 1 ---< N history     (who)
+  bugs  N >---< M labels     (bug_labels)
+  bugs  N --->  1 bugs       (duplicateOf, self-referential)
+\end{verbatim}
+
+% ────────────────────────────────────────────────────────
+
+\subsection{Diagramma delle classi di design}
+
+Il diagramma delle classi di design è organizzato secondo il pattern architetturale
+\textbf{layered architecture} con i seguenti package:
+
+\begin{description}
+    \item[\texttt{model}] Entità JPA che mappano le tabelle del database:
+    \texttt{User}, \texttt{Bug}, \texttt{Comment}, \texttt{History}, \texttt{Label}
+    e le enumerazioni \texttt{Role}, \texttt{BugType}, \texttt{BugStatus},
+    \texttt{Priority}, \texttt{HistoryAction}.
+
+    \item[\texttt{repository}] Interfacce Spring Data JPA che estendono
+    \texttt{JpaRepository<T, UUID>}:
+    \texttt{UserRepository}, \texttt{BugRepository} (+ \texttt{JpaSpecificationExecutor}),
+    \texttt{CommentRepository}, \texttt{LabelRepository}, \texttt{HistoryRepository}.
+
+    \item[\texttt{service}] Classi di business logic:
+    \texttt{BugService} (gestione completa del ciclo di vita dei bug),
+    \texttt{AuthService} (registrazione, login, generazione token).
+
+    \item[\texttt{dto}] Record Java per i dati di trasferimento:
+    \texttt{BugCreateRequest}, \texttt{BugPatchRequest}, \texttt{AssignRequest},
+    \texttt{LabelSetRequest}, \texttt{LoginRequest}.
+
+    \item[\texttt{controller}] Controller REST:
+    \texttt{BugController} (\texttt{/api/bugs}),
+    \texttt{AuthController} (\texttt{/api/auth}),
+    \texttt{AdminController} (\texttt{/api/admin}),
+    \texttt{ExportController} (\texttt{/api/export}).
+
+    \item[\texttt{security}] Infrastruttura di sicurezza:
+    \texttt{JwtService} (generazione/validazione token),
+    \texttt{JwtAuthFilter} (filtro per estrarre e verificare il JWT).
+
+    \item[\texttt{config}] Configurazione dell'applicazione:
+    \texttt{SecurityConfig} (CORS, CSRF, filter chain),
+    \texttt{DataSeeder} (dati iniziali per lo sviluppo).
+\end{description}
+
+\begin{verbatim}
+  +--------------------+     +-------------------+     +------------------+
+  |    Controller      |---->|     Service       |---->|    Repository    |
+  |  (REST Endpoints)  |     | (Business Logic)  |     |  (Data Access)  |
+  +--------------------+     +-------------------+     +------------------+
+         |                           |                         |
+         v                           v                         v
+  +--------------------+     +-------------------+     +------------------+
+  |       DTO          |     |      Model        |     |     Database     |
+  | (Request/Response) |     |  (JPA Entities)   |     |  (H2/PostgreSQL) |
+  +--------------------+     +-------------------+     +------------------+
+                                     ^
+                                     |
+                             +-------------------+
+                             |    Security       |
+                             | (JWT, Auth Filter)|
+                             +-------------------+
+\end{verbatim}
+
+% ────────────────────────────────────────────────────────
+
+\subsection{Scelte di software design}
+
+\subsubsection{Pattern Repository}
+Ogni entità dispone di un'interfaccia repository dedicata che estende
+\texttt{JpaRepository}. Questo pattern separa la logica di accesso ai dati
+dalla logica di business, favorendo la testabilità tramite mock objects.
+
+\texttt{BugRepository} estende anche \texttt{JpaSpecificationExecutor},
+consentendo la costruzione di query dinamiche (filtri per tipo, stato,
+priorità, label, ricerca testuale) senza codice SQL custom.
+
+\subsubsection{Pattern Service Layer}
+La logica di business è concentrata nei servizi (\texttt{BugService},
+\texttt{AuthService}), che orchestrano le operazioni tra più repository.
+I controller sono \emph{thin}: delegano immediatamente ai servizi senza
+contenere logica di business.
+
+\subsubsection{Record Java per i DTO}
+I DTO sono implementati come \texttt{record} Java, che garantiscono
+immutabilità, auto-generazione di \texttt{equals}/\texttt{hashCode}/\texttt{toString},
+e riduzione del codice boilerplate. Le annotazioni di validazione
+(\texttt{@NotBlank}, \texttt{@NotNull}, \texttt{@NotEmpty}) sono applicate
+direttamente sui componenti del record.
+
+\subsubsection{Specification Pattern per le query}
+La classe \texttt{BugSpecification} implementa il pattern Specification
+di Spring Data, componendo predicati JPA Criteria in modo dichiarativo.
+I filtri (tipo, stato, priorità, label, ricerca full-text su titolo e
+descrizione) possono essere combinati liberamente dal frontend.
+
+\subsubsection{Audit Trail tramite History}
+Ogni operazione significativa (creazione, modifica, assegnazione,
+commento, archiviazione) genera automaticamente una entry nella tabella
+\texttt{history}, con riferimento all'utente, all'azione e ai dettagli
+della modifica. Questo garantisce tracciabilità completa senza librerie esterne.
+
+\subsubsection{Autenticazione stateless con JWT}
+\texttt{JwtService} genera token firmati HMAC-SHA256 con claims personalizzati
+(ruolo, nome, email). \texttt{JwtAuthFilter} intercetta ogni richiesta,
+estrae il token da cookie o header, e popola il \texttt{SecurityContext}
+di Spring Security. Questo approccio elimina la necessità di sessioni
+server-side e facilita la scalabilità orizzontale.
+
+\subsubsection{Gestione delle autorizzazioni}
+Il controllo degli accessi è implementato a due livelli:
+\begin{itemize}
+    \item \textbf{Livello HTTP}: Spring Security filtra le richieste in base
+    all'autenticazione (JWT valido).
+    \item \textbf{Livello Service}: le regole di business (solo admin può
+    assegnare; solo assegnatario o admin può cambiare stato) sono verificate
+    nel servizio, lanciando \texttt{SecurityException} in caso di violazione.
+\end{itemize}
+
+% ────────────────────────────────────────────────────────
+
+\subsection{Evidenza dell'uso di strumenti di versioning}
+
+Il codice sorgente del progetto è ospitato su un repository \textbf{GitHub}
+accessibile ai membri del team di sviluppo.
+
+\begin{itemize}
+    \item \textbf{Repository}: \url{https://github.com/alessandroilprogrammatore/BugBoard26}
+    \item \textbf{Release}: la release ``Specifica dei requisiti'' è stata
+    pubblicata il 19 ottobre 2025
+    \item \textbf{Branching strategy}: sviluppo su branch feature,
+    merge su \texttt{main} tramite pull request
+    \item \textbf{Commit}: messaggi descrittivi che seguono il formato
+    convenzionale (\texttt{feat:}, \texttt{fix:}, \texttt{docs:}, \texttt{test:})
+\end{itemize}
