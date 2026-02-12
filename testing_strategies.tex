@@ -1,0 +1,144 @@
+% testing_strategies.tex — Documentazione delle strategie di test adottate
+
+\section{Strategie di Testing}
+
+Questa sezione documenta le strategie adottate per la progettazione dei
+test di unità del servizio \texttt{BugService}, nucleo della logica di
+business dell'applicazione BugBoard26.
+
+\subsection{Metodi testati}
+
+Sono stati selezionati tre metodi non banali, ciascuno con almeno due
+parametri, come richiesto dalla specifica di progetto:
+
+\begin{enumerate}
+    \item \texttt{create(BugCreateRequest request, UUID userId)} – 2~parametri
+    \item \texttt{assign(UUID bugId, AssignRequest request, UUID userId)} – 3~parametri
+    \item \texttt{patch(UUID id, BugPatchRequest request, UUID userId, boolean isAdmin)} – 4~parametri
+\end{enumerate}
+
+\subsection{Classi di equivalenza}
+
+Per ciascun metodo sono state individuate le seguenti classi di equivalenza.
+
+\subsubsection{create(BugCreateRequest, UUID)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|c|p{4.5cm}|}
+\hline
+\textbf{Classe} & \textbf{Condizione} & \textbf{Validità} & \textbf{Test case} \\
+\hline
+EC-C1 & \texttt{userId} esistente; request con campi obbligatori validi, senza label & Valida & TC-C1 \\
+\hline
+EC-C2 & \texttt{userId} non presente nel database & Invalida & TC-C2 \\
+\hline
+EC-C3 & Request con lista di label non vuota (misto label esistenti e nuove) & Valida & TC-C3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{assign(UUID, AssignRequest, UUID)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|c|p{4.5cm}|}
+\hline
+\textbf{Classe} & \textbf{Condizione} & \textbf{Validità} & \textbf{Test case} \\
+\hline
+EC-A1 & Chiamante con ruolo \texttt{ADMIN}; bug e assegnatario esistenti & Valida & TC-A1 \\
+\hline
+EC-A2 & Chiamante con ruolo \texttt{USER} (non admin) & Invalida & TC-A2 \\
+\hline
+EC-A3 & \texttt{bugId} non presente nel database & Invalida & TC-A3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{patch(UUID, BugPatchRequest, UUID, boolean)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{5.5cm}|c|p{4.5cm}|}
+\hline
+\textbf{Classe} & \textbf{Condizione} & \textbf{Validità} & \textbf{Test case} \\
+\hline
+EC-P1 & \texttt{isAdmin=true}; modifica di campi generici (titolo, priorità) & Valida & TC-P1 \\
+\hline
+EC-P2 & \texttt{isAdmin=false}; cambio di \texttt{status} su bug assegnato ad altro utente & Invalida & TC-P2 \\
+\hline
+EC-P3 & \texttt{isAdmin=false}; modifica effettuata dall'assegnatario stesso (senza cambio di stato) & Valida & TC-P3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Copertura strutturale}
+
+Oltre alle classi di equivalenza, i test sono stati progettati per coprire
+i rami decisionali principali (\emph{branch coverage}) della logica di
+business:
+
+\begin{itemize}
+    \item \textbf{create}:
+    \begin{itemize}
+        \item Ramo: utente trovato vs.\ utente non trovato (\texttt{findById → Optional.empty})
+        \item Ramo: lista label presente vs.\ assente
+        \item Ramo: label già esistente (\texttt{findByName → present}) vs.\ label nuova (\texttt{findByName → empty} → \texttt{save})
+    \end{itemize}
+
+    \item \textbf{assign}:
+    \begin{itemize}
+        \item Ramo: bug trovato vs.\ bug non trovato
+        \item Ramo: chiamante admin vs.\ non-admin (controllo \texttt{role == ADMIN})
+    \end{itemize}
+
+    \item \textbf{patch}:
+    \begin{itemize}
+        \item Ramo: \texttt{isAdmin == true} → modifica consentita
+        \item Ramo: \texttt{isAdmin == false} \&\& cambio status \&\& utente $\neq$ assegnatario → \texttt{SecurityException}
+        \item Ramo: \texttt{isAdmin == false} \&\& utente == assegnatario → modifica consentita
+        \item Ramo: campi \texttt{null} nel \texttt{BugPatchRequest} → nessuna modifica per quel campo
+    \end{itemize}
+\end{itemize}
+
+\subsection{Tecnica di isolamento: Mock Objects}
+
+Per isolare il \emph{System Under Test} (SUT) dalle dipendenze esterne,
+tutti i repository JPA sono sostituiti da mock Mockito:
+
+\begin{center}
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Dipendenza} & \textbf{Mock} \\
+\hline
+\texttt{BugRepository}     & \texttt{@Mock} \\
+\texttt{UserRepository}    & \texttt{@Mock} \\
+\texttt{CommentRepository} & \texttt{@Mock} \\
+\texttt{LabelRepository}   & \texttt{@Mock} \\
+\texttt{HistoryRepository} & \texttt{@Mock} \\
+\hline
+\end{tabular}
+\end{center}
+
+Questo approccio garantisce:
+\begin{itemize}
+    \item \textbf{Determinismo}: i test non dipendono dallo stato di un database
+    reale; ogni esecuzione produce lo stesso risultato.
+    \item \textbf{Velocità}: nessun I/O di rete o disco; l'intera suite viene
+    eseguita in meno di 2~secondi.
+    \item \textbf{Granularità}: ogni test verifica un singolo comportamento
+    della logica di servizio, facilitando la localizzazione dei difetti.
+\end{itemize}
+
+\subsection{Riepilogo dei risultati}
+
+L'esecuzione della suite produce il seguente esito:
+
+\begin{verbatim}
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+\end{verbatim}
+
+Tutti i 9 casi di test passano con successo, confermando il corretto
+funzionamento della logica di business per le tre funzionalità testate.

@@ -1,0 +1,106 @@
+% test_plan.tex — Test Plan per la funzionalità "Gestione Bug"
+
+\section{Test Plan – Gestione Bug}
+
+\subsection{Obiettivo}
+Il test plan descrive le attività di verifica previste per la funzionalità
+\textbf{Gestione Bug} del sistema BugBoard26.
+L'obiettivo è validare che le operazioni di creazione, assegnazione e
+modifica di un bug rispettino i requisiti funzionali e le regole di
+autorizzazione definite nella specifica.
+
+\subsection{Funzionalità sotto test}
+Le funzionalità coperte dal piano sono quelle esposte dal servizio
+\texttt{BugService}:
+
+\begin{enumerate}
+    \item \textbf{Creazione di un bug} – metodo \texttt{create(BugCreateRequest, UUID)}
+    \item \textbf{Assegnazione di un bug} – metodo \texttt{assign(UUID, AssignRequest, UUID)}
+    \item \textbf{Modifica di un bug} – metodo \texttt{patch(UUID, BugPatchRequest, UUID, boolean)}
+\end{enumerate}
+
+\subsection{Approccio di testing}
+
+\begin{itemize}
+    \item \textbf{Livello}: test di unità (\emph{unit test}).
+    \item \textbf{Tecnica}: \emph{black-box} (classi di equivalenza,
+          valori limite) combinata con ispezione \emph{white-box}
+          (copertura dei rami decisionali interni).
+    \item \textbf{Framework}: JUnit~5 + Mockito~5 (via
+          \texttt{spring-boot-starter-test}).
+    \item \textbf{Isolamento}: le dipendenze (repository JPA) sono sostituite
+          da \emph{mock objects} iniettati con \texttt{@Mock} /
+          \texttt{@InjectMocks}, garantendo che i test verifichino
+          esclusivamente la logica di business senza accesso al database.
+\end{itemize}
+
+\subsection{Casi di test pianificati}
+
+\subsubsection{create(BugCreateRequest, UUID)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{6cm}|p{5.5cm}|}
+\hline
+\textbf{ID} & \textbf{Scenario} & \textbf{Risultato atteso} \\
+\hline
+TC-C1 & Creazione con titolo, descrizione, tipo e priorità validi & Bug salvato; history \texttt{CREATE} registrata \\
+\hline
+TC-C2 & UserId inesistente nel sistema & \texttt{EntityNotFoundException} \\
+\hline
+TC-C3 & Request con lista di label (alcune esistenti, altre nuove) & Bug con label associate; label inesistenti create automaticamente \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{assign(UUID, AssignRequest, UUID)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{6cm}|p{5.5cm}|}
+\hline
+\textbf{ID} & \textbf{Scenario} & \textbf{Risultato atteso} \\
+\hline
+TC-A1 & Admin assegna bug a utente esistente & Assignee aggiornato; history \texttt{ASSIGN} registrata \\
+\hline
+TC-A2 & Utente non-admin tenta l'assegnazione & \texttt{SecurityException} \\
+\hline
+TC-A3 & BugId inesistente & \texttt{EntityNotFoundException} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{patch(UUID, BugPatchRequest, UUID, boolean)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|p{6cm}|p{5.5cm}|}
+\hline
+\textbf{ID} & \textbf{Scenario} & \textbf{Risultato atteso} \\
+\hline
+TC-P1 & Admin aggiorna titolo e priorità & Campi aggiornati; history \texttt{UPDATE} registrata \\
+\hline
+TC-P2 & Non-admin tenta di cambiare stato di bug altrui & \texttt{SecurityException} \\
+\hline
+TC-P3 & Assegnatario modifica il proprio bug senza cambiare stato & Modifica applicata con successo \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Criteri di ingresso e uscita}
+
+\begin{description}
+    \item[Ingresso:] codice sorgente compilabile; dipendenze Maven risolte;
+    ambiente Java~23 configurato.
+    \item[Uscita:] tutti i 9 test passano (\texttt{BUILD SUCCESS}) con
+    0~failures e 0~errors; copertura dei rami decisionali principali
+    raggiunta.
+\end{description}
+
+\subsection{Ambiente di esecuzione}
+
+\begin{itemize}
+    \item \textbf{JDK}: Amazon Corretto 23.0.2
+    \item \textbf{Build tool}: Apache Maven con plugin Surefire 3.1.2
+    \item \textbf{CI locale}: \texttt{mvn test} dalla directory \texttt{backend/}
+\end{itemize}
