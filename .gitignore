@@ -30,6 +30,7 @@ backend/data/
 backend/*.iml
 
 # LaTeX
+*.tex
 *.aux
 *.log
 *.out
@@ -37,6 +38,7 @@ backend/*.iml
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+*.mmd
 _temp_diagram.html
 
 # OS
