@@ -1,0 +1,202 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{url}
+
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    urlcolor=blue!60!black,
+}
+
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{BugBoard26 --- Specifica dei Requisiti Software}
+\lhead{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% --- Frontespizio ---
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\LARGE \textbf{Università degli Studi di Napoli Federico II}} \\[0.5cm]
+    {\large Corso di Ingegneria del Software --- Canale 2} \\[3cm]
+
+    \rule{\linewidth}{0.5mm} \\[0.4cm]
+    {\Huge \textbf{BugBoard26}} \\[0.2cm]
+    {\Large Documento di Specifica dei Requisiti Software (SRS)} \\
+    \rule{\linewidth}{0.5mm} \\[2cm]
+
+    {\large
+    \begin{tabular}{ll}
+        \textbf{Versione:} & 2.0 \\[0.3cm]
+        \textbf{Data:}     & \today \\[0.3cm]
+        \textbf{Stato:}    & Consegna progetto completo \\
+    \end{tabular}
+    } \\[3cm]
+
+    \vfill
+    {\large Anno Accademico 2025/2026}
+\end{titlepage}
+
+% --- Indice ---
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduzione}
+% ============================================================
+
+\subsection{Scopo del documento}
+Il presente documento costituisce la Specifica dei Requisiti Software (SRS) per il sistema \textbf{BugBoard26}, sviluppato nell'ambito del corso di Ingegneria del Software. Il documento descrive le funzionalità del sistema, i suoi attori, i casi d'uso formalizzati, i requisiti non funzionali e fornisce una prima prototipazione visuale dell'interfaccia utente.
+
+\subsection{Descrizione del sistema}
+BugBoard26 è un'applicazione web per il \textbf{tracciamento e la gestione collaborativa di segnalazioni di bug}. Il sistema consente a team di sviluppo di:
+\begin{itemize}
+    \item segnalare bug, feature request e miglioramenti;
+    \item assegnare le segnalazioni agli sviluppatori;
+    \item tracciare il ciclo di vita di ogni segnalazione (apertura, presa in carico, risoluzione, archiviazione);
+    \item aggiungere commenti e allegati fotografici;
+    \item visualizzare statistiche e generare report mensili sull'attività del team.
+\end{itemize}
+
+\subsection{Riferimenti}
+\begin{itemize}
+    \item A. Cockburn, \textit{Writing Effective Use Cases}, Addison-Wesley, 2001
+    \item Traccia progetto corso Ingegneria del Software --- Canale 2
+    \item Documentazione di riferimento: DietiDeals24 (esempio fornito dal docente)
+\end{itemize}
+
+% ============================================================
+% GLOSSARIO
+\input{glossario}
+
+% ============================================================
+\section{Individuazione e caratterizzazione degli utenti (attori)}
+% ============================================================
+
+Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
+
+\begin{description}[style=nextline]
+    \item[Utente non registrato (Guest)]
+    Chiunque acceda all'applicazione senza credenziali. Può accedere alla pagina di login e di registrazione. Non ha accesso ad alcuna funzionalità interna.
+
+    \item[Utente registrato (USER)]
+    Utente autenticato con ruolo standard. Può creare e modificare bug, aggiungere commenti e allegati, visualizzare lo storico, gestire il proprio profilo.
+
+    \item[Utente ReadOnly]
+    Utente autenticato con accesso in sola lettura. Può visualizzare bug, commenti e allegati, ma non può eseguire operazioni di scrittura.
+
+    \item[Admin]
+    Utente con privilegi amministrativi completi. Eredita tutte le funzionalità di USER e può in aggiunta: gestire gli utenti del sistema, assegnare bug, visualizzare metriche, generare report, esportare dati.
+
+    \item[Sistema]
+    Attore non umano che esegue operazioni automatiche: invio di notifiche, generazione dello storico modifiche, validazione degli allegati.
+\end{description}
+
+% ============================================================
+\section{Modellazione dei Casi d'Uso}
+% ============================================================
+
+\subsection{Tabella dei Casi d'Uso per Attore}
+\input{tabella_casi_uso}
+
+\subsection{Diagrammi UML dei Casi d'Uso}
+
+\subsubsection{Diagramma Generale del Sistema}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{immagini/diagramma_generale.png}
+    \caption{Diagramma generale dei casi d'uso --- BugBoard26}
+    \label{fig:uc_generale}
+\end{figure}
+
+\subsubsection{Diagramma Dettagliato --- Gestione Bug}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{immagini/diagramma_bug_management.png}
+    \caption{Diagramma dettagliato --- Gestione Bug}
+    \label{fig:uc_bug}
+\end{figure}
+
+\subsubsection{Diagramma Dettagliato --- Amministrazione}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{immagini/diagramma_amministrazione.png}
+    \caption{Diagramma dettagliato --- Amministrazione e funzioni di sistema}
+    \label{fig:uc_admin}
+\end{figure}
+
+\subsection{Convenzioni grafiche}
+\begin{itemize}
+    \item \textbf{Attori} (omino stilizzato o rettangolo): entità esterne che interagiscono con il sistema
+    \item \textbf{Casi d'uso} (ellissi): funzionalità offerte dal sistema
+    \item \textbf{Linee solide}: relazione di associazione tra attore e caso d'uso
+    \item \textbf{Frecce tratteggiate $\ll$include$\gg$}: il caso d'uso base include sempre il caso d'uso puntato
+    \item \textbf{Frecce tratteggiate $\ll$extend$\gg$}: il caso d'uso puntato estende opzionalmente il caso d'uso base
+\end{itemize}
+
+% ============================================================
+\section{Formalizzazione dei Casi d'Uso (Cockburn)}
+% ============================================================
+
+In questa sezione vengono formalizzati quattro casi d'uso significativi, secondo il formalismo tabellare di Alistair Cockburn. Sono stati esclusi i casi d'uso relativi a registrazione e autenticazione, come indicato nelle istruzioni della traccia.
+
+\input{casi_uso_dettagliati_body}
+
+% ============================================================
+% REQUISITI NON FUNZIONALI
+\input{requisiti_non_funzionali}
+
+% ============================================================
+% PROTOTIPAZIONE MOCK-UP
+\input{prototipazione_mockup}
+
+% ============================================================
+% DESIGN DEL SISTEMA
+\input{design_sistema}
+
+% ============================================================
+% DESIGN DEL SOFTWARE
+\input{design_software}
+
+% ============================================================
+% TEST PLAN
+\input{test_plan}
+
+% ============================================================
+% STRATEGIE DI TESTING
+\input{testing_strategies}
+
+% ============================================================
+% REPORT QUALITÀ DEL CODICE
+\input{report_qualita_codice}
+
+% ============================================================
+\end{document}
