@@ -1,0 +1,56 @@
+sequenceDiagram
+    autonumber
+    actor U as Utente
+    participant FE as Frontend (React)
+    participant BC as BugController
+    participant BS as BugService
+    participant UR as UserRepository
+    participant LR as LabelRepository
+    participant BR as BugRepository
+    participant HR as HistoryRepository
+
+    U->>FE: Compila form creazione bug
+    Note over FE: Titolo, descrizione,<br/>tipo, priorità, label
+
+    FE->>BC: POST /api/bugs<br/>BugCreateRequest + JWT Cookie
+
+    BC->>BC: Estrai userId dal JWT
+    BC->>BS: create(request, userId)
+
+    BS->>UR: findById(userId)
+    alt Utente non trovato
+        UR-->>BS: Optional.empty()
+        BS-->>BC: EntityNotFoundException
+        BC-->>FE: 404 Not Found
+        FE-->>U: Messaggio di errore
+    else Utente trovato
+        UR-->>BS: Optional(User)
+
+        BS->>BS: new Bug(title, description, type, user)
+        BS->>BS: setPriority(priority)
+        BS->>BS: setDeadline(deadline)
+
+        opt Labels presenti nella request
+            loop Per ogni label name
+                BS->>LR: findByName(labelName)
+                alt Label esistente
+                    LR-->>BS: Optional(Label)
+                else Label nuova
+                    LR-->>BS: Optional.empty()
+                    BS->>LR: save(new Label(name))
+                    LR-->>BS: Label salvata
+                end
+                BS->>BS: bug.getLabels().add(label)
+            end
+        end
+
+        BS->>BR: save(bug)
+        BR-->>BS: Bug salvato (con ID)
+
+        BS->>HR: save(new History(bug, user, CREATE))
+        HR-->>BS: History salvata
+
+        BS-->>BC: Bug creato
+        BC-->>FE: 200 OK + Bug JSON
+        FE-->>U: Redirect a dettaglio bug
+    end

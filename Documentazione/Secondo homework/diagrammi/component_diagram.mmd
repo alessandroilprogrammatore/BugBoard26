@@ -1,0 +1,91 @@
+graph TB
+    subgraph Frontend["Frontend (React SPA)"]
+        direction TB
+        Pages["Pages<br/>Login, Register, Home,<br/>BugList, BugDetail, BugForm,<br/>AssignBug, Reports, Admin"]
+        Components["Components<br/>BugCard, Layout, Badge,<br/>StatusBadge, PriorityBadge"]
+        UILib["UI Library<br/>shadcn/ui + Radix UI"]
+        Contexts["Contexts<br/>AuthContext"]
+        Hooks["Hooks<br/>use-toast, use-mobile"]
+        APIClient["API Client<br/>fetch wrapper"]
+
+        Pages --> Components
+        Pages --> Contexts
+        Pages --> Hooks
+        Components --> UILib
+        Pages --> APIClient
+    end
+
+    subgraph Backend["Backend (Spring Boot)"]
+        direction TB
+        subgraph ControllerLayer["Controller Layer"]
+            AuthCtrl["AuthController<br/>/api/auth"]
+            BugCtrl["BugController<br/>/api/bugs"]
+            AdminCtrl["AdminController<br/>/api/admin"]
+            ExportCtrl["ExportController<br/>/api/export"]
+            ExHandler["RestExceptionHandler"]
+        end
+
+        subgraph SecurityLayer["Security Layer"]
+            JwtSvc["JwtService"]
+            JwtFilter["JwtAuthFilter"]
+            SecConfig["SecurityConfig"]
+        end
+
+        subgraph ServiceLayer["Service Layer"]
+            AuthSvc["AuthService"]
+            BugSvc["BugService"]
+            AnalSvc["AnalyticsService"]
+            ExpSvc["ExportService"]
+            BugSpec["BugSpecification"]
+        end
+
+        subgraph RepositoryLayer["Repository Layer"]
+            UserRepo["UserRepository"]
+            BugRepo["BugRepository"]
+            CommentRepo["CommentRepository"]
+            HistoryRepo["HistoryRepository"]
+            LabelRepo["LabelRepository"]
+        end
+
+        subgraph ModelLayer["Model Layer"]
+            Entities["User, Bug, Comment,<br/>History, Label"]
+            Enums["Role, BugType, BugStatus,<br/>Priority, HistoryAction"]
+            DTOs["BugCreateRequest,<br/>BugPatchRequest,<br/>AssignRequest, LoginRequest"]
+        end
+
+        AuthCtrl --> AuthSvc
+        BugCtrl --> BugSvc
+        AdminCtrl --> AnalSvc
+        ExportCtrl --> ExpSvc
+
+        JwtFilter --> JwtSvc
+        SecConfig --> JwtFilter
+        AuthSvc --> JwtSvc
+
+        AuthSvc --> UserRepo
+        BugSvc --> BugRepo
+        BugSvc --> UserRepo
+        BugSvc --> CommentRepo
+        BugSvc --> HistoryRepo
+        BugSvc --> LabelRepo
+        AnalSvc --> BugRepo
+        ExpSvc --> BugRepo
+
+        RepositoryLayer --> ModelLayer
+    end
+
+    subgraph Database["Database"]
+        DB["H2 / PostgreSQL"]
+    end
+
+    APIClient -->|"REST/JSON<br/>JWT Cookie"| ControllerLayer
+    RepositoryLayer -->|"JPA/Hibernate"| DB
+
+    style Frontend fill:#e1f5fe,stroke:#0288d1
+    style Backend fill:#e8f5e9,stroke:#388e3c
+    style Database fill:#fff3e0,stroke:#f57c00
+    style ControllerLayer fill:#c8e6c9,stroke:#2e7d32
+    style SecurityLayer fill:#ffcdd2,stroke:#c62828
+    style ServiceLayer fill:#dcedc8,stroke:#558b2f
+    style RepositoryLayer fill:#f0f4c3,stroke:#9e9d24
+    style ModelLayer fill:#e0e0e0,stroke:#616161

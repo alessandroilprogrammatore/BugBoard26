@@ -1,0 +1,40 @@
+graph TB
+    subgraph Client["Client (Browser)"]
+        SPA["React SPA<br/>Vite + TypeScript<br/>Port 8080"]
+    end
+
+    subgraph DockerCompose["Docker Compose Environment"]
+        subgraph FrontendContainer["Container: bugboard-frontend"]
+            ViteDev["Vite Dev Server<br/>Node.js"]
+        end
+
+        subgraph BackendContainer["Container: bugboard-backend"]
+            SpringBoot["Spring Boot 3.3.4<br/>Java 23<br/>Port 8081"]
+            subgraph SpringModules["Moduli Spring"]
+                Web["Spring Web<br/>REST API"]
+                Security["Spring Security<br/>JWT Auth"]
+                JPA["Spring Data JPA<br/>Hibernate"]
+            end
+        end
+
+        subgraph DBContainer["Container: bugboard-db"]
+            PostgreSQL["PostgreSQL 16<br/>Port 5432<br/>Volume: pgdata"]
+        end
+    end
+
+    subgraph DevLocal["Sviluppo Locale"]
+        H2["H2 Database<br/>(embedded)<br/>File: ./data/devdb"]
+    end
+
+    SPA -->|"HTTP/REST<br/>/api/*"| ViteDev
+    ViteDev -->|"Proxy<br/>localhost:8081"| SpringBoot
+    SPA -->|"HTTP/REST<br/>/api/*<br/>(produzione)"| SpringBoot
+    SpringBoot -->|"JDBC<br/>jdbc:postgresql://db:5432"| PostgreSQL
+    SpringBoot -.->|"JDBC<br/>(sviluppo)"| H2
+
+    style Client fill:#e1f5fe,stroke:#0288d1
+    style FrontendContainer fill:#f3e5f5,stroke:#7b1fa2
+    style BackendContainer fill:#e8f5e9,stroke:#388e3c
+    style DBContainer fill:#fff3e0,stroke:#f57c00
+    style DevLocal fill:#fce4ec,stroke:#c62828
+    style DockerCompose fill:#f5f5f5,stroke:#616161

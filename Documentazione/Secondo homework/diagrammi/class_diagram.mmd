@@ -1,0 +1,216 @@
+classDiagram
+    direction TB
+
+    class Role {
+        &lt;&lt;enumeration&gt;&gt;
+        ADMIN
+        USER
+        READONLY
+    }
+
+    class BugType {
+        &lt;&lt;enumeration&gt;&gt;
+        QUESTION
+        BUG
+        DOCUMENTATION
+        FEATURE
+    }
+
+    class BugStatus {
+        &lt;&lt;enumeration&gt;&gt;
+        TODO
+        IN_PROGRESS
+        RESOLVED
+        ARCHIVED
+    }
+
+    class Priority {
+        &lt;&lt;enumeration&gt;&gt;
+        LOW
+        MEDIUM
+        HIGH
+        URGENT
+    }
+
+    class HistoryAction {
+        &lt;&lt;enumeration&gt;&gt;
+        CREATE
+        UPDATE
+        ASSIGN
+        COMMENT
+        ARCHIVE
+        DUPLICATE
+        LABELS_SET
+    }
+
+    class User {
+        -UUID id
+        -String email
+        -String passwordHash
+        -String name
+        -Role role
+        -LocalDateTime createdAt
+    }
+
+    class Bug {
+        -UUID id
+        -String title
+        -String description
+        -BugType type
+        -BugStatus status
+        -Priority priority
+        -Boolean archived
+        -LocalDateTime createdAt
+        -LocalDateTime deadline
+    }
+
+    class Comment {
+        -UUID id
+        -String text
+        -LocalDateTime createdAt
+    }
+
+    class History {
+        -UUID id
+        -HistoryAction action
+        -String details
+        -LocalDateTime at
+    }
+
+    class Label {
+        -UUID id
+        -String name
+        -LocalDateTime createdAt
+    }
+
+    class UserRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findByEmail(email) User
+        +existsByEmail(email) boolean
+    }
+
+    class BugRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findAll(spec, pageable) Page
+    }
+
+    class CommentRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findByBugId(bugId) List
+    }
+
+    class HistoryRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findByBugId(bugId) List
+    }
+
+    class LabelRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findByName(name) Label
+    }
+
+    class BugService {
+        +create(request, userId) Bug
+        +patch(id, request, userId, isAdmin) Bug
+        +assign(bugId, request, userId) void
+        +list(search, type, status, priority, label, pageable) Page
+        +get(id) Bug
+        +archive(bugId, email) void
+        +addComment(bugId, authorId, text) Comment
+        +setLabels(bugId, request, whoId) void
+    }
+
+    class AuthService {
+        +login(request) String
+        +register(email, password, name) User
+    }
+
+    class ExportService {
+        +exportToCsv() bytes
+        +exportToExcel() bytes
+    }
+
+    class AnalyticsService {
+        +getMetrics() MetricsResponse
+        +getMonthlyReport(month) MonthlyReportResponse
+    }
+
+    class BugController {
+        &lt;&lt;RestController&gt;&gt;
+        +listBugs() Page
+        +createBug(request) Bug
+        +getBug(id) Bug
+        +patchBug(id, request) Bug
+        +assignBug(id, request) void
+    }
+
+    class AuthController {
+        &lt;&lt;RestController&gt;&gt;
+        +login(request) ResponseEntity
+        +logout() ResponseEntity
+        +me() MeResponse
+    }
+
+    class AdminController {
+        &lt;&lt;RestController&gt;&gt;
+        +getMetrics() MetricsResponse
+        +getMonthlyReport(month) MonthlyReportResponse
+    }
+
+    class ExportController {
+        &lt;&lt;RestController&gt;&gt;
+        +exportCsv() ResponseEntity
+        +exportExcel() ResponseEntity
+    }
+
+    class JwtService {
+        -SecretKey key
+        -long ttlHours
+        +issue(id, role, name, email) String
+        +parse(token) Claims
+        +isExpired(claims) boolean
+    }
+
+    class JwtAuthFilter {
+        -JwtService jwtService
+        #doFilterInternal(req, res, chain) void
+    }
+
+    class SecurityConfig {
+        &lt;&lt;Configuration&gt;&gt;
+        +filterChain(http) SecurityFilterChain
+        +passwordEncoder() BCryptPasswordEncoder
+    }
+
+    Bug "*" --> "1" User : createdBy
+    Bug "*" --> "0..1" User : assignee
+    Bug "*" --> "0..1" Bug : duplicateOf
+    Bug "1" --> "*" Comment : comments
+    Bug "1" --> "*" History : history
+    Bug "*" --> "*" Label : labels
+    Comment "*" --> "1" User : author
+    History "*" --> "1" User : who
+
+    User --> Role
+    Bug --> BugType
+    Bug --> BugStatus
+    Bug --> Priority
+    History --> HistoryAction
+
+    BugController --> BugService
+    AuthController --> AuthService
+    AdminController --> AnalyticsService
+    ExportController --> ExportService
+
+    BugService --> BugRepository
+    BugService --> UserRepository
+    BugService --> CommentRepository
+    BugService --> HistoryRepository
+    BugService --> LabelRepository
+    AuthService --> UserRepository
+    AuthService --> JwtService
+    AnalyticsService --> BugRepository
+    ExportService --> BugRepository
+
+    JwtAuthFilter --> JwtService
+    SecurityConfig --> JwtAuthFilter

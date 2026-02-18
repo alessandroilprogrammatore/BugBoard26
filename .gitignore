@@ -39,6 +39,7 @@ backend/*.iml
 *.fls
 *.fdb_latexmk
 *.mmd
+!Documentazione/Secondo homework/diagrammi/*.mmd
 _temp_diagram.html
 
 # OS
