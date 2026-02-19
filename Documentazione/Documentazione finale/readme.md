@@ -1,5 +1,20 @@
-La consegna finale include tutta la documentazione prodotta nelle prime fasi (eventualmente aggiornata e rivista) nonchè tutti i documenti sulla progettazione e implementazione non ancora realizzata nelle fasi precedenti.
+# Documentazione Finale
 
-Eventuali materiali necessari alla presentazione e discussione del progetto possono essere anch'essi caricati in questa cartella.
+Questa cartella contiene la documentazione completa del progetto BugBoard26.
 
-Le informazioni riguardanti l'installazione e utilizzo del progetto vanno invece scritte nel readme della cartella principale, coerentemente con la modalità di fruizione dei normali progetti open source.
+## Contenuti
+
+- `SRS_BugBoard26.pdf` - Documento completo che include:
+  - Specifica dei Requisiti Software
+  - Glossario
+  - Modellazione casi d'uso (Use Case Diagrams)
+  - Caratterizzazione degli utenti
+  - Requisiti non funzionali e di sistema
+  - Casi d'uso formalizzati (Cockburn)
+  - Prototipazione mockup
+  - Design del sistema (architettura e scelte tecnologiche)
+  - Design del software (schema DB, diagramma classi, scelte design)
+  - Test plan e strategie di testing
+  - Report qualita del codice
+
+- `immagini/` - Diagrammi UML e screenshot mockup delle interfacce
