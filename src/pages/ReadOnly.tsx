@@ -1,17 +1,44 @@
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { BugCard } from '@/components/BugCard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { mockBugs } from '@/data/mockData';
 import { ArrowLeft, Eye, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '@/api/client';
 
 export default function ReadOnly() {
   const navigate = useNavigate();
+  const [visibleBugs, setVisibleBugs] = useState<any[]>([]);
 
-  // Mostra solo bug aperti in modalità readonly
-  const visibleBugs = mockBugs.filter((b) => b.status !== 'archived').slice(0, 5);
+  useEffect(() => {
+    loadBugs();
+  }, []);
+
+  const loadBugs = async () => {
+    try {
+      const response = await api('/bugs?size=5');
+      const bugs = (response.content || []).map((b: any) => ({
+        id: b.id,
+        title: b.title,
+        description: b.description,
+        type: b.type.toLowerCase(),
+        status: b.status.toLowerCase(),
+        priority: b.priority?.toLowerCase() || 'medium',
+        labels: b.labels?.map((l: any) => l.name) || [],
+        assignee: b.assignee?.id,
+        assigneeName: b.assignee?.name,
+        createdBy: b.createdBy.id,
+        createdByName: b.createdBy.name,
+        createdAt: new Date(b.createdAt),
+        updatedAt: new Date(b.createdAt),
+      }));
+      setVisibleBugs(bugs);
+    } catch (error) {
+      console.error('Failed to load bugs:', error);
+    }
+  };
 
   return (
     <Layout showNav={false}>
@@ -67,3 +94,4 @@ export default function ReadOnly() {
     </Layout>
   );
 }
+

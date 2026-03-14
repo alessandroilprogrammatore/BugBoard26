@@ -1,21 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { mockBugs } from '@/data/mockData';
 import { ArrowLeft, Copy, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { api } from '@/api/client';
 
 export default function DuplicateBug() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const bug = mockBugs.find((b) => b.id === id);
+  const [bug, setBug] = useState<any>(null);
+  const [allBugs, setAllBugs] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [selectedOriginal, setSelectedOriginal] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, [id]);
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      const bugData = await api(`/bugs/${id}`);
+      setBug(bugData);
+
+      const response = await api('/bugs?size=200');
+      setAllBugs((response.content || []).filter((b: any) => b.id !== id));
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Layout showNav={false}>
+        <div className="p-4">Caricamento...</div>
+      </Layout>
+    );
+  }
 
   if (!bug) {
     return (
@@ -25,23 +54,29 @@ export default function DuplicateBug() {
     );
   }
 
-  const otherBugs = mockBugs.filter((b) => b.id !== id);
   const filteredBugs = search
-    ? otherBugs.filter(
-        (b) =>
-          b.id.toLowerCase().includes(search.toLowerCase()) ||
-          b.title.toLowerCase().includes(search.toLowerCase())
-      )
-    : otherBugs.slice(0, 5);
+    ? allBugs.filter(
+      (b) =>
+        b.title.toLowerCase().includes(search.toLowerCase())
+    )
+    : allBugs.slice(0, 5);
 
-  const handleMarkDuplicate = () => {
+  const handleMarkDuplicate = async () => {
     if (!selectedOriginal) {
       toast.error('Seleziona il bug originale');
       return;
     }
 
-    toast.success('Bug segnato come duplicato e chiuso');
-    setTimeout(() => navigate(`/bug/${id}`), 500);
+    try {
+      await api(`/bugs/${id}/duplicate-of/${selectedOriginal}`, {
+        method: 'POST',
+      });
+      toast.success('Bug segnato come duplicato e chiuso');
+      setTimeout(() => navigate(`/bug/${id}`), 500);
+    } catch (error) {
+      console.error('Failed to mark as duplicate:', error);
+      toast.error('Errore nella marcatura come duplicato');
+    }
   };
 
   return (
@@ -57,7 +92,7 @@ export default function DuplicateBug() {
         <Card className="p-4 mb-4">
           <div className="text-sm">
             <span className="text-muted-foreground">Questo bug:</span>{' '}
-            <span className="font-medium">{bug.id} - {bug.title}</span>
+            <span className="font-medium">{bug.title}</span>
           </div>
         </Card>
 
@@ -74,7 +109,7 @@ export default function DuplicateBug() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Cerca per ID o titolo..."
+                placeholder="Cerca per titolo..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9"
@@ -86,19 +121,16 @@ export default function DuplicateBug() {
             {filteredBugs.map((b) => (
               <Card
                 key={b.id}
-                className={`p-3 cursor-pointer transition-all ${
-                  selectedOriginal === b.id
+                className={`p-3 cursor-pointer transition-all ${selectedOriginal === b.id
                     ? 'ring-2 ring-primary bg-primary/5'
                     : 'hover:shadow-md'
-                }`}
+                  }`}
                 onClick={() => setSelectedOriginal(b.id)}
               >
                 <div className="flex items-start gap-2">
                   <div className="flex-1">
-                    <div className="font-mono text-sm text-muted-foreground mb-1">
-                      {b.id}
-                    </div>
                     <div className="font-medium text-sm">{b.title}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{b.status} · {b.type}</div>
                   </div>
                   {selectedOriginal === b.id && (
                     <div className="text-primary">✓</div>
@@ -122,3 +154,4 @@ export default function DuplicateBug() {
     </Layout>
   );
 }
+

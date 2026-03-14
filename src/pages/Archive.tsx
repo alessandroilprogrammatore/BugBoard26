@@ -1,26 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { BugCard } from '@/components/BugCard';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { mockBugs } from '@/data/mockData';
 import { ArrowLeft, Search, Archive as ArchiveIcon, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { api } from '@/api/client';
 
 export default function Archive() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [archivedBugs, setArchivedBugs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const archivedBugs = mockBugs.filter((b) => b.status === 'archived');
+  useEffect(() => {
+    loadArchivedBugs();
+  }, []);
+
+  const loadArchivedBugs = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api('/bugs?size=200');
+      const bugs = (response.content || [])
+        .filter((b: any) => b.archived)
+        .map((b: any) => ({
+          id: b.id,
+          title: b.title,
+          description: b.description,
+          type: b.type.toLowerCase(),
+          status: b.status.toLowerCase(),
+          priority: b.priority?.toLowerCase() || 'medium',
+          labels: b.labels?.map((l: any) => l.name) || [],
+          assignee: b.assignee?.id,
+          assigneeName: b.assignee?.name,
+          createdBy: b.createdBy.id,
+          createdByName: b.createdBy.name,
+          createdAt: new Date(b.createdAt),
+          updatedAt: new Date(b.createdAt),
+          archived: b.archived,
+        }));
+      setArchivedBugs(bugs);
+    } catch (error) {
+      console.error('Failed to load archived bugs:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredBugs = searchQuery
     ? archivedBugs.filter(
-        (b) =>
-          b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          b.id.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      (b) =>
+        b.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : archivedBugs;
 
   return (
@@ -47,7 +80,9 @@ export default function Archive() {
           {filteredBugs.length} bug archiviati
         </div>
 
-        {filteredBugs.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center p-8 text-muted-foreground">Caricamento...</div>
+        ) : filteredBugs.length === 0 ? (
           <EmptyState
             icon={<ArchiveIcon className="h-16 w-16" />}
             title="Nessun bug archiviato"
@@ -58,18 +93,6 @@ export default function Archive() {
             {filteredBugs.map((bug) => (
               <div key={bug.id} className="relative">
                 <BugCard bug={bug} />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toast.success('Bug ripristinato');
-                  }}
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Ripristina
-                </Button>
               </div>
             ))}
           </div>
@@ -78,3 +101,4 @@ export default function Archive() {
     </Layout>
   );
 }
+

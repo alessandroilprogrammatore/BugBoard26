@@ -1,7 +1,6 @@
 import { Home, List, Bell, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockNotifications } from '@/data/mockData';
 
 export function MobileNav() {
   const navigate = useNavigate();
@@ -10,14 +9,10 @@ export function MobileNav() {
 
   if (!user) return null;
 
-  const unreadCount = mockNotifications.filter(
-    (n) => n.userId === user.id && !n.read
-  ).length;
-
   const navItems = [
     { path: '/home', icon: Home, label: 'Home' },
     { path: '/bugs', icon: List, label: 'Bug' },
-    { path: '/notifications', icon: Bell, label: 'Notifiche', badge: unreadCount },
+    { path: '/notifications', icon: Bell, label: 'Notifiche' },
     { path: '/profile', icon: User, label: 'Profilo' },
   ];
 
@@ -31,18 +26,10 @@ export function MobileNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center justify-center flex-1 h-full relative ${
-                isActive ? 'text-primary' : 'text-muted-foreground'
-              }`}
+              className={`flex flex-col items-center justify-center flex-1 h-full relative ${isActive ? 'text-primary' : 'text-muted-foreground'
+                }`}
             >
-              <div className="relative">
-                <Icon className="h-5 w-5" />
-                {item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
-              </div>
+              <Icon className="h-5 w-5" />
               <span className="text-xs mt-1">{item.label}</span>
             </button>
           );
@@ -51,3 +38,4 @@ export function MobileNav() {
     </nav>
   );
 }
+
