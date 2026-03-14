@@ -160,13 +160,11 @@ public class BugController {
     }
 
     private UUID getCurrentUserId(Authentication auth) {
-        // In a real implementation, you'd extract this from the JWT token
-        // For now, return a dummy UUID
-        return UUID.fromString("00000000-0000-0000-0000-000000000001");
+        return UUID.fromString((String) auth.getDetails());
     }
 
     private boolean isCurrentUserAdmin(Authentication auth) {
-        // In a real implementation, you'd extract this from the JWT token
-        return true;
+        return auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

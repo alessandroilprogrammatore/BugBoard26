@@ -53,6 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (token != null && !jwtService.isExpired(token)) {
             try {
+                String sub = jwtService.parse(token).getSubject();
                 String role = jwtService.getRole(token);
                 String name = jwtService.getName(token);
                 String email = jwtService.getEmail(token);
@@ -61,6 +62,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     email, null, authorities
                 );
+                // Store the user UUID so controllers can retrieve it
+                auth.setDetails(sub);
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {

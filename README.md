@@ -37,7 +37,7 @@ Il documento SRS completo e' disponibile in `SRS_BugBoard26.pdf`.
 | Componente | Tecnologia |
 |------------|-----------|
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS, Radix UI |
-| Backend | Java 23, Spring Boot 3.3.4, Spring Security, JPA |
+| Backend | Java 17, Spring Boot 3.3.4, Spring Security, JPA |
 | Database | H2 (dev) / PostgreSQL 16 (prod) |
 | Auth | JWT (stateless) |
 | Testing | JUnit 5, Mockito, AssertJ |

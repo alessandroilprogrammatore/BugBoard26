@@ -1,5 +1,6 @@
 package com.bugboard26.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "bugs")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Bug {
 
     @Id

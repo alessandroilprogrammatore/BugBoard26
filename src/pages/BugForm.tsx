@@ -14,27 +14,23 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { mockBugs } from '@/data/mockData';
 import { ArrowLeft, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugType, BugPriority } from '@/types/bug';
-import { apiUpload } from '@/api/client';
+import { api, apiUpload } from '@/api/client';
 
 export default function BugForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = id !== 'new';
-  const bug = isEdit ? mockBugs.find((b) => b.id === id) : null;
 
-  const [title, setTitle] = useState(bug?.title || '');
-  const [description, setDescription] = useState(bug?.description || '');
-  const [type, setType] = useState<BugType>(bug?.type || 'bug');
-  const [priority, setPriority] = useState<BugPriority>(bug?.priority || 'medium');
-  const [labels, setLabels] = useState<string[]>(bug?.labels || []);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState<BugType>('bug');
+  const [priority, setPriority] = useState<BugPriority>('medium');
+  const [labels, setLabels] = useState<string[]>([]);
   const [newLabel, setNewLabel] = useState('');
-  const [dueDate, setDueDate] = useState(
-    bug?.dueDate ? new Date(bug.dueDate).toISOString().split('T')[0] : ''
-  );
+  const [dueDate, setDueDate] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -131,17 +127,42 @@ export default function BugForm() {
     setIsSubmitting(true);
 
     try {
-      // In a real implementation, you would create the bug first via API
-      // For now, we'll simulate this with a temporary bug ID
-      const bugId = isEdit ? id! : 'temp-bug-id';
+      let bugId: string;
+
+      if (isEdit) {
+        // Patch existing bug
+        await api(`/bugs/${id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim(),
+            type: type.toUpperCase(),
+            priority: priority.toUpperCase(),
+            deadline: dueDate || null,
+            labels: labels,
+          }),
+        });
+        bugId = id!;
+      } else {
+        // Create new bug
+        const created = await api('/bugs', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim(),
+            type: type.toUpperCase(),
+            priority: priority.toUpperCase(),
+            deadline: dueDate || null,
+            labels: labels,
+          }),
+        });
+        bugId = created.id;
+      }
 
       // Upload attachments if any
       if (attachments.length > 0) {
         await uploadAttachments(bugId);
       }
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast.success(isEdit ? 'Bug aggiornato' : 'Bug creato');
       navigate('/bugs');

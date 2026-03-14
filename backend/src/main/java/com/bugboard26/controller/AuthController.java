@@ -2,7 +2,10 @@ package com.bugboard26.controller;
 
 import com.bugboard26.dto.LoginRequest;
 import com.bugboard26.dto.MeResponse;
+import com.bugboard26.model.User;
+import com.bugboard26.repository.UserRepository;
 import com.bugboard26.service.AuthService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,15 +19,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
     private final boolean cookieSecure;
     private final String cookieSameSite;
 
     public AuthController(
         AuthService authService,
+        UserRepository userRepository,
         @Value("${app.cookie.secure}") boolean cookieSecure,
         @Value("${app.cookie.samesite}") String cookieSameSite
     ) {
         this.authService = authService;
+        this.userRepository = userRepository;
         this.cookieSecure = cookieSecure;
         this.cookieSameSite = cookieSameSite;
     }
@@ -69,8 +75,15 @@ public class AuthController {
         }
 
         String email = authentication.getName();
-        // In a real implementation, you'd fetch user details from the database
-        // For now, return basic info from the JWT token
-        return ResponseEntity.ok().build();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return ResponseEntity.ok(new MeResponse(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getRole(),
+            null  // no token on /me, already in cookie
+        ));
     }
 }

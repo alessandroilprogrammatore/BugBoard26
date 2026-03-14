@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "labels")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Label {
 
     @Id

@@ -3,11 +3,13 @@ package com.bugboard26.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "history")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class History {
 
     @Id
