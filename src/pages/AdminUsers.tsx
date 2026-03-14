@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,37 +19,79 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { mockUsers } from '@/data/mockData';
 import { ArrowLeft, UserPlus, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { UserRole } from '@/contexts/AuthContext';
+import { api } from '@/api/client';
+
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function AdminUsers() {
   const navigate = useNavigate();
-  const [users] = useState(mockUsers);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
   const [newUserRole, setNewUserRole] = useState<UserRole>('user');
 
-  const roleLabels = {
+  const roleLabels: Record<string, string> = {
     admin: 'Amministratore',
     user: 'Utente normale',
     readonly: 'Solo lettura',
+    ADMIN: 'Amministratore',
+    USER: 'Utente normale',
+    READONLY: 'Solo lettura',
   };
 
-  const handleCreateUser = () => {
-    if (!newUserName.trim() || !newUserEmail.trim()) {
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const data = await api('/admin/users');
+      setUsers(data);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+      toast.error('Errore nel caricamento utenti');
+    }
+  };
+
+  const handleCreateUser = async () => {
+    if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim()) {
       toast.error('Compila tutti i campi');
       return;
     }
 
-    toast.success('Utente creato con successo');
-    setIsDialogOpen(false);
-    setNewUserName('');
-    setNewUserEmail('');
-    setNewUserRole('user');
+    try {
+      await api('/admin/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: newUserName.trim(),
+          email: newUserEmail.trim(),
+          password: newUserPassword.trim(),
+          role: newUserRole.toUpperCase(),
+        }),
+      });
+
+      toast.success('Utente creato con successo');
+      setIsDialogOpen(false);
+      setNewUserName('');
+      setNewUserEmail('');
+      setNewUserPassword('');
+      setNewUserRole('user');
+      loadUsers();
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      toast.error('Errore nella creazione utente');
+    }
   };
 
   return (
@@ -95,6 +137,17 @@ export default function AdminUsers() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="role">Ruolo</Label>
                   <Select value={newUserRole} onValueChange={(v) => setNewUserRole(v as UserRole)}>
                     <SelectTrigger id="role">
@@ -126,15 +179,8 @@ export default function AdminUsers() {
                     <Mail className="h-3 w-3" />
                     {user.email}
                   </div>
-                  <Badge variant="secondary">{roleLabels[user.role]}</Badge>
+                  <Badge variant="secondary">{roleLabels[user.role] || user.role}</Badge>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toast.info('Modifica ruolo (demo)')}
-                >
-                  Modifica
-                </Button>
               </div>
             </Card>
           ))}
@@ -143,3 +189,4 @@ export default function AdminUsers() {
     </Layout>
   );
 }
+
