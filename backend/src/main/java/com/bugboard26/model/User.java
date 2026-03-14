@@ -1,5 +1,6 @@
 package com.bugboard26.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -25,6 +26,7 @@ public class User {
     @NotBlank
     @Size(min = 60, max = 60) // BCrypt hash length
     @Column(name = "password_hash")
+    @JsonIgnore
     private String passwordHash;
 
     @NotBlank

@@ -1,31 +1,60 @@
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockBugs } from '@/data/mockData';
 import { Bug, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '@/api/client';
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [metrics, setMetrics] = useState({
+    open: 0,
+    assignedToMe: 0,
+    resolved: 0,
+    dueSoon: 0,
+  });
 
-  const openBugs = mockBugs.filter(
-    (b) => b.status !== 'resolved' && b.status !== 'archived'
-  ).length;
-  const assignedToMe = mockBugs.filter((b) => b.assignee === user?.id).length;
-  const resolvedBugs = mockBugs.filter((b) => b.status === 'resolved').length;
-  const dueSoon = mockBugs.filter(
-    (b) =>
-      b.dueDate &&
-      new Date(b.dueDate) > new Date() &&
-      new Date(b.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  ).length;
+  useEffect(() => {
+    loadMetrics();
+  }, []);
+
+  const loadMetrics = async () => {
+    try {
+      if (isAdmin) {
+        const data = await api('/admin/metrics');
+        setMetrics({
+          open: data.open || 0,
+          assignedToMe: data.inProgress || 0,
+          resolved: data.resolved || 0,
+          dueSoon: data.archived || 0,
+        });
+      } else {
+        // For non-admin users, load bugs and compute locally
+        const response = await api('/bugs?size=100');
+        const bugs = response.content || [];
+        setMetrics({
+          open: bugs.filter((b: any) => b.status === 'TODO').length,
+          assignedToMe: bugs.filter((b: any) => b.assignee?.id === user?.id).length,
+          resolved: bugs.filter((b: any) => b.status === 'RESOLVED').length,
+          dueSoon: bugs.filter((b: any) =>
+            b.deadline &&
+            new Date(b.deadline) > new Date() &&
+            new Date(b.deadline) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          ).length,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load metrics:', error);
+    }
+  };
 
   const stats = [
-    { label: 'Bug aperti', value: openBugs, icon: Bug, color: 'text-primary' },
-    { label: 'Assegnati a me', value: assignedToMe, icon: AlertTriangle, color: 'text-warning' },
-    { label: 'Risolti', value: resolvedBugs, icon: CheckCircle, color: 'text-success' },
-    { label: 'Scadenze prossime', value: dueSoon, icon: Clock, color: 'text-destructive' },
+    { label: 'Bug aperti', value: metrics.open, icon: Bug, color: 'text-primary' },
+    { label: 'Assegnati a me', value: metrics.assignedToMe, icon: AlertTriangle, color: 'text-warning' },
+    { label: 'Risolti', value: metrics.resolved, icon: CheckCircle, color: 'text-success' },
+    { label: 'Scadenze prossime', value: metrics.dueSoon, icon: Clock, color: 'text-destructive' },
   ];
 
   return (
@@ -93,3 +122,4 @@ export default function Home() {
     </Layout>
   );
 }
+
