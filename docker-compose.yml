@@ -13,7 +13,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bug -d bugboard"]
+      test: [ "CMD-SHELL", "pg_isready -U bug -d bugboard" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,7 +25,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bugboard
       SPRING_DATASOURCE_USERNAME: bug
       SPRING_DATASOURCE_PASSWORD: bug
-      APP_JWT_SECRET: change-me-in-production
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      APP_JWT_SECRET: ThisIsAVeryLongAndSecureJWTSecretKeyThatIsAtLeast32CharactersLongForSecurity123456789
       APP_FRONT_ORIGIN: http://localhost:5173
       APP_COOKIE_SECURE: "false"
       APP_COOKIE_SAMESITE: Lax
@@ -35,7 +38,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -55,5 +58,20 @@ services:
       - .:/app
       - /app/node_modules
 
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: bugboard-sonarqube
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
 volumes:
   pgdata:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:

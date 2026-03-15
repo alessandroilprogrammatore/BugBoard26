@@ -210,9 +210,14 @@ export default function BugDetail() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => {
-                      toast.success('Bug archiviato');
-                      setTimeout(() => navigate('/bugs'), 1000);
+                    onClick={async () => {
+                      try {
+                        await api(`/bugs/${id}/archive`, { method: 'POST' });
+                        toast.success('Bug archiviato');
+                        setTimeout(() => navigate('/bugs'), 1000);
+                      } catch (error) {
+                        toast.error("Errore nell'archiviazione");
+                      }
                     }}
                   >
                     <Archive className="h-4 w-4 mr-1" />
