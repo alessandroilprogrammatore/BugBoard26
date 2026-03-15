@@ -29,10 +29,8 @@ backend/target/
 backend/data/
 backend/*.iml
 
-# LaTeX
-*.tex
+# LaTeX build artifacts (keep .tex sources!)
 *.aux
-*.log
 *.out
 *.toc
 *.synctex.gz
@@ -51,6 +49,7 @@ bun.lockb
 
 # Temp and utility scripts
 mvn_output.txt
+student_pdf_output.txt
 take-screenshots.mjs
 debug-screenshot.mjs
 debug_screenshot.png
