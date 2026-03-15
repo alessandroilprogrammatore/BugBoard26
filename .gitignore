@@ -48,3 +48,7 @@ desktop.ini
 
 # Binary lock files
 bun.lockb
+
+# Temp and utility scripts
+mvn_output.txt
+take-screenshots.mjs
