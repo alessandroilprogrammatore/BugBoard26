@@ -52,3 +52,10 @@ bun.lockb
 # Temp and utility scripts
 mvn_output.txt
 take-screenshots.mjs
+debug-screenshot.mjs
+debug_screenshot.png
+
+# Environment matching
+.env
+.env.*
+!.env.example
