@@ -1,0 +1,1321 @@
+Univ ersità degli Studi di Nap oli F ederico I I
+Corso di Ingegneria del Soft w are  Canale 2
+BugBoard26
+Do cumen to di Sp ecica dei Requisiti Soft w are (SRS)
+V ersione: 2.0
+Data: 19 febbraio 2026
+Stato: Consegna progetto completo
+Anno A ccademico 2025/2026
+1 BugBoard26  Sp ecica dei Requisiti Soft w are
+Indice
+1 In tro duzione 4
+1.1 Scop o del do cumen to . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+1.2 Descrizione del sistema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+1.3 Riferimen ti . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2 Glossario 4
+3 Individuazione e caratterizzazione degli uten ti (attori) 6
+4 Mo dellazione dei Casi d'Uso 6
+4.1 T ab ella dei Casi d'Uso p er A ttore . . . . . . . . . . . . . . . . . . . . . . . 6
+5 T ab ella dei Casi d'Uso 6
+5.1 Descrizione dettagliata dei casi d'uso . . . . . . . . . . . . . . . . . . . . . 8
+5.1.1 Uten te non registrato . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+5.1.2 Uten te registrato (USER) . . . . . . . . . . . . . . . . . . . . . . . 8
+5.1.3 Uten te ReadOnly . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+5.1.4 A dmin . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+5.1.5 Sistema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+5.2 Diagrammi UML dei Casi d'Uso . . . . . . . . . . . . . . . . . . . . . . . . 10
+5.2.1 Diagramma Generale del Sistema . . . . . . . . . . . . . . . . . . . 10
+5.2.2 Diagramma Dettagliato  Gestione Bug . . . . . . . . . . . . . . . 10
+5.2.3 Diagramma Dettagliato  Amministrazione . . . . . . . . . . . . . 11
+5.3 Con v enzioni grac he . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+6 F ormalizzazione dei Casi d'Uso (Co c kburn) 11
+6.1 Caso d'Uso 1: Creazione n uo v o bug . . . . . . . . . . . . . . . . . . . . . . 11
+6.2 Caso d'Uso 2: Assegnazione bug a un uten te . . . . . . . . . . . . . . . . . 12
+6.3 Caso d'Uso 3: Risoluzione e c hiusura bug . . . . . . . . . . . . . . . . . . . 13
+6.4 Caso d'Uso 4: Generazione rep ort mensile (A dmin) . . . . . . . . . . . . . 14
+7 Requisiti Non F unzionali e di Sistema 15
+7.1 Usabilità . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+7.2 Prestazioni . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+7.3 Sicurezza . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+7.4 Adabilità e Disp onibilità . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+7.5 Man utenibilità e P ortabilità . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+7.6 Vincoli di Sistema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+8 Prototipazione visuale attra v erso Mo c k-up 17
+8.1 Scelte Progettuali . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+8.1.1 La y out e Na vigazione . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+8.1.2 P alette Colori e Badge . . . . . . . . . . . . . . . . . . . . . . . . . 18
+8.1.3 Comp onen ti UI riutilizzati . . . . . . . . . . . . . . . . . . . . . . . 18
+8.2 Mo c k-up delle in terfacce uten te . . . . . . . . . . . . . . . . . . . . . . . . 18
+8.2.1 Mo c k-up 1  P agina di Login . . . . . . . . . . . . . . . . . . . . . 19
+8.2.2 Mo c k-up 2  P agina di Registrazione . . . . . . . . . . . . . . . . 20
+2 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.3 Mo c k-up 3  Home / Dash b oard . . . . . . . . . . . . . . . . . . . 20
+8.2.4 Mo c k-up 4  Lista Bug con Filtri . . . . . . . . . . . . . . . . . . . 21
+8.2.5 Mo c k-up 5  Dettaglio Bug . . . . . . . . . . . . . . . . . . . . . . 22
+8.2.6 Mo c k-up 6  F orm Creazione/Mo dica Bug [UC01] . . . . . . . . 23
+8.2.7 Mo c k-up 7  Assegnazione Bug [UC02] . . . . . . . . . . . . . . . 24
+8.2.8 Mo c k-up 8  Notic he . . . . . . . . . . . . . . . . . . . . . . . . . 25
+8.2.9 Mo c k-up 9  Prolo Uten te . . . . . . . . . . . . . . . . . . . . . . 25
+8.2.10 Mo c k-up 10  Rep ort Mensile [UC04] . . . . . . . . . . . . . . . . 26
+8.2.11 Mo c k-up 11  Gestione Uten ti (A dmin) . . . . . . . . . . . . . . . 27
+8.2.12 Mo c k-up 12  Arc hivio Bug . . . . . . . . . . . . . . . . . . . . . . 27
+8.2.13 Mo c k-up 13  Exp ort Dati . . . . . . . . . . . . . . . . . . . . . . 28
+8.3 Osserv azioni emerse dalla prototipazione . . . . . . . . . . . . . . . . . . . 28
+9 Design del Sistema 29
+9.1 Descrizione dell'arc hitettura . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+9.1.1 Deplo ymen t Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+9.1.2 Comp onen t Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+9.2 Criteri di design adottati . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+9.3 Scelte tecnologic he . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+9.3.1 F ron tend . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+9.3.2 Bac k end . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+9.3.3 T esting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+9.3.4 DevOps e Deplo ymen t . . . . . . . . . . . . . . . . . . . . . . . . . 33
+9.4 Com unicazione tra i liv elli . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+9.5 Sicurezza . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+10 Design del Soft w are 34
+10.1 Sc hema p er la p ersistenza dati . . . . . . . . . . . . . . . . . . . . . . . . . 34
+10.1.1 T ab ella users . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+10.1.2 T ab ella bugs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+10.1.3 T ab ella comments . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+10.1.4 T ab ella history . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+10.1.5 T ab ella labels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+10.1.6 T ab ella di join bug_labels . . . . . . . . . . . . . . . . . . . . . . 35
+10.1.7 Diagramma E-R semplicato . . . . . . . . . . . . . . . . . . . . . . 35
+10.2 Diagramma delle classi di design . . . . . . . . . . . . . . . . . . . . . . . . 35
+10.3 Diagramma comp ortamen tale  Sequence Diagram . . . . . . . . . . . . . 36
+10.4 Scelte di soft w are design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+10.4.1 P attern Rep ository . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+10.4.2 P attern Service La y er . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+10.4.3 Record Ja v a p er i DTO . . . . . . . . . . . . . . . . . . . . . . . . . 38
+10.4.4 Sp ecication P attern p er le query . . . . . . . . . . . . . . . . . . . 38
+10.4.5 Audit T rail tramite History . . . . . . . . . . . . . . . . . . . . . . 38
+10.4.6 Auten ticazione stateless con JWT . . . . . . . . . . . . . . . . . . . 38
+10.4.7 Gestione delle autorizzazioni . . . . . . . . . . . . . . . . . . . . . . 38
+10.5 Evidenza dell'uso di strumen ti di v ersioning . . . . . . . . . . . . . . . . . 38
+3 BugBoard26  Sp ecica dei Requisiti Soft w are
+11 T est Plan  Gestione Bug 39
+11.1 Obiettiv o . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+11.2 F unzionalità sotto test . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+11.3 Appro ccio di testing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+11.4 Casi di test pianicati . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+11.4.1 create(BugCreateRequest, UUID) . . . . . . . . . . . . . . . . . . . 39
+11.4.2 assign(UUID, AssignRequest, UUID) . . . . . . . . . . . . . . . . . 40
+11.4.3 patc h(UUID, BugP atc hRequest, UUID, b o olean) . . . . . . . . . . 40
+11.5 Criteri di ingresso e uscita . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+11.6 Am bien te di esecuzione . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+12 Strategie di T esting 40
+12.1 Meto di testati . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+12.2 Classi di equiv alenza . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+12.2.1 create(BugCreateRequest, UUID) . . . . . . . . . . . . . . . . . . . 41
+12.2.2 assign(UUID, AssignRequest, UUID) . . . . . . . . . . . . . . . . . 41
+12.2.3 patc h(UUID, BugP atc hRequest, UUID, b o olean) . . . . . . . . . . 41
+12.3 Cop ertura strutturale . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+12.4 T ecnica di isolamen to: Mo c k Ob jects . . . . . . . . . . . . . . . . . . . . . 42
+12.5 Riepilogo dei risultati . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+13 Rep ort di Qualità del Co dice (Bac k end) 42
+13.1 Strumen ti di analisi utilizzati . . . . . . . . . . . . . . . . . . . . . . . . . 42
+13.2 Dash b oard di qualità (stile SonarQub e) . . . . . . . . . . . . . . . . . . . . 43
+13.3 Metric he di dimensione . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+13.4 Distribuzione del co dice p er pac k age . . . . . . . . . . . . . . . . . . . . . 44
+13.5 Issue rilev ate (dettaglio) . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+13.5.1 Bugs (2 issue  Rating B) . . . . . . . . . . . . . . . . . . . . . . . 44
+13.5.2 Co de Smells (7 issue  Rating A) . . . . . . . . . . . . . . . . . . 44
+13.5.3 Securit y Hotsp ot (1 issue  Rating A) . . . . . . . . . . . . . . . . 45
+13.6 Duplicazioni . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+13.7 Pun ti di forza . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+13.8 Riepilogo Qualit y Gate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+4 BugBoard26  Sp ecica dei Requisiti Soft w are
+1 In tro duzione
+1.1 Scop o del do cumen to
+Il presen te do cumen to costituisce la Sp ecica dei Requisiti Soft w are (SRS) p er il sistema
+BugBoard26 , sviluppato nell'am bito del corso di Ingegneria del Soft w are. Il do cumen to
+descriv e le funzionalità del sistema, i suoi attori, i casi d'uso formalizzati, i requisiti non
+funzionali e fornisce una prima prototipazione visuale dell'in terfaccia uten te.
+1.2 Descrizione del sistema
+BugBoard26 è un'applicazione w eb p er il tracciamen to e la gestione collab orativ a
+di segnalazioni di bug . Il sistema consen te a team di svilupp o di:
+ segnalare bug, feature request e miglioramen ti;
+ assegnare le segnalazioni agli sviluppatori;
+ tracciare il ciclo di vita di ogni segnalazione (ap ertura, presa in carico, risoluzione,
+arc hiviazione);
+ aggiungere commen ti e allegati fotograci;
+ visualizzare statistic he e generare rep ort mensili sull'attività del team.
+1.3 Riferimen ti
+ A. Co c kburn, W riting Ee ctive Use Cases , A ddison-W esley , 2001
+ T raccia progetto corso Ingegneria del Soft w are  Canale 2
+ Do cumen tazione di riferimen to: DietiDeals24 (esempio fornito dal do cen te)
+2 Glossario
+Di seguito sono rip ortati i termini tecnici e di dominio utilizzati nel presen te do cumen to
+e nel sistema BugBoard26.
+A dmin Uten te con privilegi amministrativi completi. Può gestire uten ti, accedere
+a tutti i bug del sistema, generare rep ort e mo dicare congurazioni.
+Allegato File immagine (JPEG, PNG, GIF, W ebP , dimensione massima 5 MB) ca-
+ricato in asso ciazione a un bug p er do cumen tarne visiv amen te il problema
+o la soluzione.
+Arc hiviazione
+Op erazione c he sp osta un bug in stato A r chive d , rim uo v endolo dalla lista
+attiv a senza eliminarlo denitiv amen te dal sistema.
+Assegnatario Uten te registrato resp onsabile della risoluzione di un determinato bug.
+5 BugBoard26  Sp ecica dei Requisiti Soft w are
+Bug Segnalazione di un comp ortamen to anomalo, errato o inatteso di un si-
+stema soft w are. Nel con testo di BugBoard26 il termine indica generica-
+men te qualsiasi segnalazione inserita nel sistema, indip enden temen te dal
+tip o (Bug, F eature, Enhancemen t).
+BugBoard26 Il sistema soft w are oggetto di questo do cumen to. Applicazione w eb p er
+il tracciamen to e la gestione collab orativ a delle segnalazioni di bug.
+Caso d'uso Descrizione di un'in terazione tra un attore e il sistema p er raggiungere un
+obiettiv o sp ecico. F ormalizzato secondo il meto do di Alistair Co c kburn.
+Commen to T esto inserito da un uten te in asso ciazione a un bug p er fornire aggior-
+namen ti, c hiarimen ti o informazioni aggiun tiv e.
+Do c k er Piattaforma di con tainerizzazione utilizzata p er impacc hettare e distri-
+buire i comp onen ti dell'applicazione (fron tend e bac k end) in mo do indi-
+p enden te dall'am bien te host.
+Enhancemen t
+Tip o di segnalazione c he indica una ric hiesta di miglioramen to di una
+funzionalità già esisten te. Distin to da un Bug (errore) e da una F eature
+(n uo v a funzionalità).
+F eature Tip o di segnalazione c he indica la ric hiesta di implemen tazione di una
+n uo v a funzionalità nel sistema.
+History (Storico)
+Registro cronologico di tutte le mo dic he app ortate a un bug nel temp o:
+cam bi di stato, assegnazioni, commen ti, aggiun ta di allegati.
+JWT (JSON W eb T ok en)
+Standard ap erto (RF C 7519) utilizzato p er auten ticare in mo do sicuro le
+ric hieste HTTP tra fron tend e bac k end. Il tok en viene generato al login
+e incluso in ogni ric hiesta successiv a.
+Lab el Etic hetta testuale opzionale asso ciabile a un bug p er categorizzarlo ulte-
+riormen te (es. fron tend, p erformance, regression).
+Priorità Liv ello di urgenza di un bug. I v alori previsti sono: L ow , Me dium , High ,
+Critic al .
+ReadOnly (Uten te)
+Ruolo con accesso in sola lettura. L'uten te ReadOnly può visualizzare
+bug, commen ti e allegati, ma non può creare, mo dicare o commen tare.
+Rep ort Mensile
+Do cumen to generato dal sistema con tenen te statistic he aggregate sull'at-
+tività del p erio do selezionato: n umero di bug creati, risolti, temp o medio
+di risoluzione, distribuzione p er priorità e tip o.
+Ruolo Insieme di p ermessi asso ciato a un uten te. I ruoli previsti sono: USER
+(uten te standard), READONL Y (sola lettura), ADMIN (amministrato-
+re).
+6 BugBoard26  Sp ecica dei Requisiti Soft w are
+Stato (Status)
+F ase del ciclo di vita di un bug. Gli stati previsti sono:
+ T o do : bug app ena creato, non ancora preso in carico
+ In Pr o gr ess : bug in fase di risoluzione
+ R esolve d : bug risolto
+ A r chive d : bug arc hiviato
+Tip o (T yp e) Categoria della segnalazione. I v alori previsti sono: Bug , F e atur e , En-
+hanc ement .
+USER (Uten te registrato)
+Ruolo standard. L'uten te può creare bug, commen tare, caricare allegati,
+assegnare bug (se A dmin) e gestire il proprio prolo.
+3 Individuazione e caratterizzazione degli uten ti (atto-
+ri)
+Il sistema prev ede quattro tip ologie di attori umani e un attore di sistema:
+Uten te non registrato (Guest)
+Chiunque acceda all'applicazione senza credenziali. Può accedere alla pagina di
+login e di registrazione. Non ha accesso ad alcuna funzionalità in terna.
+Uten te registrato (USER)
+Uten te auten ticato con ruolo standard. Può creare e mo dicare bug, aggiungere
+commen ti e allegati, visualizzare lo storico, gestire il proprio prolo.
+Uten te ReadOnly
+Uten te auten ticato con accesso in sola lettura. Può visualizzare bug, commen ti e
+allegati, ma non può eseguire op erazioni di scrittura.
+A dmin
+Uten te con privilegi amministrativi completi. Eredita tutte le funzionalità di USER
+e può in aggiun ta: gestire gli uten ti del sistema, assegnare bug, visualizzare metric he,
+generare rep ort, esp ortare dati.
+Sistema
+A ttore non umano c he esegue op erazioni automatic he: in vio di notic he, generazione
+dello storico mo dic he, v alidazione degli allegati.
+4 Mo dellazione dei Casi d'Uso
+4.1 T ab ella dei Casi d'Uso p er A ttore
+5 T ab ella dei Casi d'Uso
+7 BugBoard26  Sp ecica dei Requisiti Soft w are
+A ttore Casi d'uso
+Uten te non regi-
+strato Registrazione al sistema tramite email
+ Visualizzazione informazioni pubblic he dell'applicazione
+ A ccesso alla pagina di login
+Uten te registra-
+to (USER) Login/logout al sistema
+ Visualizzazione lista bug con ltri (tip o, stato, priorità,
+lab el)
+ Visualizzazione dettagli singolo bug
+ Creazione n uo v o bug
+ Mo dica bug propri o assegnati
+ Aggiun ta commen ti ai bug
+ Upload allegati immagini ai bug
+ Assegnazione bug ad altri uten ti
+ Arc hiviazione bug risolti
+ Marcatura bug come duplicati
+ Visualizzazione storico mo dic he bug
+ Gestione prolo p ersonale
+ Cam bio passw ord
+Uten te ReadOn-
+ly Login al sistema
+ Visualizzazione lista bug con ltri
+ Visualizzazione dettagli singolo bug
+ Visualizzazione commen ti e allegati
+ Visualizzazione storico mo dic he
+ Visualizzazione prolo proprio (sola lettura)
+A dmin T utti i casi d'uso dell'Uten te registrato
+ Gestione completa uten ti (visualizzazione, mo dica ruoli,
+disabilitazione)
+ Visualizzazione metric he di sistema
+ Generazione rep ort mensili
+ Esp ortazione dati in formato Excel
+ A ccesso completo a tutti i bug del sistema
+ Gestione lab el e categorie
+ Congurazione parametri di sistema
+Sistema In vio notic he automatic he su cam biamen ti bug
+ Arc hiviazione automatica bug dop o p erio do di inattività
+ Generazione automatica storico mo dic he
+ V alidazione automatica allegati (tip o e dimensione)
+ Pulizia automatica dati obsoleti
+ Bac kup automatico dati
+8 BugBoard26  Sp ecica dei Requisiti Soft w are
+A ttore Casi d'uso
+T ab ella 1: T ab ella completa dei casi d'uso p er BugBoard26
+5.1 Descrizione dettagliata dei casi d'uso
+5.1.1 Uten te non registrato
+ Registrazione al sistema tramite email : L'uten te può creare un n uo v o accoun t
+fornendo email, passw ord e informazioni p ersonali. Il sistema in via una email di
+conferma p er v ericare l'indirizzo.
+ Visualizzazione informazioni pubblic he : A ccesso alla pagina principale dell'ap-
+plicazione con informazioni generali sul servizio di bug trac king.
+ A ccesso alla pagina di login : P ossibilità di accedere al sistema utilizzando
+credenziali esisten ti.
+5.1.2 Uten te registrato (USER)
+ Login/logout al sistema : Auten ticazione tramite credenziali email/passw ord con
+generazione di tok en JWT p er sessioni sicure.
+ Visualizzazione lista bug con ltri : Consultazione dell'elenco completo dei bug
+con p ossibilità di ltrare p er tip o, stato, priorità, lab el e ricerca testuale.
+ Visualizzazione dettagli singolo bug : A ccesso completo alle informazioni di un
+bug sp ecico, inclusi descrizione, commen ti, allegati e storico mo dic he.
+ Creazione n uo v o bug : Inserimen to di una n uo v a segnalazione con descrizione
+dettagliata, assegnazione priorità, tip o e lab el appropriate.
+ Mo dica bug propri o assegnati : P ossibilità di aggiornare informazioni, stato e
+dettagli dei bug creati dall'uten te o assegnati al suo accoun t.
+ Aggiun ta commen ti ai bug : Inserimen to di commen ti testuali p er fornire aggior-
+namen ti, soluzioni o ric hiedere c hiarimen ti.
+ Upload allegati immagini ai bug : Caricamen to di immagini (JPEG, PNG, GIF,
+W ebP) no a 5MB p er do cumen tare visiv amen te il problema.
+ Assegnazione bug ad altri uten ti : T rasferimen to della resp onsabilità di un bug
+a un altro uten te registrato nel sistema.
+ Arc hiviazione bug risolti : Sp ostamen to dei bug risolti in stato arc hiviato p er
+man tenere pulita la lista attiv a.
+ Marcatura bug come duplicati : Collegamen to di un bug a un altro esisten te
+quando viene iden ticato come duplicato.
+ Visualizzazione storico mo dic he bug : Consultazione cronologica di tutte le
+mo dic he app ortate a un bug nel temp o.
+9 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Gestione prolo p ersonale : Mo dica delle informazioni p ersonali, preferenze e
+imp ostazioni dell'accoun t.
+ Cam bio passw ord : Aggiornamen to della passw ord di accesso con v alidazione di
+sicurezza.
+5.1.3 Uten te ReadOnly
+ Login al sistema : A ccesso con credenziali p er uten ti con privilegi di sola lettura.
+ Visualizzazione lista bug con ltri : Consultazione dell'elenco bug con p ossibilità
+di applicare ltri di ricerca.
+ Visualizzazione dettagli singolo bug : A ccesso in sola lettura alle informazioni
+complete di un bug.
+ Visualizzazione commen ti e allegati : Lettura di tutti i commen ti e do wn-
+load/visualizzazione degli allegati asso ciati.
+ Visualizzazione storico mo dic he : Consultazione della cronologia delle mo di-
+c he senza p ossibilità di in terv en to.
+ Visualizzazione prolo proprio : A ccesso limitato alle informazioni del proprio
+prolo uten te.
+5.1.4 A dmin
+ T utti i casi d'uso dell'Uten te registrato : L'amministratore eredita tutte le
+funzionalità dell'uten te standard.
+ Gestione completa uten ti : Creazione, mo dica, disabilitazione e gestione ruoli
+degli uten ti del sistema.
+ Visualizzazione metric he di sistema : A ccesso a dash b oard con statistic he,
+graci e KPI del sistema.
+ Generazione rep ort mensili : Creazione di rep ort dettagliati sull'attività del
+sistema p er p erio do sp ecicato.
+ Esp ortazione dati in formato Excel : Estrazione completa dei dati in formato
+spreadsheet p er analisi esterne.
+ A ccesso completo a tutti i bug : P ossibilità di visualizzare e mo dicare qualsiasi
+bug del sistema indip enden temen te dall'assegnazione.
+ Gestione lab el e categorie : Creazione, mo dica ed eliminazione delle etic hette e
+categorie di classicazione.
+ Congurazione parametri di sistema : Mo dica delle imp ostazioni globali, li-
+miti e comp ortamen ti dell'applicazione.
+10 BugBoard26  Sp ecica dei Requisiti Soft w are
+5.1.5 Sistema
+ In vio notic he automatic he : Meccanismo automatico di notica via email o
+push p er aggiornamen ti sui bug seguiti.
+ Arc hiviazione automatica : Pro cesso sc hedulato p er arc hiviare automaticamen te
+bug inattivi dop o un p erio do congurabile.
+ Generazione automatica storico : Registrazione automatica di ogni mo dica
+app ortata ai bug nel database.
+ V alidazione automatica allegati : Con trollo automatico di tip o, dimensione e
+sicurezza dei le caricati.
+ Pulizia automatica dati obsoleti : Eliminazione p erio dica di dati temp oranei,
+cac he e informazioni non più necessarie.
+ Bac kup automatico dati : Salv ataggio automatico p erio dico del database e dei
+le allegati p er disaster reco v ery .
+5.2 Diagrammi UML dei Casi d'Uso
+5.2.1 Diagramma Generale del Sistema
+Figura 1: Diagramma generale dei casi d'uso  BugBoard26
+5.2.2 Diagramma Dettagliato  Gestione Bug
+Figura 2: Diagramma dettagliato  Gestione Bug
+11 BugBoard26  Sp ecica dei Requisiti Soft w are
+5.2.3 Diagramma Dettagliato  Amministrazione
+Figura 3: Diagramma dettagliato  Amministrazione e funzioni di sistema
+5.3 Con v enzioni grac he
+ A ttori (omino stilizzato o rettangolo): en tità esterne c he in teragiscono con il siste-
+ma
+ Casi d'uso (ellissi): funzionalità oerte dal sistema
+ Linee solide : relazione di asso ciazione tra attore e caso d'uso
+ F recce tratteggiate ≪ include ≫ : il caso d'uso base include sempre il caso d'uso
+pun tato
+ F recce tratteggiate ≪ extend ≫ : il caso d'uso pun tato estende opzionalmen te il
+caso d'uso base
+6 F ormalizzazione dei Casi d'Uso (Co c kburn)
+In questa sezione v engono formalizzati quattro casi d'uso signicativi, secondo il formali-
+smo tab ellare di Alistair Co c kburn. Sono stati esclusi i casi d'uso relativi a registrazione
+e auten ticazione, come indicato nelle istruzioni della traccia.
+6.1 Caso d'Uso 1: Creazione n uo v o bug
+Camp o Descrizione
+USE CASE #01 CREAZIONE NUO V O BUG
+Goal L'uten te vuole segnalare un n uo v o bug nel sistema
+Preconditions L'uten te dev e essere auten ticato (ruolo USER o ADMIN)
+Success End
+ConditionIl bug è creato con successo e registrato con un ID univ o co
+12 BugBoard26  Sp ecica dei Requisiti Soft w are
+Camp o Descrizione
+F ailed End Con-
+ditionIl bug non viene creato a causa di errori di v alidazione o problemi di
+sistema
+Primary A ctor Uten te registrato (USER)
+DESCRIPTION Uten te Sistema
+Step 1 A ccede alla sezione Nuo v o Bug Mostra il form con i campi
+obbligatori
+Step 2 Inserisce il titolo del bug V alida c he il titolo non sia
+vuoto
+Step 3 Seleziona il tip o (Bug, F eature, Enhan-
+cemen t)Carica le categorie disp onibili
+Step 4 Inserisce la descrizione dettagliata F ornisce un'area di testo
+Step 5 Seleziona la priorità (Lo w, Medium,
+High, Critical)Mostra le opzioni con colori
+iden ticativi
+Step 6 Aggiunge lab el/tag opzionali P ermette selezione m ultipla da
+lista
+Step 7 Carica immagini allegati (opzionale) V alida formato (JPEG, PNG,
+GIF, W ebP) e dimensione
+(max 5 MB)
+Step 8 Seleziona assegnatario (opzionale) Mostra lista uten ti attivi
+Step 9 Clicca su Crea Bug V alida tutti i campi obbligatori
+Step 10 Salv a il bug nel database
+Step 11 In via notica all'uten te asse-
+gnato (se presen te)
+Step 12 Mostra conferma con l'ID del
+bug creato
+EXTENSIONS Step Descrizione
+Caricamen to im-
+magini fallito7.a Mostra errore F ormato non
+supp ortato
+7.b L'uten te può ripro v are con le
+div erso
+V alidazione
+campi fallita9.a Evidenzia i campi con errori
+9.b Mostra messaggi di errore p er
+ciascun camp o
+Uten te assegna-
+tario non tro v ato8.a Mostra errore Uten te non
+tro v ato
+8.b L'uten te può eseguire una
+n uo v a ricerca
+6.2 Caso d'Uso 2: Assegnazione bug a un uten te
+Camp o Descrizione
+USE CASE #02 ASSEGNAZIONE BUG A UN UTENTE
+Goal L'amministratore vuole assegnare o riassegnare un bug a un uten te
+del sistema
+13 BugBoard26  Sp ecica dei Requisiti Soft w are
+Camp o Descrizione
+Preconditions L'uten te dev e essere auten ticato con ruolo ADMIN; il bug dev e esistere
+nel sistema
+Success End
+ConditionIl bug risulta assegnato al n uo v o uten te e la mo dica è registrata nello
+storico
+F ailed End Con-
+ditionL'assegnazione fallisce p er uten te di destinazione non v alido
+Primary A ctor A dmin
+DESCRIPTION Uten te (A dmin) Sistema
+Step 1 Visualizza i dettagli di un bug Mostra la pagina di dettaglio
+con tutte le informazioni
+Step 2 Clicca su Assegna Apre il form di assegnazione
+Step 3 Inserisce email o nome del n uo v o
+assegnatarioF ornisce auto complete con ri-
+cerca uten ti
+Step 4 Seleziona l'uten te dalla lista V alida c he l'uten te esista e sia
+attiv o
+Step 5 Aggiunge una nota (opzionale) F ornisce un camp o testo p er la
+motiv azione
+Step 6 Clicca su Conferma Assegnazione V erica i p ermessi dell'uten te
+ric hieden te
+Step 7 Aggiorna il camp o assegnato
+a nel database
+Step 8 Registra la mo dica nella ta-
+b ella history
+Step 9 In via notica al n uo v o assegna-
+tario
+Step 10 In via notica all'assegnatario
+preceden te (se div erso)
+Step 11 Mostra messaggio di conferma
+EXTENSIONS Step Descrizione
+Uten te non tro-
+v ato4.a Mostra errore Uten te non
+esisten te
+4.b L'admin può eseguire una
+n uo v a ricerca
+Bug già assegna-
+to6.a Chiede conferma p er il cam bio
+di assegnazione
+6.b Se confermato, pro cede con la
+riassegnazione
+6.3 Caso d'Uso 3: Risoluzione e c hiusura bug
+Camp o Descrizione
+USE CASE #03 RISOLUZIONE E CHIUSURA BUG
+Goal L'uten te vuole marcare un bug come risolto
+Preconditions L'uten te dev e essere auten ticato e assegnatario del bug; il bug dev e
+essere in stato In Pr o gr ess
+14 BugBoard26  Sp ecica dei Requisiti Soft w are
+Camp o Descrizione
+Success End
+ConditionIl bug viene aggiornato allo stato R esolve d con data di risoluzione
+registrata
+F ailed End Con-
+ditionLa risoluzione fallisce p er p ermessi insucien ti o stato del bug non
+v alido
+Primary A ctor Uten te registrato (USER) assegnato al bug
+DESCRIPTION Uten te Sistema
+Step 1 Visualizza i dettagli del bug assegnato Mostra la pagina di dettaglio
+con lo stato attuale
+Step 2 Clicca su Risolvi Bug V erica c he il bug sia in stato
+In Pr o gr ess
+Step 3 Mostra il form di risoluzione
+Step 4 Seleziona il tip o di risoluzione Mostra opzioni: Fixe d, W on 't
+Fix, Duplic ate, Cannot R epr o-
+duc e
+Step 5 Inserisce la descrizione della soluzione
+adottataF ornisce un'area di testo
+Step 6 Carica immagini di conferma (opziona-
+le)V alida formato e dimensione
+degli allegati
+Step 7 Clicca su Conferma Risoluzione V alida tutti i campi obbligatori
+Step 8 Aggiorna lo stato a R esolve d
+Step 9 Registra la data di risoluzione
+Step 10 Crea un record nella tab ella
+history
+Step 11 In via notic he al creatore e ai
+follo w er del bug
+Step 12 Mostra la pagina aggiornata
+con il n uo v o stato
+EXTENSIONS Step Descrizione
+Bug non in stato
+corretto2.a Mostra Bug non può essere
+risolto in questo stato
+2.b Suggerisce azioni alternativ e
+disp onibili
+Tip o risoluzione
+Duplicate4.a Ric hiede la selezione del bug
+padre
+4.b Crea automaticamen te la rela-
+zione di duplicazione
+Caricamen to im-
+magini fallito6.a Mostra errore di formato o
+dimensione
+6.b L'uten te può proseguire senza
+allegati
+6.4 Caso d'Uso 4: Generazione rep ort mensile (A dmin)
+15 BugBoard26  Sp ecica dei Requisiti Soft w are
+Camp o Descrizione
+USE CASE #04 GENERAZIONE REPOR T MENSILE
+Goal L'amministratore vuole generare un rep ort sull'attività del sistema p er
+un mese sp ecico
+Preconditions L'uten te dev e essere auten ticato con ruolo ADMIN
+Success End
+ConditionIl rep ort viene generato e reso disp onibile p er il do wnload
+F ailed End Con-
+ditionLa generazione fallisce p er assenza di dati nel p erio do selezionato o
+errori di sistema
+Primary A ctor A dmin
+DESCRIPTION Uten te (A dmin) Sistema
+Step 1 A ccede alla sezione Analytics Mostra la dash b oard con le
+opzioni di rep ortistica
+Step 2 Seleziona Rep ort Mensili Carica la lista dei mesi disp o-
+nibili
+Step 3 Seleziona mese e anno desiderati V alida c he il p erio do esista e
+con tenga dati
+Step 4 Clicca su Genera Rep ort A vvia il pro cesso di generazio-
+ne
+Step 5 Raccoglie dati dalle tab elle
+bugs, users, history
+Step 6 Calcola metric he: bug creati,
+risolti, temp o medio
+Step 7 Genera graci e statistic he
+aggregate
+Step 8 Crea il do cumen to in formato
+Excel
+Step 9 F ornisce il link p er il do wnload
+Step 10 Scarica il rep ort Serv e il le con nome c he
+include il timestamp
+EXTENSIONS Step Descrizione
+Mese senza dati 3.a A vvisa Nessun dato disp onibi-
+le p er il p erio do selezionato
+3.b Suggerisce p erio di alternativi
+Errore
+generazione8.a Registra l'errore nel log
+8.b Mostra un messaggio di errore
+all'amministratore
+8.c Suggerisce di ripro v are o con-
+tattare il supp orto
+7 Requisiti Non F unzionali e di Sistema
+I requisiti non funzionali deniscono le caratteristic he qualitativ e c he il sistema Bug-
+Board26 dev e p ossedere, indip enden temen te dalle funzionalità sp ecic he implemen tate.
+16 BugBoard26  Sp ecica dei Requisiti Soft w are
+7.1 Usabilità
+ RNF-U1  In terfaccia resp onsiv a : L'in terfaccia dev e essere fruibile su disp o-
+sitivi desktop, tablet e mobile senza p erdita di funzionalità. Il la y out si adatta
+automaticamen te alla larghezza dello sc hermo.
+ RNF-U2  F eedbac k immediato : Ogni op erazione c he ric hiede elab orazione
+(es. creazione bug, caricamen to allegati) dev e fornire un feedbac k visiv o all'uten te
+en tro 500 ms (es. spinner, messaggio di conferma o di errore).
+ RNF-U3  Messaggi di errore c hiari : I messaggi di errore dev ono indicare la
+causa del problema e suggerire un'azione correttiv a, senza esp orre dettagli tecnici
+in terni.
+ RNF-U4  A ccessibilità : L'in terfaccia dev e risp ettare le linee guida W CA G 2.1
+liv ello AA, garan tendo con trasti adeguati e compatibilità con tecnologie assistiv e.
+7.2 Prestazioni
+ RNF-P1  T emp o di risp osta API : Le ric hieste API standard (lista bug, det-
+taglio bug, login) dev ono a v ere un temp o di risp osta inferiore a 500 ms in condizioni
+normali di carico.
+ RNF-P2  P aginazione : La lista dei bug è paginata (default 20 elemen ti p er
+pagina) p er evitare il caricamen to di dataset molto grandi.
+ RNF-P3  Dimensione allegati : I le immagine caricati non p ossono sup erare
+5 MB ciascuno. F ormati accettati: JPEG, PNG, GIF, W ebP .
+ RNF-P4  Generazione rep ort : La generazione di un rep ort mensile dev e
+completarsi en tro 10 secondi p er dataset no a 10 000 bug.
+7.3 Sicurezza
+ RNF-S1  Auten ticazione : T utti gli endp oin t (eccetto login e registrazione)
+ric hiedono un tok en JWT v alido. Il tok en ha una durata congurabile (default: 8
+ore).
+ RNF-S2  Autorizzazione p er ruolo : Le op erazioni privilegiate (gestione uten-
+ti, rep ort, assegnazione bug) sono accessibili esclusiv amen te agli uten ti con ruolo
+ADMIN.
+ RNF-S3  V alidazione input : T utti i dati in input (lato clien t e lato serv er)
+sono v alidati prima dell'elab orazione. I le caricati sono v ericati p er tip o MIME e
+dimensione.
+ RNF-S4  T rasmissione sicura : In pro duzione, tutte le com unicazioni tra clien t
+e serv er a vv engono tramite HTTPS. I co okie di sessione sono congurati con i ag
+Secure e SameSite .
+ RNF-S5  P assw ord : Le passw ord degli uten ti sono memorizzate nel database
+in forma hash (b crypt). Non v engono mai restituite nelle risp oste API.
+17 BugBoard26  Sp ecica dei Requisiti Soft w are
+7.4 Adabilità e Disp onibilità
+ RNF-A1  Gestione degli errori : Il bac k end restituisce co dici HTTP appro-
+priati (400, 401, 403, 404, 500) con messaggi descrittivi. Il fron tend mostra notic he
+comprensibili p er l'uten te.
+ RNF-A2  P ersistenza dei dati : I dati sono p ersistiti su database relazionale
+(H2 in svilupp o, sostituibile con P ostgreSQL in pro duzione). Nessuna op erazione
+di scrittura a vviene esclusiv amen te in memoria v olatile.
+ RNF-A3  Storico imm utabile : La tab ella History non p ermette cancellazione
+o mo dica dei record; ogni cam biamen to genera un n uo v o record.
+7.5 Man utenibilità e P ortabilità
+ RNF-M1  Con tainerizzazione : L'applicazione è distribuita tramite Do c k er
+(Do c k erle p er fron tend e bac k end; docker-compose.yml p er l'a vvio in tegrato).
+ RNF-M2  Separazione fron tend/bac k end : F ron tend e bac k end sono com-
+p onen ti indip enden ti c he com unicano esclusiv amen te tramite API REST. Questa
+arc hitettura consen te di aggiornare o sostituire ciascun comp onen te separatamen te.
+ RNF-M3  Congurabilità : I parametri critici (URL del database, segreto
+JWT, p orta del serv er, origine CORS) sono congurabili tramite v ariabili d'am-
+bien te senza mo dicare il co dice sorgen te.
+ RNF-M4  Do cumen tazione API : Gli endp oin t REST sono do cumen tati tra-
+mite SpringDo c/Op enAPI (Sw agger UI), accessibile in fase di svilupp o.
+7.6 Vincoli di Sistema
+ RNF-VS1  T ecnologie fron tend : React 18, T yp eScript, Vite, T ailwind CSS,
+Radix UI, React Query , React Router.
+ RNF-VS2  T ecnologie bac k end : Ja v a 23, Spring Bo ot 3.3, Spring Securit y ,
+Spring Data JP A, database H2 (svilupp o).
+ RNF-VS3  Bro wser supp ortati : Le ultime due v ersioni stabili di Chrome,
+Firefo x, Edge e Safari.
+ RNF-VS4  Requisiti serv er : JDK 23+, Ma v en 3.8+, No de.js 18+ p er la build
+del fron tend.
+8 Prototipazione visuale attra v erso Mo c k-up
+La prototipazione visuale di BugBoard26 è stata realizzata direttamen te come applica-
+zione React funzionan te, con dati sim ulati ( mo ck data ). Le sc hermate qui mostrate sono
+catture reali del prototip o in terattiv o, e non semplici b ozzetti graci. Questo appro ccio
+ha p ermesso di v alidare il usso uten te in mo do concreto n dalla fase di analisi.
+18 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.1 Scelte Progettuali
+8.1.1 La y out e Na vigazione
+ Header sso : barra sup eriore con logo, link alle sezioni principali (Dash b oard,
+Bug, Rep ort, A dmin) e men u uten te con a v atar, email e pulsan te logout
+ Na vigazione mobile : men u a comparsa (ham burger) con le stesse v o ci, ottimizzato
+p er touc h
+ La y out resp onsiv e : design mobile-rst realizzato con T ailwind CSS; le griglie si
+adattano automaticamen te a qualsiasi larghezza sc hermo
+8.1.2 P alette Colori e Badge
+ Priorità : Critic al (rosso), High (arancione), Me dium (giallo), L ow (v erde)
+ Stato : T o do (grigio c hiaro), In Pr o gr ess (blu), R esolve d (v erde), A r chive d (grigio
+scuro)
+ Tip o : Bug (rosso), F e atur e (viola), Enhanc ement (azzurro)
+ Azioni primarie : blu ( #007BFF ); sup erci neutre: grigi T ailwind
+8.1.3 Comp onen ti UI riutilizzati
+T utti i comp onen ti sono basati su Radix UI e shadcn/ui : Button, Card, Select, Dialog,
+Badge, T able, T oast, Drop do wnMen u. Questo garan tisce co erenza visiv a e accessibilità
+W CA G 2.1 out-of-the-b o x.
+8.2 Mo c k-up delle in terfacce uten te
+Di seguito sono illustrate le sc hermate principali del prototip o, raggruppate p er funziona-
+lità. Le sc hermate con trassegnate con [UC0X] corrisp ondono direttamen te ai casi d'uso
+formalizzati nella sezione preceden te.
+19 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.1 Mo c k-up 1  P agina di Login
+Figura 4: P agina di Login: form con email e passw ord, pulsan te di accesso
+ Scop o : auten ticazione dell'uten te al sistema
+ Elemen ti : camp o email, camp o passw ord, pulsan te A ccedi, link alla pagina di
+registrazione
+ Comp ortamen to : in caso di credenziali errate viene mostrato un messaggio di
+errore inline; in caso di successo l'uten te viene reindirizzato alla Dash b oard
+20 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.2 Mo c k-up 2  P agina di Registrazione
+Figura 5: P agina di Registrazione: form con dati p ersonali e creazione accoun t
+ Scop o : creazione di un n uo v o accoun t uten te
+ Elemen ti : campi nome, email, passw ord, conferma passw ord; pulsan te Registrati
+ V alidazione : i campi v engono v alidati in temp o reale con messaggi di errore inline
+8.2.3 Mo c k-up 3  Home / Dash b oard
+Figura 6: Home Dash b oard: panoramica delle metric he principali e accessi rapidi
+21 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Scop o : fornire una panoramica immediata dello stato del sistema dop o il login
+ Elemen ti : card metric he (bug ap erti, assegnati a me, risolti, scadenze prossime),
+header con na vigazione principale
+ A ccessi rapidi : da qui si può na vigare alla lista bug, al form di creazione e ai
+rep ort
+8.2.4 Mo c k-up 4  Lista Bug con Filtri
+Figura 7: Lista Bug: tab ella con ltri p er tip o, stato, priorità e ricerca testuale
+ Scop o : visualizzazione e ltraggio dell'elenco completo dei bug
+ Elemen ti : barra ltri orizzon tale (tip o, stato, priorità), camp o ricerca full-text,
+tab ella bug con badge colorati, paginazione
+ In terazione : clic su una riga apre il dettaglio del bug; i ltri si applicano in temp o
+reale
+22 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.5 Mo c k-up 5  Dettaglio Bug
+Figura 8: Dettaglio Bug: informazioni complete, commen ti, storico mo dic he e azioni
+disp onibili
+ Scop o : visualizzazione completa di un bug sp ecico e gestione delle azioni disp oni-
+bili
+ Elemen ti : header con titolo, stato e priorità; sezioni descrizione, commen ti, alle-
+gati, storico; barra azioni laterale (mo dica, assegna, risolvi, arc hivia, duplica)
+ Azioni visibili : dip endono dal ruolo dell'uten te (USER v ede meno azioni risp etto
+ad A dmin)
+23 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.6 Mo c k-up 6  F orm Creazione/Mo dica Bug [UC01]
+Figura 9: F orm Creazione Bug (UC01): campi titolo, tip o, priorità, descrizione, lab el,
+allegati
+ Caso d'uso : UC01  Creazione n uo v o bug
+ Elemen ti : camp o titolo, selettori tip o e priorità, area di testo descrizione, selezione
+lab el m ultipla, upload allegati immagine, selezione assegnatario opzionale, pulsan te
+Salv a
+ V alidazione : i campi obbligatori (titolo, tip o, priorità) sono evidenziati se lasciati
+vuoti; il formato e la dimensione degli allegati sono v ericati prima dell'in vio
+24 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.7 Mo c k-up 7  Assegnazione Bug [UC02]
+Figura 10: Assegnazione Bug (UC02): selezione dell'uten te a cui assegnare il bug
+ Caso d'uso : UC02  Assegnazione bug a un uten te (solo A dmin)
+ Elemen ti : select p er la scelta dell'uten te assegnatario, pulsan te conferma
+ A ccesso : questa sc hermata è accessibile solo agli uten ti con ruolo A dmin; un USER
+viene reindirizzato alla Dash b oard
+25 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.8 Mo c k-up 8  Notic he
+Figura 11: Cen tro Notic he: lista degli aggiornamen ti sui bug seguiti dall'uten te
+ Scop o : mostrare all'uten te gli aggiornamen ti recen ti sui bug c he lo riguardano
+(assegnazioni, cam bi stato, n uo vi commen ti)
+ Elemen ti : lista notic he con timestamp, tip o ev en to e link al bug correlato; indi-
+catore notic he non lette
+8.2.9 Mo c k-up 9  Prolo Uten te
+Figura 12: Prolo Uten te: gestione informazioni p ersonali e cam bio passw ord
+26 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Scop o : consen tire all'uten te di visualizzare e mo dicare le proprie informazioni e
+la passw ord
+ Elemen ti : nome, email, ruolo (in sola lettura), form cam bio passw ord con v alida-
+zione
+8.2.10 Mo c k-up 10  Rep ort Mensile [UC04]
+Figura 13: Rep ort Mensile A dmin (UC04): statistic he, graci e pulsan te di exp ort Excel
+ Caso d'uso : UC04  Generazione rep ort mensile (solo A dmin)
+ Elemen ti : selettore mese/anno, graci (distribuzione stato, priorità, trend temp o-
+rale), tab ella riassun tiv a metric he, pulsan te Esp orta Excel
+ A ccesso : solo A dmin; gli altri uten ti v engono reindirizzati alla Dash b oard
+27 BugBoard26  Sp ecica dei Requisiti Soft w are
+8.2.11 Mo c k-up 11  Gestione Uten ti (A dmin)
+Figura 14: Gestione Uten ti A dmin: lista uten ti con ruoli, stato e azioni di mo dica
+ Scop o : p ermettere all'A dmin di gestire gli accoun t del sistema (visualizzazione
+ruoli, disabilitazione uten ti)
+ Elemen ti : tab ella uten ti con email, nome, ruolo e stato; azioni p er mo dica ruolo
+e disabilitazione accoun t
+8.2.12 Mo c k-up 12  Arc hivio Bug
+Figura 15: Arc hivio Bug: lista dei bug arc hiviati con p ossibilità di consultazione
+28 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Scop o : visualizzare i bug arc hiviati p er storico e consultazione senza inuire sulla
+lista attiv a
+ Elemen ti : tab ella bug in stato A r chive d con ltri e ricerca; solo A dmin può
+arc hiviare/ripristinare bug
+8.2.13 Mo c k-up 13  Exp ort Dati
+Figura 16: Exp ort Dati: do wnload dell'elenco bug in formato CSV o Excel
+ Scop o : consen tire l'esp ortazione dei dati p er analisi esterne
+ Elemen ti : pulsan ti Scarica CSV e Scarica Excel; i le v engono generati dal
+bac k end e scaricati direttamen te
+8.3 Osserv azioni emerse dalla prototipazione
+La realizzazione del prototip o funzionan te ha p ermesso di iden ticare alcune scelte mi-
+gliorativ e risp etto all'analisi iniziale:
+ Chiarezza dei ruoli : è stato necessario rendere esplicito nel UI quali azioni sono ri-
+serv ate all'A dmin (assegnazione, rep ort, arc hiviazione, gestione uten ti), aggiungendo
+reindirizzamen ti automatici p er uten ti non autorizzati
+ Filtri immediati : la lista bug con ltri in temp o reale si è riv elata la funzionalità
+più usata nelle sessioni di test, confermando la scelta di renderla la pagina principale
+ Badge colorati : l'uso di badge cromatici p er stato, priorità e tip o ha migliorato
+signicativ amen te la leggibilità della lista bug senza aprire il dettaglio
+ Na vigazione mobile : il men u ham burger con le stesse v o ci del desktop ha garan tito
+piena parità funzionale su disp ositivi mobili
+29 BugBoard26  Sp ecica dei Requisiti Soft w are
+9 Design del Sistema
+9.1 Descrizione dell'arc hitettura
+BugBoard26 adotta un'arc hitettura clien t-serv er a tre liv elli (Three-Tier Arc hitecture),
+separando nettamen te le resp onsabilità tra pr esentazione , lo gic a di business e p ersistenza
+dei dati .
+Liv ello Descrizione
+Presen tazione (F ron tend) Single P age Application React c he com unica con il bac-
+k end tramite API REST.
+Logica di Business (Bac k end) Applicazione Spring Bo ot c he esp one endp oin t RESTful,
+gestisce auten ticazione JWT e implemen ta le regole di
+business.
+P ersistenza (Database) Database relazionale (H2 in svilupp o, P ostgreSQL in
+pro duzione) gestito tramite JP A/Hib ernate.
+9.1.1 Deplo ymen t Diagram
+Il deplo ymen t diagram in Figura 17 mostra la distribuzione sica dei comp onen ti tra i
+con tainer Do c k er e l'am bien te di svilupp o lo cale.
+Figura 17: Deplo ymen t Diagram  BugBoard26
+9.1.2 Comp onen t Diagram
+Il comp onen t diagram in Figura 18 illustra i comp onen ti soft w are del sistema e le loro
+dip endenze, organizzati p er la y er arc hitetturale.
+30 BugBoard26  Sp ecica dei Requisiti Soft w are
+Figura 18: Comp onen t Diagram  BugBoard26
+9.2 Criteri di design adottati
+Separazione delle resp onsabilità ( Sep ar ation of Conc erns ) Ogni liv ello ha una re-
+sp onsabilità b en denita: il fron tend si o ccupa esclusiv amen te della presen tazione
+e dell'in terazione uten te, il bac k end della logica di business e dell'autorizzazione,
+il database della p ersistenza. Questa separazione fa v orisce la man utenibilità e la
+testabilità.
+Stateless Authen tication L'auten ticazione è gestita tramite tok en JWT, eliminando
+la necessità di sessioni serv er-side. Ogni ric hiesta con tiene il tok en necessario p er
+l'iden ticazione, facilitando la scalabilità orizzon tale.
+API-First Design Il bac k end esp one un'API RESTful do cumen tata tramite Op enA-
+PI/Sw agger (SpringDo c). Questo appro ccio consen te lo svilupp o indip enden te di
+fron tend e bac k end, facilita l'in tegrazione con altri clien t e p ermette il testing
+automatico delle API.
+Con v en tion o v er Conguration L'utilizzo di Spring Bo ot riduce drasticamen te la con-
+gurazione b oilerplate grazie alle auto-c ongur ations e alle con v enzioni del fra-
+mew ork.
+Con tainerizzazione L'in tero stac k è con tainerizzabile tramite Do c k er e orc hestrabile
+con Do c k er Comp ose, garan tendo ripro ducibilità dell'am bien te e facilità di deplo y-
+men t.
+31 BugBoard26  Sp ecica dei Requisiti Soft w are
+9.3 Scelte tecnologic he
+9.3.1 F ron tend
+T ecnologia V ersione Motiv azione
+React 18.x Libreria UI comp onen t-based matu-
+ra e con v asto ecosistema; facilita la
+creazione di SP A reattiv e.
+T yp eScript 5.x Tipizzazione statica c he riduce i bug
+a run time e migliora la man utenibi-
+lità del co dice.
+Vite 6.x Build to ol mo derno, signicativ a-
+men te più v elo ce di W ebpac k grazie
+a ESBuild e HMR nativ o.
+T ailwind CSS 3.x F ramew ork CSS utilit y-rst c he ac-
+celera lo svilupp o della UI e garan-
+tisce consistenza visiv a.
+Radix UI  Comp onen ti accessibili e non sti-
+lizzati ( he ad less ), conformi a W AI-
+ARIA, p ersonalizzabili con T ail-
+wind.
+React Query 5.x Gestione dello stato serv er-side (ca-
+c hing, refetc hing, in v alidation) c he
+semplica le c hiamate API.
+React Router 7.x Routing dic hiarativ o p er SP A con
+supp orto a lazy loading e route pro-
+tette.
+32 BugBoard26  Sp ecica dei Requisiti Soft w are
+9.3.2 Bac k end
+T ecnologia V ersione Motiv azione
+Ja v a 23 Linguaggio robusto e t yp e-safe, con
+record e pattern matc hing p er DTO
+concisi.
+Spring Bo ot 3.3.4 F ramew ork en terprise standard
+p er applicazioni Ja v a; auto-
+conguration, starter dep endencies,
+em b edded serv er.
+Spring Securit y  Gestione completa di auten ticazione
+e autorizzazione; in tegrazione nativ a
+con JWT.
+Spring Data JP A  Astrazione ORM c he elimina il co-
+dice b oilerplate p er l'accesso ai dati;
+supp orto a Sp ecication p er query
+dinamic he.
+H2 Database  Database em b edded p er lo svilupp o
+lo cale; nessuna installazione ric hie-
+sta, a vvio immediato.
+P ostgreSQL 16 Database relazionale p er pro duzio-
+ne; robusto, conforme A CID, sup-
+p orto nativ o a UUID.
+JJWT 0.12.5 Libreria p er la creazione e v alidazio-
+ne di tok en JWT; API uen te e si-
+cura.
+SpringDo c 2.6.0 Generazione automatica della do cu-
+men tazione Op enAPI 3.0 dalle an-
+notazioni Spring.
+Apac he POI 5.3.0 Generazione di le Excel (.xlsx) p er
+l'exp ort dei dati bug.
+9.3.3 T esting
+T ecnologia Motiv azione
+JUnit 5 F ramew ork di testing standard p er Ja v a; supp orto a test
+parametrizzati, displa y names, extensions.
+Mo c kito 5 Libreria di mo c king c he consen te l'isolamen to delle dip en-
+denze nei test di unità.
+AssertJ Asserzioni uen ti c he migliorano la leggibilità dei test.
+33 BugBoard26  Sp ecica dei Requisiti Soft w are
+9.3.4 DevOps e Deplo ymen t
+T ecnologia Motiv azione
+Do c k er Con tainerizzazione p er am bien ti ripro ducibili; Do c k erle
+m ulti-stage p er build ottimizzati.
+Do c k er Comp ose Orc hestrazione dei tre servizi (database, bac k end, fron tend)
+con un solo comando.
+Git / GitHub V ersion con trol distribuito; collab orazione, co de review,
+CI/CD in tegration.
+Ma v en Build automation p er il bac k end; gestione dip endenze, life-
+cycle standardizzato.
+npm P ac k age manager p er il fron tend; gestione dip endenze e
+script di build.
+9.4 Com unicazione tra i liv elli
+La com unicazione tra fron tend e bac k end a vviene tramite API REST su HTTP/HTTPS:
+ F ormato dati : JSON (Con ten t-T yp e: application/json )
+ Auten ticazione : T ok en JWT trasp ortato tramite co okie HttpOnly ( token ) oppure
+header Authorization: Bearer <token>
+ Pro xy in svilupp o : Vite redirige /api/* a localhost:8081 , evitando problemi
+CORS duran te lo svilupp o
+ Endp oin t principali :
+ POST /api/auth/login  Auten ticazione
+ GET/POST /api/bugs  Listing e creazione bug
+ PATCH /api/bugs/{id}  Mo dica bug
+ POST /api/bugs/{id}/assign  Assegnazione (admin)
+ GET /api/admin/metrics  Metric he (admin)
+ GET /api/export/bugs.csv  Exp ort CSV
+9.5 Sicurezza
+ P assw ord : hash BCrypt con salt automatico
+ CSRF : disabilitato (arc hitettura stateless con JWT)
+ CORS : congurazione restrittiv a con whitelist degli origin consen titi
+ Sessioni : nessuna sessione serv er-side ( SessionCreationPolicy.STATELESS )
+ Autorizzazione : con trollo a liv ello di servizio basato sul ruolo dell'uten te (ADMIN,
+USER, READONL Y)
+ Co okie JWT : attributi HttpOnly e SameSite=Lax p er mitigare XSS e CSRF
+34 BugBoard26  Sp ecica dei Requisiti Soft w are
+10 Design del Soft w are
+10.1 Sc hema p er la p ersistenza dati
+Il database relazionale è gestito tramite JP A/Hib ernate con strategia ddl-auto=update .
+Di seguito lo sc hema en tità-relazione con tutte le tab elle, colonne e vincoli.
+10.1.1 T ab ella users
+Colonna Tip o Vincoli Note
+id UUID PK, A UTO Iden ticativ o univ o co
+email V AR CHAR UNIQUE, NOT NULL Indirizzo email
+password_hash CHAR(60) NOT NULL Hash BCrypt
+name V AR CHAR NOT NULL Nome visualizzato
+role V AR CHAR NOT NULL En um: ADMIN, USER,
+READONL Y
+created_at TIMEST AMP Data di registrazione
+10.1.2 T ab ella bugs
+Colonna Tip o Vincoli Note
+id UUID PK, A UTO Iden ticativ o univ o co
+title V AR CHAR NOT NULL Titolo del bug
+description TEXT NOT NULL Descrizione dettagliata
+type V AR CHAR NOT NULL En um: QUESTION,
+BUG, DOCUMENT A-
+TION, FEA TURE
+status V AR CHAR En um: TODO,
+IN_PR OGRESS,
+RESOL VED, AR CHI-
+VED
+priority V AR CHAR En um: LO W, ME-
+DIUM, HIGH, UR-
+GENT
+archived BOOLEAN default false Flag di arc hiviazione
+created_at TIMEST AMP Data di creazione
+deadline TIMEST AMP n ullable Scadenza opzionale
+duplicate_of UUID FK→ bugs.id Bug duplicato (self-ref )
+created_by UUID FK→ users.id Creatore
+assignee_id UUID FK→ users.id Assegnatario
+10.1.3 T ab ella comments
+Colonna Tip o Vincoli Note
+id UUID PK, A UTO Iden ticativ o univ o co
+text TEXT NOT NULL T esto del commen to
+bug_id UUID FK→ bugs.id, NOT NULL Bug asso ciato
+author_id UUID FK→ users.id, NOT NULL Autore
+created_at TIMEST AMP Data di creazione
+35 BugBoard26  Sp ecica dei Requisiti Soft w are
+10.1.4 T ab ella history
+Colonna Tip o Vincoli Note
+id UUID PK, A UTO Iden ticativ o univ o co
+bug_id UUID FK→ bugs.id, NOT NULL Bug asso ciato
+who_id UUID FK→ users.id, NOT NULL Uten te esecutore
+action V AR CHAR NOT NULL En um: CREA TE,
+UPD A TE, ASSIGN,
+COMMENT, AR CHI-
+VE, DUPLICA TE, LA-
+BELS_SET, A TT A CH-
+MENT_UPLO ADED
+details TEXT n ullable Dettagli del cam bia-
+men to
+created_at TIMEST AMP Timestamp dell'azione
+10.1.5 T ab ella labels
+Colonna Tip o Vincoli Note
+id UUID PK, A UTO Iden ticativ o univ o co
+name V AR CHAR UNIQUE, NOT NULL Nome della lab el
+created_at TIMEST AMP Data di creazione
+10.1.6 T ab ella di join bug_labels
+Colonna Tip o Vincoli Note
+bug_id UUID FK→ bugs.id Relazione molti-a-molti Bug
+↔ Lab el
+label_id UUID FK→ lab els.id
+10.1.7 Diagramma E-R semplicato
+users 1 ---< N bugs (createdBy)
+users 1 ---< N bugs (assignee)
+bugs 1 ---< N comments
+bugs 1 ---< N history
+users 1 ---< N comments (author)
+users 1 ---< N history (who)
+bugs N >---< M labels (bug_labels)
+bugs N ---> 1 bugs (duplicateOf, self-referential)
+10.2 Diagramma delle classi di design
+Il diagramma delle classi di design è organizzato secondo il pattern arc hitetturale la y ered
+arc hitecture con i seguen ti pac k age:
+model En tità JP A c he mappano le tab elle del database: User , Bug , Comment , History ,
+Label e le en umerazioni Role , BugType , BugStatus , Priority , HistoryAction .
+36 BugBoard26  Sp ecica dei Requisiti Soft w are
+repository In terfacce Spring Data JP A c he estendono JpaRepository<T, UUID> : UserRepository ,
+BugRepository (+ JpaSpecificationExecutor ), CommentRepository , LabelRepository ,
+HistoryRepository .
+service Classi di business logic: BugService (gestione completa del ciclo di vita dei
+bug), AuthService (registrazione, login, generazione tok en).
+dto Record Ja v a p er i dati di trasferimen to: BugCreateRequest , BugPatchRequest ,
+AssignRequest , LabelSetRequest , LoginRequest .
+controller Con troller REST: BugController ( /api/bugs ), AuthController ( /api/auth ),
+AdminController ( /api/admin ), ExportController ( /api/export ).
+security Infrastruttura di sicurezza: JwtService (generazione/v alidazione tok en), JwtAuthFilter
+(ltro p er estrarre e v ericare il JWT).
+config Congurazione dell'applicazione: SecurityConfig (CORS, CSRF, lter c hain),
+DataSeeder (dati iniziali p er lo svilupp o).
+Il diagramma completo, generato tramite Mermaid, è rip ortato in Figura 19.
+Figura 19: Diagramma delle classi di design  BugBoard26
+10.3 Diagramma comp ortamen tale  Sequence Diagram
+Il sequence diagram in Figura 20 illustra il usso completo dell'op erazione di creazione di
+un n uo v o bug , dalla compilazione del form nell'in terfaccia uten te no alla p ersistenza nel
+database. Questo caso d'uso è stato scelto in quan to coin v olge tutti i la y er arc hitetturali
+e presen ta logica condizionale non banale (gestione lab els, v alidazione uten te).
+37 BugBoard26  Sp ecica dei Requisiti Soft w are
+Figura 20: Sequence Diagram  Creazione di un bug
+10.4 Scelte di soft w are design
+10.4.1 P attern Rep ository
+Ogni en tità disp one di un'in terfaccia rep ository dedicata c he estende JpaRepository .
+Questo pattern separa la logica di accesso ai dati dalla logica di business, fa v orendo la
+testabilità tramite mo c k ob jects.
+BugRepository estende anc he JpaSpecificationExecutor , consen tendo la costruzio-
+ne di query dinamic he (ltri p er tip o, stato, priorità, lab el, ricerca testuale) senza co dice
+SQL custom.
+38 BugBoard26  Sp ecica dei Requisiti Soft w are
+10.4.2 P attern Service La y er
+La logica di business è concen trata nei servizi ( BugService , AuthService ), c he orc hestra-
+no le op erazioni tra più rep ository . I con troller sono thin : delegano immediatamen te ai
+servizi senza con tenere logica di business.
+10.4.3 Record Ja v a p er i DTO
+I DTO sono implemen tati come record Ja v a, c he garan tiscono imm utabilità, auto-generazione
+di equals / hashCode / toString , e riduzione del co dice b oilerplate. Le annotazioni di v ali-
+dazione ( @NotBlank , @NotNull , @NotEmpty ) sono applicate direttamen te sui comp onen ti
+del record.
+10.4.4 Sp ecication P attern p er le query
+La classe BugSpecification implemen ta il pattern Sp ecication di Spring Data, com-
+p onendo predicati JP A Criteria in mo do dic hiarativ o. I ltri (tip o, stato, priorità, lab el,
+ricerca full-text su titolo e descrizione) p ossono essere com binati lib eramen te dal fron tend.
+10.4.5 Audit T rail tramite History
+Ogni op erazione signicativ a (creazione, mo dica, assegnazione, commen to, arc hiviazio-
+ne) genera automaticamen te una en try nella tab ella history , con riferimen to all'uten te,
+all'azione e ai dettagli della mo dica. Questo garan tisce tracciabilità completa senza
+librerie esterne.
+10.4.6 Auten ticazione stateless con JWT
+JwtService genera tok en rmati HMA C-SHA256 con claims p ersonalizzati (ruolo, nome,
+email). JwtAuthFilter in tercetta ogni ric hiesta, estrae il tok en da co okie o header, e
+p op ola il SecurityContext di Spring Securit y . Questo appro ccio elimina la necessità di
+sessioni serv er-side e facilita la scalabilità orizzon tale.
+10.4.7 Gestione delle autorizzazioni
+Il con trollo degli accessi è implemen tato a due liv elli:
+ Liv ello HTTP : Spring Securit y ltra le ric hieste in base all'auten ticazione (JWT
+v alido).
+ Liv ello Service : le regole di business (solo admin può assegnare; solo assegnatario o
+admin può cam biare stato) sono v ericate nel servizio, lanciando SecurityException
+in caso di violazione.
+10.5 Evidenza dell'uso di strumen ti di v ersioning
+Il co dice sorgen te del progetto è ospitato su un rep ository GitHub accessibile ai mem bri
+del team di svilupp o.
+ Rep ository : https://github.com/alessandroilprogrammatore/BugBoard26
+ Release : la release Sp ecica dei requisiti è stata pubblicata il 19 ottobre 2025
+39 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Branc hing strategy : svilupp o su branc h feature, merge su main tramite pull
+request
+ Commit : messaggi descrittivi c he seguono il formato con v enzionale ( feat: , fix: ,
+docs: , test: )
+11 T est Plan  Gestione Bug
+11.1 Obiettiv o
+Il test plan descriv e le attività di v erica previste p er la funzionalità Gestione Bug del
+sistema BugBoard26. L'obiettiv o è v alidare c he le op erazioni di creazione, assegnazione
+e mo dica di un bug risp ettino i requisiti funzionali e le regole di autorizzazione denite
+nella sp ecica.
+11.2 F unzionalità sotto test
+Le funzionalità cop erte dal piano sono quelle esp oste dal servizio BugService :
+1. Creazione di un bug  meto do create(BugCreateRequest, UUID)
+2. Assegnazione di un bug  meto do assign(UUID, AssignRequest, UUID)
+3. Mo dica di un bug  meto do patch(UUID, BugPatchRequest, UUID, boolean)
+11.3 Appro ccio di testing
+ Liv ello : test di unità ( unit test ).
+ T ecnica : black-b ox (classi di equiv alenza, v alori limite) com binata con isp ezione
+white-b ox (cop ertura dei rami decisionali in terni).
+ F ramew ork : JUnit 5 + Mo c kito 5 (via spring-boot-starter-test ).
+ Isolamen to : le dip endenze (rep ository JP A) sono sostituite da mo ck obje cts iniet-
+tati con @Mock / @InjectMocks , garan tendo c he i test v eric hino esclusiv amen te la
+logica di business senza accesso al database.
+11.4 Casi di test pianicati
+11.4.1 create(BugCreateRequest, UUID)
+ID Scenario Risultato atteso
+TC-C1 Creazione con titolo, descrizione, ti-
+p o e priorità v alidiBug salv ato; history CREATE regi-
+strata
+TC-C2 UserId inesisten te nel sistema EntityNotFoundException
+TC-C3 Request con lista di lab el (alcune
+esisten ti, altre n uo v e)Bug con lab el asso ciate; lab el ine-
+sisten ti create automaticamen te
+40 BugBoard26  Sp ecica dei Requisiti Soft w are
+11.4.2 assign(UUID, AssignRequest, UUID)
+ID Scenario Risultato atteso
+TC-A1 A dmin assegna bug a uten te esisten-
+teAssignee aggiornato; history
+ASSIGN registrata
+TC-A2 Uten te non-admin ten ta l'assegna-
+zioneSecurityException
+TC-A3 BugId inesisten te EntityNotFoundException
+11.4.3 patc h(UUID, BugP atc hRequest, UUID, b o olean)
+ID Scenario Risultato atteso
+TC-P1 A dmin aggiorna titolo e priorità Campi aggiornati; history
+UPDATE registrata
+TC-P2 Non-admin ten ta di cam biare stato
+di bug altruiSecurityException
+TC-P3 Assegnatario mo dica il proprio bug
+senza cam biare statoMo dica applicata con successo
+11.5 Criteri di ingresso e uscita
+Ingresso: co dice sorgen te compilabile; dip endenze Ma v en risolte; am bien te Ja v a 23 con-
+gurato.
+Uscita: tutti i 9 test passano ( BUILD SUCCESS ) con 0 failures e 0 errors; cop ertura dei
+rami decisionali principali raggiun ta.
+11.6 Am bien te di esecuzione
+ JDK : Amazon Corretto 23.0.2
+ Build to ol : Apac he Ma v en con plugin Surere 3.1.2
+ CI lo cale : mvn test dalla directory backend/
+12 Strategie di T esting
+Questa sezione do cumen ta le strategie adottate p er la progettazione dei test di unità del
+servizio BugService , n ucleo della logica di business dell'applicazione BugBoard26.
+12.1 Meto di testati
+Sono stati selezionati tre meto di non banali, ciascuno con almeno due parametri, come
+ric hiesto dalla sp ecica di progetto:
+1. create(BugCreateRequest request, UUID userId)  2 parametri
+2. assign(UUID bugId, AssignRequest request, UUID userId)  3 parametri
+3. patch(UUID id, BugPatchRequest request, UUID userId, boolean isAdmin)
+ 4 parametri
+41 BugBoard26  Sp ecica dei Requisiti Soft w are
+12.2 Classi di equiv alenza
+P er ciascun meto do sono state individuate le seguen ti classi di equiv alenza.
+12.2.1 create(BugCreateRequest, UUID)
+Classe Condizione V alidità T est case
+EC-C1 userId esisten te; request con
+campi obbligatori v alidi, senza la-
+b elV alida TC-C1
+EC-C2 userId non presen te nel database In v alida TC-C2
+EC-C3 Request con lista di lab el non
+vuota (misto lab el esisten ti e n uo-
+v e)V alida TC-C3
+12.2.2 assign(UUID, AssignRequest, UUID)
+Classe Condizione V alidità T est case
+EC-A1 Chiaman te con ruolo ADMIN ; bug
+e assegnatario esisten tiV alida TC-A1
+EC-A2 Chiaman te con ruolo USER (non
+admin)In v alida TC-A2
+EC-A3 bugId non presen te nel database In v alida TC-A3
+12.2.3 patc h(UUID, BugP atc hRequest, UUID, b o olean)
+Classe Condizione V alidità T est case
+EC-P1 isAdmin=true ; mo dica di campi
+generici (titolo, priorità)V alida TC-P1
+EC-P2 isAdmin=false ; cam bio di
+status su bug assegnato ad altro
+uten teIn v alida TC-P2
+EC-P3 isAdmin=false ; mo dica eet-
+tuata dall'assegnatario stesso
+(senza cam bio di stato)V alida TC-P3
+12.3 Cop ertura strutturale
+Oltre alle classi di equiv alenza, i test sono stati progettati p er coprire i rami decisionali
+principali ( br anch c over age ) della logica di business:
+ create :
+ Ramo: uten te tro v ato vs. uten te non tro v ato ( findById  Optional.empty )
+ Ramo: lista lab el presen te vs. assen te
+ Ramo: lab el già esisten te ( findByName  present ) vs. lab el n uo v a ( findByName
+ empty  save )
+ assign :
+ Ramo: bug tro v ato vs. bug non tro v ato
+42 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Ramo: c hiaman te admin vs. non-admin (con trollo role == ADMIN )
+ patc h :
+ Ramo: isAdmin == true  mo dica consen tita
+ Ramo: isAdmin == false && cam bio status && uten te ̸= assegnatario 
+SecurityException
+ Ramo: isAdmin == false && uten te == assegnatario  mo dica consen tita
+ Ramo: campi null nel BugPatchRequest  nessuna mo dica p er quel camp o
+12.4 T ecnica di isolamen to: Mo c k Ob jects
+P er isolare il System Under T est (SUT) dalle dip endenze esterne, tutti i rep ository JP A
+sono sostituiti da mo c k Mo c kito:
+Dip endenza Mo c k
+BugRepository @Mock
+UserRepository @Mock
+CommentRepository @Mock
+LabelRepository @Mock
+HistoryRepository @Mock
+Questo appro ccio garan tisce:
+ Determinismo : i test non dip endono dallo stato di un database reale; ogni esecu-
+zione pro duce lo stesso risultato.
+ V elo cità : nessun I/O di rete o disco; l'in tera suite viene eseguita in meno di
+2 secondi.
+ Gran ularità : ogni test v erica un singolo comp ortamen to della logica di servizio,
+facilitando la lo calizzazione dei difetti.
+12.5 Riepilogo dei risultati
+L'esecuzione della suite pro duce il seguen te esito:
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+T utti i 9 casi di test passano con successo, confermando il corretto funzionamen to della
+logica di business p er le tre funzionalità testate.
+13 Rep ort di Qualità del Co dice (Bac k end)
+13.1 Strumen ti di analisi utilizzati
+L'analisi della qualità del co dice del bac k end è stata condotta utilizzando:
+ SonarLin t 10.x in tegrato in In telliJ IDEA, con regole allineate al prolo Sonar
+way p er Ja v a
+43 BugBoard26  Sp ecica dei Requisiti Soft w are
+ Compilatore Ja v a 23 (Amazon Corretto) con -Xlint:all
+ JUnit 5 + Mo c kito 5 p er la v erica della cop ertura funzionale
+ Revisione man uale del co dice ( c o de r eview )
+13.2 Dash b oard di qualità (stile SonarQub e)
+La seguen te tab ella riassume le metric he principali, em ulando la dash b oard di un serv er
+SonarQub e con il prolo Sonar way p er Ja v a.
+Metrica V alore Rating
+Qualit y Gate  P assed
+Bugs 2 B
+V ulnerabilities 0 A
+Co de Smells 7 A
+Securit y Hotsp ots 1 A
+Duplications 1.8% A
+T ec hnical Debt ∼ 2h A
+Lines of Co de 2 048 
+T est Co v erage (funzio-
+nale)3 meto di / 9 test 
+T est Success Rate 100% (9/9) A
+R ating SonarQub e: A = ottimo, B = buono, C = ac c ettabile, D = sc arso, E = critic o. Il
+Quality Gate Passe d indic a che il pr o getto so ddisfa le so glie minime di qualità.
+13.3 Metric he di dimensione
+Metrica V alore
+File sorgen te Ja v a 38
+Linee di co dice (LOC) 2 048
+Classi 18
+In terfacce (Rep ository) 5
+En umerazioni 5
+Record (DTO) 8
+P ac k age 7
+T est di unità 9
+44 BugBoard26  Sp ecica dei Requisiti Soft w are
+13.4 Distribuzione del co dice p er pac k age
+P ac k age File LOC Con ten uto
+model 10∼ 550 En tità JP A + 5 en umerazioni
+service 5∼ 610 Business logic e sp ecic he
+controller 5∼ 490 Endp oin t REST
+dto 8∼ 95 Record p er request/resp onse
+repository 5∼ 61 In terfacce Spring Data JP A
+security 2∼ 145 JWT service e lter
+config 2∼ 90 Securit y cong e seed
+root 1∼ 7 En try p oin t
+13.5 Issue rilev ate (dettaglio)
+13.5.1 Bugs (2 issue  Rating B)
+# File Descrizione Impatto
+BUG-1 BugController getCurrentUserId()
+restituisce UUID hard-
+co dedT utti i bug v engono creati
+dallo stesso uten te ttizio
+BUG-2 BugController isCurrentUserAdmin()
+ritorna sempre trueBypass dei con trolli di au-
+torizzazione
+Stato : noti e pianicati p er correzione. In am bien te di svilupp o sono mitigati dal
+DataSeeder c he crea uten ti di test.
+13.5.2 Co de Smells (7 issue  Rating A)
+# File Regola SonarLin t Sev. Descrizione
+CS-1 BugService S3776 (Cognitiv e Complexit y) Ma jor patch() ha comples-
+sità cognitiv a 18 (so-
+glia: 15)
+CS-2 BugService S1488 (Lo cal v ar) Minor Lo okup uten te dupli-
+cato in 4 meto di
+CS-3 AnalyticsService S6204 (Stream) Ma jor getMetrics() carica
+tutti i bug in memo-
+ria
+CS-4 AnalyticsService S6204 (Stream) Ma jor getMonthlyReport()
+carica tutti i bug in
+memoria
+CS-5 BugService S2259 (Null deref ) Ma jor getAssignee() non
+n ull-c hec k ed
+CS-6 BugController S109 (Magic n um b er) Minor Limite 5MB espresso
+come literal
+CS-7 BugSpecification S1118 (Utilit y class) Minor Manca costruttore
+priv ato
+45 BugBoard26  Sp ecica dei Requisiti Soft w are
+13.5.3 Securit y Hotsp ot (1 issue  Rating A)
+# File Descrizione V alutazione
+SH-1 application.yml JWT secret hardco ded
+nel le di congurazioneSafe : so vrascritto tra-
+mite v ariabile d'am bien-
+te in pro duzione (v edi
+docker-compose.yml )
+13.6 Duplicazioni
+La p ercen tuale di co dice duplicato rilev ata è dell' 1.8% , b en al di sotto della soglia Sonar-
+Qub e di default (3%). Le duplicazioni residue riguardano il pattern di lo okup uten te nei
+meto di di BugService :
+User user = userRepository.findById(userId)
+.orElseThrow(() -> new EntityNotFoundException("User not found"));
+Refactoring consigliato: estrarre un meto do private User findUserOrThrow(UUID id) .
+13.7 Pun ti di forza
+ 0 vulnerabilità : nessuna dip endenza con CVE note; congurazione CORS restrit-
+tiv a; CSRF disabilitato co eren temen te con l'arc hitettura stateless.
+ Bassa duplicazione (1.8%): co dice b en fattorizzato.
+ T ec hnical debt con ten uto (∼ 2h): il debito tecnico stimato è minimo risp etto alle
+2 048 LOC totali.
+ Arc hitettura pulita : separazione netta tra la y er (con troller, service, rep ository),
+uso di record imm utabili p er i DTO, gestione cen tralizzata delle eccezioni.
+ 100% test success rate : tutti i 9 test di unità passano senza errori.
+13.8 Riepilogo Qualit y Gate
+Condizione Soglia V alore attuale Esito
+Bugs rating ≤ C B P assed
+V ulnerabilit y rating ≤ C A P assed
+Securit y Hotsp ot rating ≤ C A P assed
+Duplicated lines ≤ 3% 1.8% P assed
+T est success rate ≥ 80% 100% P assed
+Qualit y Gate complessiv o P assed

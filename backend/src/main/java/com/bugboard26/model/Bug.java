@@ -39,6 +39,9 @@ public class Bug {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
@@ -68,6 +71,18 @@ public class Bug {
     @OneToMany(mappedBy = "bug", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     // Constructors
     public Bug() {}
 
@@ -77,6 +92,7 @@ public class Bug {
         this.type = type;
         this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
         this.status = BugStatus.TODO;
         this.archived = false;
     }
@@ -144,6 +160,14 @@ public class Bug {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public LocalDateTime getDeadline() {

@@ -4,7 +4,7 @@ import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, UserCheck, TrendingDown } from 'lucide-react';
+import { ArrowLeft, UserCheck, TrendingDown, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { api } from '@/api/client';
@@ -32,29 +32,12 @@ export default function AssignBug() {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      // Load bug details
-      const bugData = await api(`/bugs/${id}`);
+      // Load bug details and server-computed workload in parallel
+      const [bugData, workload] = await Promise.all([
+        api(`/bugs/${id}`),
+        api('/bugs/workload'),
+      ]);
       setBug(bugData);
-
-      // Load all users
-      const users = await api('/admin/users');
-      const allBugs = await api('/bugs?size=200');
-      const bugList = allBugs.content || [];
-
-      // Compute workload per user (exclude READONLY users)
-      const workload: UserWithWorkload[] = users
-        .filter((u: any) => u.role !== 'READONLY')
-        .map((u: any) => ({
-          id: u.id,
-          name: u.name,
-          email: u.email,
-          role: u.role,
-          assignedCount: bugList.filter(
-            (b: any) => b.assignee?.id === u.id && b.status !== 'RESOLVED'
-          ).length,
-        }));
-
-      workload.sort((a, b) => a.assignedCount - b.assignedCount);
       setUserWorkload(workload);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -150,7 +133,10 @@ export default function AssignBug() {
                 </div>
               </div>
               {suggestedUser && user.id === suggestedUser.id && (
-                <div className="mt-2 text-xs text-primary">✓ Consigliato</div>
+                <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-primary">
+                  <Star className="h-3 w-3 fill-primary" />
+                  CONSIGLIATO
+                </div>
               )}
             </Card>
           ))}

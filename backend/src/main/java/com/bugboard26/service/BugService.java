@@ -4,6 +4,7 @@ import com.bugboard26.dto.AssignRequest;
 import com.bugboard26.dto.BugCreateRequest;
 import com.bugboard26.dto.BugPatchRequest;
 import com.bugboard26.dto.LabelSetRequest;
+import com.bugboard26.dto.UserWorkloadDTO;
 import com.bugboard26.model.*;
 import com.bugboard26.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -251,24 +252,35 @@ public class BugService {
         return labelRepository.save(label);
     }
 
-    private User suggestAssignee() {
-        // Find user with least IN_PROGRESS bugs
+    private static final List<BugStatus> ACTIVE_STATUSES = List.of(BugStatus.TODO, BugStatus.IN_PROGRESS);
+
+    /**
+     * Returns workload data for all non-READONLY users, sorted by ascending
+     * number of active (TODO + IN_PROGRESS) bugs assigned to each user.
+     */
+    public List<UserWorkloadDTO> getUserWorkloads() {
         List<User> users = userRepository.findAll();
         return users.stream()
-            .filter(user -> user.getRole().equals(Role.USER))
-            .min((u1, u2) -> {
-                long count1 = bugRepository.count((root, query, cb) ->
-                    cb.and(
-                        cb.equal(root.get("assignee"), u1),
-                        cb.equal(root.get(STATUS_FIELD), BugStatus.IN_PROGRESS)
-                    ));
-                long count2 = bugRepository.count((root, query, cb) ->
-                    cb.and(
-                        cb.equal(root.get("assignee"), u2),
-                        cb.equal(root.get(STATUS_FIELD), BugStatus.IN_PROGRESS)
-                    ));
-                return Long.compare(count1, count2);
-            })
+            .filter(user -> !user.getRole().equals(Role.READONLY))
+            .map(user -> new UserWorkloadDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                bugRepository.countByAssigneeAndStatusIn(user, ACTIVE_STATUSES)
+            ))
+            .sorted(java.util.Comparator.comparingLong(UserWorkloadDTO::assignedCount))
+            .toList();
+    }
+
+    private User suggestAssignee() {
+        // Find non-READONLY user with fewest active bugs (TODO + IN_PROGRESS)
+        List<User> users = userRepository.findAll();
+        return users.stream()
+            .filter(user -> !user.getRole().equals(Role.READONLY))
+            .min(java.util.Comparator.comparingLong(user ->
+                bugRepository.countByAssigneeAndStatusIn(user, ACTIVE_STATUSES)
+            ))
             .orElse(null);
     }
 

@@ -8,6 +8,7 @@ import com.bugboard26.repository.BugRepository;
 import com.bugboard26.repository.HistoryRepository;
 import com.bugboard26.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
@@ -47,13 +48,30 @@ public class AnalyticsService {
                 Collectors.counting()
             ));
 
-        double avgResolutionDays = allBugs.stream()
+        List<Bug> resolvedBugs = allBugs.stream()
             .filter(b -> b.getStatus() == BugStatus.RESOLVED)
-            .mapToLong(b -> java.time.Duration.between(b.getCreatedAt(), LocalDateTime.now()).toDays())
+            .toList();
+
+        double avgResolutionDays = resolvedBugs.stream()
+            .mapToLong(b -> Duration.between(
+                b.getCreatedAt(),
+                b.getUpdatedAt() != null ? b.getUpdatedAt() : LocalDateTime.now()
+            ).toDays())
             .average()
             .orElse(0.0);
 
-        return new MetricsResponse(open, inProgress, resolved, archived, assignedPerUser, avgResolutionDays);
+        Map<String, Double> avgResolutionDaysPerUser = resolvedBugs.stream()
+            .filter(b -> b.getAssignee() != null)
+            .collect(Collectors.groupingBy(
+                b -> b.getAssignee().getEmail(),
+                Collectors.averagingDouble(b -> Duration.between(
+                    b.getCreatedAt(),
+                    b.getUpdatedAt() != null ? b.getUpdatedAt() : LocalDateTime.now()
+                ).toDays())
+            ));
+
+        return new MetricsResponse(open, inProgress, resolved, archived,
+                assignedPerUser, avgResolutionDays, avgResolutionDaysPerUser);
     }
 
     public MonthlyReportResponse getMonthlyReport(int year, int month) {

@@ -40,6 +40,14 @@ export default function Reports() {
     }))
     : [];
 
+  // Build per-user average resolution time
+  const userResolution = metrics?.avgResolutionDaysPerUser
+    ? Object.entries(metrics.avgResolutionDaysPerUser).map(([email, days]: [string, any]) => ({
+      email,
+      days: Number(days),
+    }))
+    : [];
+
   return (
     <Layout showNav={false}>
       <div className="p-4">
@@ -104,6 +112,27 @@ export default function Reports() {
                         <div className="text-right">
                           <div className="text-2xl font-bold text-primary">{stat.assigned}</div>
                           <div className="text-xs text-muted-foreground">assegnati</div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {userResolution.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold mb-3">Tempo Medio Risoluzione per Utente</h2>
+                <div className="space-y-3">
+                  {userResolution.map((stat) => (
+                    <Card key={stat.email} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold">{stat.email}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-primary">{stat.days.toFixed(1)}</div>
+                          <div className="text-xs text-muted-foreground">giorni medi</div>
                         </div>
                       </div>
                     </Card>

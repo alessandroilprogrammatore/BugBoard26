@@ -4,6 +4,7 @@ import com.bugboard26.dto.AssignRequest;
 import com.bugboard26.dto.BugCreateRequest;
 import com.bugboard26.dto.BugPatchRequest;
 import com.bugboard26.dto.LabelSetRequest;
+import com.bugboard26.dto.UserWorkloadDTO;
 import com.bugboard26.model.Bug;
 import com.bugboard26.model.Comment;
 import com.bugboard26.model.History;
@@ -97,6 +98,12 @@ public class BugController {
     public ResponseEntity<List<History>> getHistory(@PathVariable UUID id) {
         List<History> history = bugService.getHistory(id);
         return ResponseEntity.ok(history);
+    }
+
+    @GetMapping("/workload")
+    public ResponseEntity<List<UserWorkloadDTO>> getWorkload() {
+        List<UserWorkloadDTO> workloads = bugService.getUserWorkloads();
+        return ResponseEntity.ok(workloads);
     }
 
     @PostMapping("/{id}/assign")

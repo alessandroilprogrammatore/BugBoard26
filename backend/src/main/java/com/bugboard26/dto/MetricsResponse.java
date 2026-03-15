@@ -8,5 +8,6 @@ public record MetricsResponse(
     long resolved,
     long archived,
     Map<String, Long> assignedPerUser,
-    double avgResolutionDays
+    double avgResolutionDays,
+    Map<String, Double> avgResolutionDaysPerUser
 ) {}
