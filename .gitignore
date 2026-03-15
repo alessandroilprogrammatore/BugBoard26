@@ -29,7 +29,8 @@ backend/target/
 backend/data/
 backend/*.iml
 
-# LaTeX build artifacts (keep .tex sources!)
+# LaTeX
+*.tex
 *.aux
 *.out
 *.toc
