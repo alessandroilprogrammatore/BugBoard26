@@ -35,19 +35,22 @@ public class BugService {
     private final CommentRepository commentRepository;
     private final LabelRepository labelRepository;
     private final HistoryRepository historyRepository;
+    private final NotificationService notificationService;
 
     public BugService(
         BugRepository bugRepository,
         UserRepository userRepository,
         CommentRepository commentRepository,
         LabelRepository labelRepository,
-        HistoryRepository historyRepository
+        HistoryRepository historyRepository,
+        NotificationService notificationService
     ) {
         this.bugRepository = bugRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.labelRepository = labelRepository;
         this.historyRepository = historyRepository;
+        this.notificationService = notificationService;
     }
 
     public Page<Bug> list(
@@ -138,6 +141,11 @@ public class BugService {
         History history = new History(savedBug, user, HistoryAction.UPDATE, details);
         historyRepository.save(history);
 
+        // Notify creator when bug is resolved
+        if (request.status() == BugStatus.RESOLVED) {
+            notificationService.notifyResolved(savedBug, user);
+        }
+
         return savedBug;
     }
 
@@ -165,6 +173,9 @@ public class BugService {
             // Create history entry
             History history = new History(bug, admin, HistoryAction.ASSIGN, assignee.getEmail());
             historyRepository.save(history);
+
+            // Notify assignee
+            notificationService.notifyAssignment(bug, admin, assignee);
         }
     }
 
