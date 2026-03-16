@@ -22,7 +22,7 @@ import { api, apiUpload } from '@/api/client';
 export default function BugForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const isEdit = id !== 'new';
+  const isEdit = !!id && id !== 'new';
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -139,7 +139,7 @@ export default function BugForm() {
             description: description.trim(),
             type: type.toUpperCase(),
             priority: priority.toUpperCase(),
-            deadline: dueDate || null,
+            deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
           }),
         });
@@ -153,7 +153,7 @@ export default function BugForm() {
             description: description.trim(),
             type: type.toUpperCase(),
             priority: priority.toUpperCase(),
-            deadline: dueDate || null,
+            deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
           }),
         });

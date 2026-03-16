@@ -47,6 +47,7 @@ function AppRoutes() {
       
       <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/bugs" element={<ProtectedRoute><BugList /></ProtectedRoute>} />
+      <Route path="/bug/new" element={<ProtectedRoute><BugForm /></ProtectedRoute>} />
       <Route path="/bug/:id" element={<ProtectedRoute><BugDetail /></ProtectedRoute>} />
       <Route path="/bug/:id/edit" element={<ProtectedRoute><BugForm /></ProtectedRoute>} />
       <Route path="/bug/:id/assign" element={<AdminRoute><AssignBug /></AdminRoute>} />

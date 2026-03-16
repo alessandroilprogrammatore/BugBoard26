@@ -1,5 +1,6 @@
 package com.bugboard26.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,7 @@ public class Notification {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bug_id")
+    @JsonIgnore
     private Bug bug;
 
     @NotBlank

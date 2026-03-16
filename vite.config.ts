@@ -4,6 +4,17 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  preview: {
+    host: "0.0.0.0",
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://backend:8081',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   server: {
     host: "0.0.0.0",
     port: 8080,
