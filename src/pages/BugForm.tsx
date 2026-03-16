@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
-import { BugType, BugPriority } from '@/types/bug';
+import { BugType, BugPriority, BugStatus } from '@/types/bug';
 import { api, apiUpload } from '@/api/client';
 
 export default function BugForm() {
@@ -27,6 +27,7 @@ export default function BugForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<BugType>('bug');
+  const [status, setStatus] = useState<BugStatus>('todo');
   const [priority, setPriority] = useState<BugPriority>('medium');
   const [labels, setLabels] = useState<string[]>([]);
   const [newLabel, setNewLabel] = useState('');
@@ -230,6 +231,22 @@ export default function BugForm() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {isEdit && (
+                <div className="space-y-2">
+                  <Label htmlFor="status">Stato</Label>
+                  <Select value={status} onValueChange={(v) => setStatus(v as BugStatus)}>
+                    <SelectTrigger id="status">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todo">Da fare</SelectItem>
+                      <SelectItem value="in progress">In corso</SelectItem>
+                      <SelectItem value="resolved">Risolto</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="priority">Priorità</Label>

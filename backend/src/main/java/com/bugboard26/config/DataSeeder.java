@@ -15,31 +15,37 @@ public class DataSeeder {
 
     @Bean
     CommandLineRunner seedData(
-        UserRepository userRepository,
-        BugRepository bugRepository,
-        LabelRepository labelRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            UserRepository userRepository,
+            BugRepository bugRepository,
+            LabelRepository labelRepository,
+            PasswordEncoder passwordEncoder) {
         return args -> {
             // Create users if they don't exist
             if (userRepository.findByEmail("admin@bugboard.com").isEmpty()) {
                 User admin = new User(
-                    "admin@bugboard.com",
-                    passwordEncoder.encode("admin123"),
-                    "Administrator",
-                    Role.ADMIN
-                );
+                        "admin@bugboard.com",
+                        passwordEncoder.encode("admin123"),
+                        "Administrator",
+                        Role.ADMIN);
                 userRepository.save(admin);
             }
 
             if (userRepository.findByEmail("user@bugboard.com").isEmpty()) {
                 User user = new User(
-                    "user@bugboard.com",
-                    passwordEncoder.encode("user123"),
-                    "Regular User",
-                    Role.USER
-                );
+                        "user@bugboard.com",
+                        passwordEncoder.encode("user123"),
+                        "Regular User",
+                        Role.USER);
                 userRepository.save(user);
+            }
+
+            if (userRepository.findByEmail("readonly@bugboard.com").isEmpty()) {
+                User readonlyUser = new User(
+                        "readonly@bugboard.com",
+                        passwordEncoder.encode("readonly123"),
+                        "Modo Lettura",
+                        Role.READONLY);
+                userRepository.save(readonlyUser);
             }
 
             // Create sample labels
@@ -57,35 +63,41 @@ public class DataSeeder {
 
             if (bugRepository.count() == 0) {
                 // Bug 1
-                Bug bug1 = new Bug("Login page not responsive", "The login page doesn't work well on mobile devices", BugType.BUG, admin);
+                Bug bug1 = new Bug("Login page not responsive", "The login page doesn't work well on mobile devices",
+                        BugType.BUG, admin);
                 bug1.setPriority(Priority.HIGH);
                 bug1.setAssignee(regularUser);
                 bug1.setStatus(BugStatus.IN_PROGRESS);
                 bugRepository.save(bug1);
 
                 // Bug 2
-                Bug bug2 = new Bug("Add dark mode toggle", "Users should be able to switch between light and dark themes", BugType.FEATURE, regularUser);
+                Bug bug2 = new Bug("Add dark mode toggle",
+                        "Users should be able to switch between light and dark themes", BugType.FEATURE, regularUser);
                 bug2.setPriority(Priority.MEDIUM);
                 bug2.setAssignee(regularUser);
                 bugRepository.save(bug2);
 
                 // Bug 3
-                Bug bug3 = new Bug("Update API documentation", "The API docs are outdated and need to be updated", BugType.DOCUMENTATION, admin);
+                Bug bug3 = new Bug("Update API documentation", "The API docs are outdated and need to be updated",
+                        BugType.DOCUMENTATION, admin);
                 bug3.setPriority(Priority.LOW);
                 bugRepository.save(bug3);
 
                 // Bug 4
-                Bug bug4 = new Bug("Fix memory leak in dashboard", "Dashboard component is causing memory leaks in production", BugType.BUG, regularUser);
+                Bug bug4 = new Bug("Fix memory leak in dashboard",
+                        "Dashboard component is causing memory leaks in production", BugType.BUG, regularUser);
                 bug4.setPriority(Priority.URGENT);
                 bugRepository.save(bug4);
 
                 // Bug 5
-                Bug bug5 = new Bug("Add export functionality", "Users should be able to export bug reports to CSV/Excel", BugType.FEATURE, admin);
+                Bug bug5 = new Bug("Add export functionality",
+                        "Users should be able to export bug reports to CSV/Excel", BugType.FEATURE, admin);
                 bug5.setPriority(Priority.MEDIUM);
                 bugRepository.save(bug5);
 
                 // Bug 6
-                Bug bug6 = new Bug("Improve search performance", "Search is slow when there are many bugs", BugType.BUG, regularUser);
+                Bug bug6 = new Bug("Improve search performance", "Search is slow when there are many bugs", BugType.BUG,
+                        regularUser);
                 bug6.setPriority(Priority.HIGH);
                 bug6.setAssignee(regularUser);
                 bugRepository.save(bug6);

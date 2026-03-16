@@ -55,6 +55,18 @@ take-screenshots.mjs
 debug-screenshot.mjs
 debug_screenshot.png
 
+# Gemini video tutorial assets
+generated_*
+gemini_*
+tutorial_*
+frame_*
+**/immagini/frame_*
+**/immagini/screenshot_*
+*.mp4
+*.webm
+*.avi
+record-all-flows-proper.mjs
+
 # Environment matching
 .env
 .env.*
