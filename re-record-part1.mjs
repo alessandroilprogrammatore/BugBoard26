@@ -133,8 +133,13 @@ const typeRobust = async (page, index, text) => {
         const bb = await inputs[index].boundingBox();
         if (bb) {
             await page.mouse.move(bb.x + 10, bb.y + 10, { steps: 5 });
-            await page.mouse.click(bb.x + 10, bb.y + 10, { clickCount: 3 });
+            await page.mouse.click(bb.x + 10, bb.y + 10);
+            await page.keyboard.down('Control');
+            await page.keyboard.press('A');
+            await page.keyboard.up('Control');
+            await sleep(100);
             await page.keyboard.press('Backspace');
+            await sleep(100);
             await page.keyboard.type(text, { delay: 30 });
         }
     }
