@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class Label {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "labels", fetch = FetchType.LAZY)
     private Set<Bug> bugs = new HashSet<>();
 
