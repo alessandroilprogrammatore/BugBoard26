@@ -1,5 +1,5 @@
 export type BugType = 'bug' | 'feature' | 'question' | 'documentation';
-export type BugStatus = 'todo' | 'in progress' | 'resolved' | 'archived';
+export type BugStatus = 'todo' | 'in_progress' | 'resolved' | 'archived';
 export type BugPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface Bug {

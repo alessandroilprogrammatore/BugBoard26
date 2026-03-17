@@ -38,17 +38,19 @@ export default function BugList() {
 
   // Reload when filters change
   useEffect(() => {
-    if (bugs.length > 0) {
-      loadBugs();
-    }
-  }, [statusFilter, priorityFilter, typeFilter, labelFilter, searchQuery]);
+    loadBugs();
+  }, [statusFilter, priorityFilter, typeFilter, labelFilter, searchQuery, activeTab]);
 
   const loadBugs = async () => {
     try {
       setIsLoading(true);
 
       const params = new URLSearchParams();
-      if (statusFilter !== 'all') params.append('status', statusFilter.toUpperCase());
+      if (activeTab === 'archived') {
+        params.append('status', 'ARCHIVED');
+      } else if (statusFilter !== 'all') {
+        params.append('status', statusFilter.toUpperCase());
+      }
       if (priorityFilter !== 'all') params.append('priority', priorityFilter.toUpperCase());
       if (typeFilter !== 'all') params.append('type', typeFilter.toUpperCase());
       if (labelFilter) params.append('label', labelFilter);
@@ -159,7 +161,7 @@ export default function BugList() {
             <SelectContent>
               <SelectItem value="all">Tutti gli stati</SelectItem>
               <SelectItem value="todo">Da fare</SelectItem>
-              <SelectItem value="in progress">In corso</SelectItem>
+              <SelectItem value="in_progress">In corso</SelectItem>
               <SelectItem value="resolved">Risolto</SelectItem>
               <SelectItem value="archived">Archiviato</SelectItem>
             </SelectContent>

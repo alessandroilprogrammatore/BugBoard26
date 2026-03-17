@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,29 @@ export default function BugForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (!isEdit) return;
+
+    const loadBug = async () => {
+      try {
+        const bug = await api(`/bugs/${id}`);
+        setTitle(bug.title || '');
+        setDescription(bug.description || '');
+        setType((bug.type?.toLowerCase() || 'bug') as BugType);
+        setStatus((bug.status?.toLowerCase() || 'todo') as BugStatus);
+        setPriority((bug.priority?.toLowerCase() || 'medium') as BugPriority);
+        setLabels(bug.labels?.map((label: { name: string } | string) =>
+          typeof label === 'string' ? label : label.name
+        ) || []);
+        setDueDate(bug.deadline ? String(bug.deadline).slice(0, 10) : '');
+      } catch (error) {
+        toast.error('Errore nel caricamento del bug');
+      }
+    };
+
+    loadBug();
+  }, [id, isEdit]);
 
   const handleAddLabel = () => {
     if (newLabel.trim() && !labels.includes(newLabel.trim())) {
@@ -138,6 +161,7 @@ export default function BugForm() {
             title: title.trim(),
             description: description.trim(),
             type: type.toUpperCase(),
+            status: status.toUpperCase(),
             priority: priority.toUpperCase(),
             deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
@@ -241,7 +265,7 @@ export default function BugForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="todo">Da fare</SelectItem>
-                      <SelectItem value="in progress">In corso</SelectItem>
+                      <SelectItem value="in_progress">In corso</SelectItem>
                       <SelectItem value="resolved">Risolto</SelectItem>
                     </SelectContent>
                   </Select>

@@ -51,8 +51,12 @@ public class BugSpecification {
                 predicates.add(criteriaBuilder.or(titleMatch, descriptionMatch));
             }
 
-            // Exclude archived bugs by default
-            predicates.add(criteriaBuilder.isFalse(root.get("archived")));
+            // Exclude archived bugs by default, unless explicitly requesting archived ones.
+            if (status == BugStatus.ARCHIVED) {
+                predicates.add(criteriaBuilder.isTrue(root.get("archived")));
+            } else {
+                predicates.add(criteriaBuilder.isFalse(root.get("archived")));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

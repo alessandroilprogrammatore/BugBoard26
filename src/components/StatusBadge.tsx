@@ -12,7 +12,7 @@ const statusConfig = {
     className: 'bg-[hsl(var(--status-todo))] text-[hsl(var(--status-todo-foreground))]',
     icon: Circle,
   },
-  'in progress': {
+  in_progress: {
     label: 'In corso',
     className: 'bg-[hsl(var(--status-progress))] text-[hsl(var(--status-progress-foreground))]',
     icon: PlayCircle,
