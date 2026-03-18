@@ -30,7 +30,7 @@ const statusConfig = {
 };
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] ?? statusConfig.todo;
   const Icon = config.icon;
 
   return (
@@ -40,3 +40,4 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     </Badge>
   );
 }
+

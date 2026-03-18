@@ -24,7 +24,7 @@ export default function ReadOnly() {
         title: b.title,
         description: b.description,
         type: b.type.toLowerCase(),
-        status: b.status.toLowerCase(),
+        status: String(b.status || 'TODO').toLowerCase().replace(/\\s+/g, '_'),
         priority: b.priority?.toLowerCase() || 'medium',
         labels: b.labels?.map((l: any) => l.name) || [],
         assignee: b.assignee?.id,
@@ -94,4 +94,5 @@ export default function ReadOnly() {
     </Layout>
   );
 }
+
 

@@ -30,7 +30,7 @@ const typeConfig = {
 };
 
 export function TypeBadge({ type }: TypeBadgeProps) {
-  const config = typeConfig[type];
+  const config = typeConfig[type] ?? typeConfig.bug;
   const Icon = config.icon;
 
   return (
@@ -40,3 +40,4 @@ export function TypeBadge({ type }: TypeBadgeProps) {
     </Badge>
   );
 }
+

@@ -30,7 +30,7 @@ const priorityConfig = {
 };
 
 export function PriorityBadge({ priority }: PriorityBadgeProps) {
-  const config = priorityConfig[priority];
+  const config = priorityConfig[priority] ?? priorityConfig.medium;
   const Icon = config.icon;
 
   return (
@@ -40,3 +40,4 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
     </Badge>
   );
 }
+

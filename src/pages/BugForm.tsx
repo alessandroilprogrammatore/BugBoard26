@@ -45,7 +45,7 @@ export default function BugForm() {
         setTitle(bug.title || '');
         setDescription(bug.description || '');
         setType((bug.type?.toLowerCase() || 'bug') as BugType);
-        setStatus((bug.status?.toLowerCase() || 'todo') as BugStatus);
+        setStatus((String(bug.status || 'TODO').toLowerCase().replace(/\\s+/g, '_') || 'todo') as BugStatus);
         setPriority((bug.priority?.toLowerCase() || 'medium') as BugPriority);
         setLabels(bug.labels?.map((label: { name: string } | string) =>
           typeof label === 'string' ? label : label.name
@@ -412,3 +412,4 @@ export default function BugForm() {
     </Layout>
   );
 }
+

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { api } from '@/api/client';
+import { api, setStoredToken, getStoredToken } from '@/api/client';
 
 export type UserRole = 'admin' | 'user' | 'readonly';
 
@@ -33,6 +33,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadCurrentUser = async () => {
     try {
+      if (!getStoredToken()) {
+        setUser(null);
+        return;
+      }
+
       const me = await api('/auth/me');
       if (me && me.id) {
         setUser({
@@ -48,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       // User not authenticated, clear any stale state
       setUser(null);
+      setStoredToken(null);
       localStorage.clear();
       sessionStorage.clear();
     }
@@ -66,6 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
 
+      setStoredToken(me.token ?? null);
+
       setUser({
         id: me.id,
         name: me.name,
@@ -82,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Clear user state first
       setUser(null);
+      setStoredToken(null);
       
       // Try to call logout API (but don't fail if it doesn't work)
       try {
