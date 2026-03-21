@@ -20,6 +20,8 @@ import { BugStatus, BugPriority, BugType } from '@/types/bug';
 import { api } from '@/api/client';
 
 const BUGS_PAGE_SIZE = 100;
+type SortField = 'createdAt' | 'title' | 'priority' | 'status' | 'type';
+type SortDirection = 'asc' | 'desc';
 
 export default function BugList() {
   const { user } = useAuth();
@@ -32,6 +34,8 @@ export default function BugList() {
   const [priorityFilter, setPriorityFilter] = useState<BugPriority | 'all'>('all');
   const [typeFilter, setTypeFilter] = useState<BugType | 'all'>('all');
   const [labelFilter, setLabelFilter] = useState<string>('');
+  const [sortField, setSortField] = useState<SortField>('createdAt');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   // Load bugs from API
   useEffect(() => {
@@ -41,7 +45,7 @@ export default function BugList() {
   // Reload when filters change
   useEffect(() => {
     loadBugs();
-  }, [statusFilter, priorityFilter, typeFilter, labelFilter, searchQuery, activeTab]);
+  }, [statusFilter, priorityFilter, typeFilter, labelFilter, searchQuery, activeTab, sortField, sortDirection]);
 
   const loadBugs = async () => {
     try {
@@ -49,6 +53,8 @@ export default function BugList() {
 
       const params = new URLSearchParams();
       params.append('size', String(BUGS_PAGE_SIZE));
+      params.append('sort', sortField);
+      params.append('dir', sortDirection);
 
       if (activeTab === 'archived') {
         params.append('status', 'ARCHIVED');
@@ -217,6 +223,29 @@ export default function BugList() {
             onChange={(e) => setLabelFilter(e.target.value)}
             className="w-[140px]"
           />
+
+          <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
+            <SelectTrigger className="w-[170px]">
+              <SelectValue placeholder="Ordina per" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="createdAt">Data creazione</SelectItem>
+              <SelectItem value="title">Titolo</SelectItem>
+              <SelectItem value="priority">Priorita</SelectItem>
+              <SelectItem value="status">Stato</SelectItem>
+              <SelectItem value="type">Tipo</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortDirection} onValueChange={(v) => setSortDirection(v as SortDirection)}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Direzione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="desc">Decrescente</SelectItem>
+              <SelectItem value="asc">Crescente</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="text-sm text-muted-foreground">
