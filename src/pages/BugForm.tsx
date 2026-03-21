@@ -18,6 +18,7 @@ import { ArrowLeft, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugType, BugPriority, BugStatus } from '@/types/bug';
 import { api, apiUpload } from '@/api/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 type PrioritySelection = BugPriority | 'none';
 
@@ -25,6 +26,7 @@ export default function BugForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id && id !== 'new';
+  const { isAdmin } = useAuth();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -159,6 +161,7 @@ export default function BugForm() {
       let bugId: string;
 
       const priorityPayload = priority === 'none' ? {} : { priority: priority.toUpperCase() };
+      const deadlinePayload = isAdmin ? { deadline: dueDate ? `${dueDate}T00:00:00` : null } : {};
 
       if (isEdit) {
         // Patch existing bug
@@ -169,9 +172,9 @@ export default function BugForm() {
             description: description.trim(),
             type: type.toUpperCase(),
             status: status.toUpperCase(),
-            deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
             ...priorityPayload,
+            ...deadlinePayload,
           }),
         });
         bugId = id!;
@@ -183,9 +186,9 @@ export default function BugForm() {
             title: title.trim(),
             description: description.trim(),
             type: type.toUpperCase(),
-            deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
             ...priorityPayload,
+            ...deadlinePayload,
           }),
         });
         bugId = created.id;
@@ -296,15 +299,17 @@ export default function BugForm() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="dueDate">Scadenza (opzionale)</Label>
-              <Input
-                id="dueDate"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
-            </div>
+            {isAdmin && (
+              <div className="space-y-2">
+                <Label htmlFor="dueDate">Scadenza (opzionale)</Label>
+                <Input
+                  id="dueDate"
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label>Etichette</Label>

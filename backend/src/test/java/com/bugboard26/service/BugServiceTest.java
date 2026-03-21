@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -170,6 +171,27 @@ class BugServiceTest {
         assertThatThrownBy(() -> bugService.create(request, readonlyId))
             .isInstanceOf(SecurityException.class)
             .hasMessageContaining("Readonly users cannot modify bugs");
+
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("create: utente non-admin tenta di creare un bug con scadenza — deve lanciare SecurityException")
+    void create_nonAdminWithDeadline_throwsSecurityException() {
+        BugCreateRequest request = new BugCreateRequest(
+            "Titolo con scadenza",
+            "Descrizione",
+            BugType.BUG,
+            Priority.MEDIUM,
+            LocalDateTime.of(2026, 4, 15, 0, 0),
+            null
+        );
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        assertThatThrownBy(() -> bugService.create(request, userId))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only admins can set bug deadlines");
 
         verify(bugRepository, never()).save(any());
     }
@@ -467,6 +489,27 @@ class BugServiceTest {
         assertThat(result.getStatus()).isEqualTo(BugStatus.ARCHIVED);
         verify(bugRepository).save(existingBug);
         verify(historyRepository).save(any(History.class));
+    }
+
+    @Test
+    @DisplayName("patch: utente assegnatario non-admin tenta di impostare una scadenza — deve lanciare SecurityException")
+    void patch_nonAdminAssigneeSetsDeadline_throwsSecurityException() {
+        BugPatchRequest request = new BugPatchRequest(
+            null, null, null, null, null, null, null,
+            LocalDateTime.of(2026, 4, 20, 0, 0),
+            null, null
+        );
+
+        existingBug.setAssignee(regularUser);
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        assertThatThrownBy(() -> bugService.patch(bugId, request, userId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only admins can set bug deadlines");
+
+        assertThat(existingBug.getDeadline()).isNull();
+        verify(bugRepository, never()).save(any());
     }
 
     @Test

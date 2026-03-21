@@ -89,6 +89,7 @@ public class BugService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
         ensureCanWrite(user);
+        ensureCanSetDeadline(request.deadline(), user.getRole() == Role.ADMIN);
 
         Bug bug = new Bug(request.title(), request.description(), request.type(), user);
         bug.setPriority(request.priority());
@@ -120,6 +121,7 @@ public class BugService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
         ensureCanWrite(user);
+        ensureCanSetDeadline(request.deadline(), isAdmin);
 
         if (hasBugFieldChanges(request)) {
             ensureCanModifyBug(bug, userId, isAdmin);
@@ -368,6 +370,12 @@ public class BugService {
     private void ensureCanModifyBug(Bug bug, UUID userId, boolean isAdmin) {
         if (!isAdmin && !isCurrentAssignee(bug, userId)) {
             throw new SecurityException("Only assignee or admin can modify bugs");
+        }
+    }
+
+    private void ensureCanSetDeadline(LocalDateTime deadline, boolean isAdmin) {
+        if (deadline != null && !isAdmin) {
+            throw new SecurityException("Only admins can set bug deadlines");
         }
     }
 
