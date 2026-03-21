@@ -19,6 +19,8 @@ import { toast } from 'sonner';
 import { BugType, BugPriority, BugStatus } from '@/types/bug';
 import { api, apiUpload } from '@/api/client';
 
+type PrioritySelection = BugPriority | 'none';
+
 export default function BugForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +30,8 @@ export default function BugForm() {
   const [description, setDescription] = useState('');
   const [type, setType] = useState<BugType>('bug');
   const [status, setStatus] = useState<BugStatus>('todo');
-  const [priority, setPriority] = useState<BugPriority>('medium');
+  const [priority, setPriority] = useState<PrioritySelection>(isEdit ? 'medium' : 'none');
+  const [allowNoPriority, setAllowNoPriority] = useState(!isEdit);
   const [labels, setLabels] = useState<string[]>([]);
   const [newLabel, setNewLabel] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -46,7 +49,9 @@ export default function BugForm() {
         setDescription(bug.description || '');
         setType((bug.type?.toLowerCase() || 'bug') as BugType);
         setStatus((String(bug.status || 'TODO').toLowerCase().replace(/\\s+/g, '_') || 'todo') as BugStatus);
-        setPriority((bug.priority?.toLowerCase() || 'medium') as BugPriority);
+        const hasPriority = !!bug.priority;
+        setPriority((bug.priority?.toLowerCase() || 'none') as PrioritySelection);
+        setAllowNoPriority(!hasPriority);
         setLabels(bug.labels?.map((label: { name: string } | string) =>
           typeof label === 'string' ? label : label.name
         ) || []);
@@ -153,6 +158,8 @@ export default function BugForm() {
     try {
       let bugId: string;
 
+      const priorityPayload = priority === 'none' ? {} : { priority: priority.toUpperCase() };
+
       if (isEdit) {
         // Patch existing bug
         await api(`/bugs/${id}`, {
@@ -162,9 +169,9 @@ export default function BugForm() {
             description: description.trim(),
             type: type.toUpperCase(),
             status: status.toUpperCase(),
-            priority: priority.toUpperCase(),
             deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
+            ...priorityPayload,
           }),
         });
         bugId = id!;
@@ -176,9 +183,9 @@ export default function BugForm() {
             title: title.trim(),
             description: description.trim(),
             type: type.toUpperCase(),
-            priority: priority.toUpperCase(),
             deadline: dueDate ? `${dueDate}T00:00:00` : null,
             labels: labels,
+            ...priorityPayload,
           }),
         });
         bugId = created.id;
@@ -274,11 +281,12 @@ export default function BugForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="priority">Priorità</Label>
-                <Select value={priority} onValueChange={(v) => setPriority(v as BugPriority)}>
+                <Select value={priority} onValueChange={(v) => setPriority(v as PrioritySelection)}>
                   <SelectTrigger id="priority">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    {allowNoPriority && <SelectItem value="none">Non specificata</SelectItem>}
                     <SelectItem value="low">Bassa</SelectItem>
                     <SelectItem value="medium">Media</SelectItem>
                     <SelectItem value="high">Alta</SelectItem>

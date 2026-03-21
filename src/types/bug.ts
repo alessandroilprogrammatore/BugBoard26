@@ -16,7 +16,7 @@ export interface Bug {
   description: string;
   type: BugType;
   status: BugStatus;
-  priority: BugPriority;
+  priority?: BugPriority;
   labels: string[];
   assignee?: string;
   assigneeName?: string;

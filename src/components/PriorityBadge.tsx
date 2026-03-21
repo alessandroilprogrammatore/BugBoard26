@@ -3,7 +3,7 @@ import { BugPriority } from '@/types/bug';
 import { ChevronDown, Minus, ChevronUp, AlertTriangle } from 'lucide-react';
 
 interface PriorityBadgeProps {
-  priority: BugPriority;
+  priority?: BugPriority;
 }
 
 const priorityConfig = {
@@ -30,7 +30,15 @@ const priorityConfig = {
 };
 
 export function PriorityBadge({ priority }: PriorityBadgeProps) {
-  const config = priorityConfig[priority] ?? priorityConfig.medium;
+  if (!priority) {
+    return null;
+  }
+
+  const config = priorityConfig[priority];
+  if (!config) {
+    return null;
+  }
+
   const Icon = config.icon;
 
   return (

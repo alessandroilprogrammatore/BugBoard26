@@ -73,7 +73,7 @@ export default function BugList() {
     description: backendBug.description,
     type: backendBug.type.toLowerCase(),
     status: String(backendBug.status || 'TODO').toLowerCase().replace(/\\s+/g, '_'),
-    priority: backendBug.priority?.toLowerCase() || 'medium',
+    priority: backendBug.priority?.toLowerCase(),
     labels: backendBug.labels?.map((l: any) => l.name) || [],
     assignee: backendBug.assignee?.id,
     assigneeName: backendBug.assignee?.name,

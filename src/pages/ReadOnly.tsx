@@ -25,7 +25,7 @@ export default function ReadOnly() {
         description: b.description,
         type: b.type.toLowerCase(),
         status: String(b.status || 'TODO').toLowerCase().replace(/\\s+/g, '_'),
-        priority: b.priority?.toLowerCase() || 'medium',
+        priority: b.priority?.toLowerCase(),
         labels: b.labels?.map((l: any) => l.name) || [],
         assignee: b.assignee?.id,
         assigneeName: b.assignee?.name,
