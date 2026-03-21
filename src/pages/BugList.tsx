@@ -19,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 import { BugStatus, BugPriority, BugType } from '@/types/bug';
 import { api } from '@/api/client';
 
+const BUGS_PAGE_SIZE = 100;
+
 export default function BugList() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -46,6 +48,8 @@ export default function BugList() {
       setIsLoading(true);
 
       const params = new URLSearchParams();
+      params.append('size', String(BUGS_PAGE_SIZE));
+
       if (activeTab === 'archived') {
         params.append('status', 'ARCHIVED');
       } else if (statusFilter !== 'all') {
@@ -56,8 +60,22 @@ export default function BugList() {
       if (labelFilter) params.append('label', labelFilter);
       if (searchQuery) params.append('q', searchQuery);
 
-      const response = await api(`/bugs?${params.toString()}`);
-      setBugs(response.content || []);
+      const fetchPage = async (page: number) => {
+        const pageParams = new URLSearchParams(params);
+        pageParams.append('page', String(page));
+        return api(`/bugs?${pageParams.toString()}`);
+      };
+
+      const firstPage = await fetchPage(1);
+      const totalPages = Math.max(firstPage.totalPages || 1, 1);
+      const allBugs = [...(firstPage.content || [])];
+
+      for (let page = 2; page <= totalPages; page += 1) {
+        const nextPage = await fetchPage(page);
+        allBugs.push(...(nextPage.content || []));
+      }
+
+      setBugs(allBugs);
     } catch (error) {
       console.error('Failed to load bugs:', error);
       setBugs([]);
