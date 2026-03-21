@@ -13,7 +13,9 @@ interface NotificationItem {
   message: string;
   read: boolean;
   createdAt: string;
-  bug: { id: string; title: string };
+  bug?: { id: string; title: string };
+  bugId?: string;
+  bugTitle?: string;
   sender: { name: string; email: string } | null;
 }
 
@@ -62,6 +64,8 @@ export default function Notifications() {
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const getBugTarget = (notification: NotificationItem) =>
+    notification.bug?.id ?? notification.bugId;
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -132,7 +136,13 @@ export default function Notifications() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigate(`/bug/${notification.bug.id}`)}
+                      disabled={!getBugTarget(notification)}
+                      onClick={() => {
+                        const bugTarget = getBugTarget(notification);
+                        if (bugTarget) {
+                          navigate(`/bug/${bugTarget}`);
+                        }
+                      }}
                     >
                       <ExternalLink className="h-3 w-3" />
                     </Button>

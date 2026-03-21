@@ -22,7 +22,7 @@ export default function Archive() {
   const loadArchivedBugs = async () => {
     try {
       setIsLoading(true);
-      const response = await api('/bugs?size=200');
+      const response = await api('/bugs?size=200&status=ARCHIVED');
       const bugs = (response.content || [])
         .filter((b: any) => b.archived)
         .map((b: any) => ({

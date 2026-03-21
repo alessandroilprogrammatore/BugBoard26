@@ -74,7 +74,7 @@ export default function AssignBug() {
     try {
       await api(`/bugs/${id}/assign`, {
         method: 'POST',
-        body: JSON.stringify({ assigneeId: selectedUser }),
+        body: JSON.stringify({ userId: selectedUser }),
       });
       toast.success('Bug assegnato con successo');
       setTimeout(() => navigate(`/bug/${id}`), 500);
@@ -155,4 +155,3 @@ export default function AssignBug() {
     </Layout>
   );
 }
-

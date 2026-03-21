@@ -57,11 +57,11 @@ export default function BugDetail() {
 
       // Load comments
       const commentsData = await api(`/bugs/${id}/comments`);
-      setComments(commentsData.map(mapBackendCommentToFrontend));
+      setComments(commentsData.map((comment: any) => mapBackendCommentToFrontend(comment, id)));
 
       // Load history
       const historyData = await api(`/bugs/${id}/history`);
-      setHistory(historyData.map(mapBackendHistoryToFrontend));
+      setHistory(historyData.map((event: any) => mapBackendHistoryToFrontend(event, id)));
 
     } catch (error) {
       console.error('Failed to load bug details:', error);
@@ -89,23 +89,26 @@ export default function BugDetail() {
     archived: backendBug.archived,
   });
 
-  const mapBackendCommentToFrontend = (backendComment: any) => ({
+  const mapBackendCommentToFrontend = (backendComment: any, bugId: string) => ({
     id: backendComment.id,
-    bugId: backendComment.bug.id,
+    bugId,
     userId: backendComment.author.id,
     userName: backendComment.author.name,
-    content: backendComment.text,
+    content: typeof backendComment.text === 'string'
+      ? backendComment.text.replace(/^"(.*)"$/, '$1')
+      : '',
     createdAt: new Date(backendComment.createdAt),
   });
 
-  const mapBackendHistoryToFrontend = (backendHistory: any) => ({
+  const mapBackendHistoryToFrontend = (backendHistory: any, bugId: string) => ({
     id: backendHistory.id,
-    bugId: backendHistory.bug.id,
+    bugId,
     userId: backendHistory.who.id,
     userName: backendHistory.who.name,
     type: mapHistoryActionToFrontend(backendHistory.action),
     oldValue: backendHistory.details,
     newValue: backendHistory.details,
+    details: backendHistory.details,
     timestamp: new Date(backendHistory.at),
   });
 
@@ -128,7 +131,10 @@ export default function BugDetail() {
     try {
       await api(`/bugs/${id}/comments`, {
         method: 'POST',
-        body: JSON.stringify(newComment),
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: newComment,
       });
 
       setNewComment('');
@@ -362,7 +368,11 @@ export default function BugDetail() {
                       {event.type === 'created' && 'ha creato il bug'}
                       {event.type === 'assigned' && `ha assegnato a ${event.newValue}`}
                       {event.type === 'status_changed' &&
-                        `ha cambiato lo stato da ${event.oldValue} a ${event.newValue}`}
+                        `ha aggiornato il bug (${event.details})`}
+                      {event.type === 'commented' && 'ha aggiunto un commento'}
+                      {event.type === 'archived' && 'ha archiviato il bug'}
+                      {event.type === 'duplicated' && 'ha segnato il bug come duplicato'}
+                      {event.type === 'label_changed' && 'ha aggiornato le etichette'}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {format(event.timestamp, "d MMM 'alle' HH:mm", { locale: it })}

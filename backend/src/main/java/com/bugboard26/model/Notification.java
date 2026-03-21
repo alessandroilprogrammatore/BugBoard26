@@ -88,6 +88,14 @@ public class Notification {
         this.bug = bug;
     }
 
+    public UUID getBugId() {
+        return bug != null ? bug.getId() : null;
+    }
+
+    public String getBugTitle() {
+        return bug != null ? bug.getTitle() : null;
+    }
+
     public String getMessage() {
         return message;
     }

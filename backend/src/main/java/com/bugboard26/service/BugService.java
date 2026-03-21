@@ -249,6 +249,10 @@ public class BugService {
         historyRepository.save(history);
     }
 
+    public List<Comment> getComments(UUID bugId) {
+        return commentRepository.findByBugIdOrderByCreatedAtAsc(bugId);
+    }
+
     public List<History> getHistory(UUID bugId) {
         return historyRepository.findByBugIdOrderByAtAsc(bugId);
     }

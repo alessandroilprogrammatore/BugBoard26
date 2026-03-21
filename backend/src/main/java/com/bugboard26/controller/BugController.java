@@ -72,6 +72,12 @@ public class BugController {
         return ResponseEntity.ok(bug);
     }
 
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<Comment>> getComments(@PathVariable UUID id) {
+        List<Comment> comments = bugService.getComments(id);
+        return ResponseEntity.ok(comments);
+    }
+
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(
         @PathVariable UUID id,
