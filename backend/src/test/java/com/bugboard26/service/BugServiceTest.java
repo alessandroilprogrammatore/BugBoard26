@@ -281,8 +281,29 @@ class BugServiceTest {
         // Act & Assert
         assertThatThrownBy(() -> bugService.patch(bugId, request, userId, false))
             .isInstanceOf(SecurityException.class)
-            .hasMessageContaining("Only assignee or admin can change status");
+            .hasMessageContaining("Only assignee or admin can modify bugs");
 
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("patch: utente non-assegnatario tenta di cambiare il titolo — deve lanciare SecurityException")
+    void patch_nonAssigneeChangesTitle_throwsSecurityException() {
+        // Arrange
+        BugPatchRequest request = new BugPatchRequest(
+            "Titolo cambiato da non assegnatario",
+            null, null, null, null, null, null, null, null
+        );
+
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        // Act & Assert
+        assertThatThrownBy(() -> bugService.patch(bugId, request, userId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only assignee or admin can modify bugs");
+
+        assertThat(existingBug.getTitle()).isEqualTo("Login non funziona su Safari");
         verify(bugRepository, never()).save(any());
     }
 

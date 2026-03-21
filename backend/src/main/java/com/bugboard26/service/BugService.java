@@ -119,9 +119,9 @@ public class BugService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        // Check permissions for status changes
-        if (request.status() != null && !isAdmin && !bug.getAssignee().getId().equals(userId)) {
-            throw new SecurityException("Only assignee or admin can change status");
+        // Any bug field change requires admin privileges or being the current assignee.
+        if (hasBugFieldChanges(request) && !isAdmin && !isCurrentAssignee(bug, userId)) {
+            throw new SecurityException("Only assignee or admin can modify bugs");
         }
 
         // Apply changes
@@ -327,6 +327,21 @@ public class BugService {
         if (request.deadline() != null) changes.add("deadline");
         if (request.assigneeId() != null) changes.add("assigneeId");
         return String.join(", ", changes);
+    }
+
+    private boolean hasBugFieldChanges(BugPatchRequest request) {
+        return request.title() != null
+            || request.description() != null
+            || request.type() != null
+            || request.status() != null
+            || request.priority() != null
+            || request.archived() != null
+            || request.duplicateOf() != null
+            || request.deadline() != null;
+    }
+
+    private boolean isCurrentAssignee(Bug bug, UUID userId) {
+        return bug.getAssignee() != null && bug.getAssignee().getId().equals(userId);
     }
 
     public String uploadAttachment(UUID bugId, MultipartFile file, UUID userId) {
