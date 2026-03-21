@@ -22,6 +22,7 @@ import {
   User,
   MessageSquare,
   Clock,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -86,6 +87,7 @@ export default function BugDetail() {
     createdAt: new Date(backendBug.createdAt),
     updatedAt: new Date(backendBug.createdAt),
     dueDate: backendBug.deadline ? new Date(backendBug.deadline) : undefined,
+    attachments: backendBug.attachments || [],
     archived: backendBug.archived,
   });
 
@@ -170,6 +172,7 @@ export default function BugDetail() {
   }
 
   const canEdit = !isReadonly && (isAdmin || bug.assignee === user?.id);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
 
 
   return (
@@ -310,6 +313,41 @@ export default function BugDetail() {
                     {label}
                   </Badge>
                 ))}
+              </div>
+            </Card>
+          )}
+
+          {bug.attachments?.length > 0 && (
+            <Card className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <ImageIcon className="h-5 w-5" />
+                <h2 className="font-semibold">Allegati</h2>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {bug.attachments.map((attachment: any) => {
+                  const attachmentUrl = `${apiBaseUrl}/bugs/${bug.id}/attachments/${attachment.storedFilename}`;
+                  return (
+                    <a
+                      key={attachment.storedFilename}
+                      href={attachmentUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                    >
+                      <img
+                        src={attachmentUrl}
+                        alt={attachment.originalFilename}
+                        className="w-full h-48 object-cover bg-muted"
+                      />
+                      <div className="p-3">
+                        <div className="text-sm font-medium truncate">{attachment.originalFilename}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {(attachment.fileSize / 1024).toFixed(1)} KB
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             </Card>
           )}

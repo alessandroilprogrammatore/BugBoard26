@@ -71,6 +71,10 @@ public class Bug {
     @OneToMany(mappedBy = "bug", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "bug_attachments", joinColumns = @JoinColumn(name = "bug_id"))
+    private List<BugAttachment> attachments = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -224,5 +228,13 @@ public class Bug {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<BugAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<BugAttachment> attachments) {
+        this.attachments = attachments;
     }
 }

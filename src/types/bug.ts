@@ -2,6 +2,14 @@ export type BugType = 'bug' | 'feature' | 'question' | 'documentation';
 export type BugStatus = 'todo' | 'in_progress' | 'resolved' | 'archived';
 export type BugPriority = 'low' | 'medium' | 'high' | 'urgent';
 
+export interface BugAttachment {
+  storedFilename: string;
+  originalFilename: string;
+  contentType: string;
+  fileSize: number;
+  uploadedAt: string;
+}
+
 export interface Bug {
   id: string;
   title: string;
@@ -17,7 +25,7 @@ export interface Bug {
   createdAt: Date;
   updatedAt: Date;
   dueDate?: Date;
-  attachments?: string[];
+  attachments?: BugAttachment[];
   duplicateOf?: string;
 }
 

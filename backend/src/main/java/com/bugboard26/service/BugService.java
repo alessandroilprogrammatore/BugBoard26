@@ -9,6 +9,9 @@ import com.bugboard26.model.*;
 import com.bugboard26.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +19,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +46,7 @@ public class BugService {
     private final LabelRepository labelRepository;
     private final HistoryRepository historyRepository;
     private final NotificationService notificationService;
+    private final Path attachmentsDir;
 
     public BugService(
         BugRepository bugRepository,
@@ -43,7 +54,8 @@ public class BugService {
         CommentRepository commentRepository,
         LabelRepository labelRepository,
         HistoryRepository historyRepository,
-        NotificationService notificationService
+        NotificationService notificationService,
+        @Value("${app.attachments.dir:uploads}") String attachmentsDir
     ) {
         this.bugRepository = bugRepository;
         this.userRepository = userRepository;
@@ -51,6 +63,7 @@ public class BugService {
         this.labelRepository = labelRepository;
         this.historyRepository = historyRepository;
         this.notificationService = notificationService;
+        this.attachmentsDir = Paths.get(attachmentsDir).toAbsolutePath().normalize();
     }
 
     public Page<Bug> list(
@@ -319,23 +332,77 @@ public class BugService {
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         try {
-            // Generate unique filename
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename != null ?
-                originalFilename.substring(originalFilename.lastIndexOf('.')) : "";
-            String filename = UUID.randomUUID().toString() + extension;
+            Files.createDirectories(attachmentsDir);
 
-            // In a real implementation, you would save the file to disk or cloud storage
-            // For now, we'll just return the filename
-            // Example: Files.copy(file.getInputStream(), Paths.get(uploadDir, filename));
+            String originalFilename = sanitizeOriginalFilename(file.getOriginalFilename());
+            String extension = extractExtension(originalFilename, file.getContentType());
+            String filename = UUID.randomUUID() + extension;
+            Path targetPath = attachmentsDir.resolve(filename).normalize();
+
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            BugAttachment attachment = new BugAttachment(
+                filename,
+                originalFilename,
+                file.getContentType() == null ? "application/octet-stream" : file.getContentType(),
+                file.getSize(),
+                LocalDateTime.now()
+            );
+            bug.getAttachments().add(attachment);
+            bugRepository.save(bug);
 
             // Create history entry for attachment upload
             History history = new History(bug, user, HistoryAction.ATTACHMENT_UPLOADED, filename);
             historyRepository.save(history);
 
             return filename;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Failed to upload attachment", e);
         }
+    }
+
+    public BugAttachment getAttachment(UUID bugId, String storedFilename) {
+        Bug bug = get(bugId);
+        return bug.getAttachments().stream()
+            .filter(attachment -> attachment.getStoredFilename().equals(storedFilename))
+            .findFirst()
+            .orElseThrow(() -> new EntityNotFoundException("Attachment not found"));
+    }
+
+    public Resource loadAttachmentResource(UUID bugId, String storedFilename) {
+        getAttachment(bugId, storedFilename);
+        Path filePath = attachmentsDir.resolve(storedFilename).normalize();
+        if (!Files.exists(filePath)) {
+            throw new EntityNotFoundException("Attachment file not found");
+        }
+
+        try {
+            return new UrlResource(filePath.toUri());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Failed to load attachment resource", e);
+        }
+    }
+
+    private String sanitizeOriginalFilename(String originalFilename) {
+        if (originalFilename == null || originalFilename.isBlank()) {
+            return "attachment";
+        }
+
+        Path fileNamePath = Paths.get(originalFilename).getFileName();
+        return fileNamePath == null ? "attachment" : fileNamePath.toString();
+    }
+
+    private String extractExtension(String originalFilename, String contentType) {
+        int dotIndex = originalFilename.lastIndexOf('.');
+        if (dotIndex >= 0 && dotIndex < originalFilename.length() - 1) {
+            return originalFilename.substring(dotIndex).toLowerCase();
+        }
+
+        if ("image/png".equals(contentType)) return ".png";
+        if ("image/jpeg".equals(contentType)) return ".jpg";
+        if ("image/gif".equals(contentType)) return ".gif";
+        if ("image/webp".equals(contentType)) return ".webp";
+
+        return "";
     }
 }

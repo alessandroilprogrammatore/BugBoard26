@@ -5,13 +5,15 @@ import com.bugboard26.dto.BugCreateRequest;
 import com.bugboard26.dto.BugPatchRequest;
 import com.bugboard26.dto.LabelSetRequest;
 import com.bugboard26.dto.UserWorkloadDTO;
+import com.bugboard26.model.BugAttachment;
 import com.bugboard26.model.Bug;
 import com.bugboard26.model.Comment;
 import com.bugboard26.model.History;
-import com.bugboard26.model.Role;
 import com.bugboard26.service.BugService;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -163,6 +165,20 @@ public class BugController {
         String filename = bugService.uploadAttachment(id, file, userId);
 
         return ResponseEntity.ok(filename);
+    }
+
+    @GetMapping("/{id}/attachments/{filename}")
+    public ResponseEntity<Resource> getAttachment(
+        @PathVariable UUID id,
+        @PathVariable String filename
+    ) {
+        BugAttachment attachment = bugService.getAttachment(id, filename);
+        Resource resource = bugService.loadAttachmentResource(id, filename);
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(attachment.getContentType()))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + attachment.getOriginalFilename() + "\"")
+            .body(resource);
     }
 
     private boolean isValidImageType(String contentType) {
