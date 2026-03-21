@@ -1,15 +1,17 @@
-# Secondo Homework - Diagrammi di progetto
+﻿# Secondo Homework - Diagrammi di progetto
 
 Questa cartella contiene i diagrammi architetturali, di dettaglio e comportamentali del progetto BugBoard26.
 
 ## Contenuto
 
-### `diagrammi/` — Sorgenti Mermaid
-File sorgente in formato [Mermaid](https://mermaid.js.org/), utilizzabili come input per la rigenerazione dei diagrammi:
-- `deployment_diagram.mmd` — Deployment Diagram (distribuzione dei container)
-- `component_diagram.mmd` — Component Diagram (componenti software e dipendenze)
-- `class_diagram.mmd` — Class Diagram (diagramma delle classi di design)
-- `sequence_create_bug.mmd` — Sequence Diagram (creazione di un bug)
+### `diagrammi/` — Sorgenti PlantUML
+File sorgente in formato [PlantUML](https://plantuml.com/), utilizzabili come input per la rigenerazione dei diagrammi:
+- `deployment_diagram.puml` — Deployment Diagram (distribuzione dei container)
+- `component_diagram.puml` — Component Diagram (componenti software e dipendenze)
+- `class_diagram.puml` — Class Diagram (diagramma delle classi di design)
+- `sequence_create_bug.puml` — Sequence Diagram (creazione di un bug)
+
+Le precedenti versioni Mermaid sono conservate come file `.mmd.legacy` per riferimento storico.
 
 ### `immagini/` — Diagrammi renderizzati (PNG)
 Versioni grafiche dei diagrammi, incluse anche nel PDF della documentazione finale:
@@ -29,5 +31,5 @@ Versioni grafiche dei diagrammi, incluse anche nel PDF della documentazione fina
 
 ## Strumenti utilizzati
 
-- **Mermaid** per la definizione dei diagrammi in formato testuale
-- **Playwright + Edge** per il rendering automatico in PNG
+- **PlantUML / StarUML** per la modellazione UML
+- Export in **PNG** per l'inclusione nella documentazione finale

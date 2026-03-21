@@ -1,0 +1,75 @@
+﻿@startuml
+title BugBoard26 - Component Diagram (Readable)
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+actor "Utente" as User
+
+package "Frontend\nReact + TypeScript + Vite" {
+  component "SPA / Routing\nApp.tsx + BrowserRouter" as SPA
+  component "Auth Context\nlogin, logout, me,\nrole guards" as AuthCtx
+  component "Issue Management UI\nlista, dettaglio, form,\nassegnazione, archivio" as IssueUI
+  component "Admin & Reports UI\nutenti, report mensili,\nexport" as AdminUI
+  component "Notifications UI" as NotifUI
+  component "API Client\nfetch wrapper" as ApiClient
+  component "Vite Proxy\n/api -> backend" as Proxy
+}
+
+package "Backend\nSpring Boot" {
+  component "Security Layer\nSecurityConfig + JwtAuthFilter" as Security
+  component "Auth API\n/api/auth" as AuthAPI
+  component "Bug API\n/api/bugs" as BugAPI
+  component "Admin API\n/api/admin" as AdminAPI
+  component "Notification API\n/api/notifications" as NotifAPI
+  component "Export API\n/api/export" as ExportAPI
+  component "Auth Service" as AuthService
+  component "Bug Service" as BugService
+  component "Analytics Service" as AnalyticsService
+  component "Notification Service" as NotificationService
+  component "Export Service" as ExportService
+  component "Scheduled Archive Service" as ArchiveService
+  component "Repositories\nUser, Bug, Comment,\nHistory, Label, Notification" as Repos
+  component "JPA / Hibernate" as JPA
+}
+
+database "Database\nPostgreSQL / H2" as DB
+folder "Attachment Storage\nuploads/" as Uploads
+component "Excel/PDF Libraries\nApache POI + PDFBox" as DocLibs
+
+User --> SPA
+SPA --> AuthCtx
+SPA --> IssueUI
+SPA --> AdminUI
+SPA --> NotifUI
+IssueUI --> ApiClient
+AdminUI --> ApiClient
+NotifUI --> ApiClient
+AdminUI --> Proxy : export download
+ApiClient --> Proxy
+Proxy --> Security : REST/JSON + multipart
+Security --> AuthAPI
+Security --> BugAPI
+Security --> AdminAPI
+Security --> NotifAPI
+Security --> ExportAPI
+AuthAPI --> AuthService
+BugAPI --> BugService
+AdminAPI --> AnalyticsService
+AdminAPI --> Repos : user management
+NotifAPI --> NotificationService
+ExportAPI --> ExportService
+AuthService --> Repos
+BugService --> Repos
+BugService --> NotificationService
+BugService --> Uploads
+AnalyticsService --> Repos
+NotificationService --> Repos
+ExportService --> Repos
+ExportService --> DocLibs
+ArchiveService --> Repos
+Repos --> JPA
+JPA --> DB
+@enduml

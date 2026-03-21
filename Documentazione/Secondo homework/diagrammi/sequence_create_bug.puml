@@ -1,0 +1,76 @@
+﻿@startuml
+title BugBoard26 - Sequence Diagram: Create Bug
+autonumber
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Utente autenticato" as User
+participant "Browser SPA" as SPA
+participant "BugForm.tsx" as BugForm
+participant "API Client\nclient.ts" as ApiClient
+participant "Vite Proxy" as Proxy
+participant "JwtAuthFilter" as JwtFilter
+participant "BugController" as BugController
+participant "BugService" as BugService
+participant "UserRepository" as UserRepo
+participant "LabelRepository" as LabelRepo
+participant "BugRepository" as BugRepo
+participant "HistoryRepository" as HistoryRepo
+database "PostgreSQL / H2" as DB
+
+User -> SPA : apre pagina /bug/new
+SPA -> BugForm : render form creazione
+User -> BugForm : inserisce title, description,\ntype, priority, labels
+alt utente admin
+  User -> BugForm : puo impostare anche deadline
+end
+User -> BugForm : conferma creazione
+BugForm -> ApiClient : POST /api/bugs\nBugCreateRequest JSON
+ApiClient -> Proxy : HTTP request /api/bugs
+Proxy -> JwtFilter : inoltra richiesta con cookie/JWT
+JwtFilter -> JwtFilter : valida token,\nestrae userId e ruolo
+JwtFilter -> BugController : richiesta autenticata
+BugController -> BugController : getCurrentUserId(auth)
+BugController -> BugService : create(request, userId)
+BugService -> UserRepo : findById(userId)
+UserRepo -> DB : SELECT user
+DB --> UserRepo : user
+UserRepo --> BugService : user
+alt utente READONLY
+  BugService --> BugController : SecurityException
+  BugController --> SPA : 403 Forbidden
+else deadline valorizzata ma utente non admin
+  BugService --> BugController : SecurityException
+  BugController --> SPA : 403 Forbidden
+else input valido
+  BugService -> BugService : new Bug(title, description, type, user)
+  BugService -> BugService : setPriority(priority)
+  BugService -> BugService : setDeadline(deadline)
+  alt labels presenti
+    loop per ogni label
+      BugService -> LabelRepo : findByName(label)
+      LabelRepo -> DB : SELECT label by name
+      DB --> LabelRepo : existing / none
+      LabelRepo --> BugService : Optional<Label>
+      alt label non esiste
+        BugService -> LabelRepo : save(new Label(label))
+        LabelRepo -> DB : INSERT label
+        DB --> LabelRepo : saved label
+        LabelRepo --> BugService : label salvata
+      end
+    end
+    BugService -> BugService : bug.setLabels(labels)
+  end
+  BugService -> BugRepo : save(bug)
+  BugRepo -> DB : INSERT bug
+  DB --> BugRepo : saved bug
+  BugRepo --> BugService : saved bug
+  BugService -> HistoryRepo : save(new History(savedBug, user, CREATE))
+  HistoryRepo -> DB : INSERT history
+  DB --> HistoryRepo : saved history
+  HistoryRepo --> BugService : saved history
+  BugService --> BugController : saved bug
+  BugController --> SPA : 200 OK + Bug JSON
+  SPA --> User : mostra conferma / naviga al dettaglio bug
+end
+@enduml

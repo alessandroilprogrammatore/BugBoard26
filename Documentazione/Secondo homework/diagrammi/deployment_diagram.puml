@@ -1,0 +1,42 @@
+﻿@startuml
+title BugBoard26 - Deployment Diagram (Readable)
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+node "Client" as Client {
+  artifact "Browser" as Browser
+}
+
+node "Docker Environment" as DockerEnv {
+  node "Frontend Container\nbugboard-frontend" as Frontend {
+    component "React SPA\nVite Preview\nport 5173" as FrontendApp
+  }
+  node "Backend Container\nbugboard-backend" as Backend {
+    component "Spring Boot REST API\nport 8081" as BackendApp
+    folder "uploads/" as Uploads
+  }
+  node "Database Container\nbugboard-db" as DbNode {
+    database "PostgreSQL 16\nbugboard" as Postgres
+  }
+  node "Quality Tooling\nbugboard-sonarqube" as Sonar {
+    component "SonarQube\nport 9000" as SonarQube
+  }
+}
+
+node "Local Development Fallback" as DevFallback {
+  component "Spring Boot + H2 file DB" as DevBackend
+}
+
+database "Persistent Volume\npgdata" as PgVolume
+
+Browser --> FrontendApp : HTTP
+FrontendApp --> BackendApp : /api/* via proxy
+Browser ..> BackendApp : direct REST access
+BackendApp --> Postgres : JDBC
+BackendApp --> Uploads : attachments
+Postgres --> PgVolume : persistence
+DevBackend ..> Browser : local dev API
+@enduml

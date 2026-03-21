@@ -1,0 +1,122 @@
+﻿@startuml
+title BugBoard26 - Design Class Diagram (Readable)
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+package "Domain" {
+  enum Role {
+    ADMIN
+    USER
+    READONLY
+  }
+  enum BugType {
+    QUESTION
+    BUG
+    DOCUMENTATION
+    FEATURE
+  }
+  enum BugStatus {
+    TODO
+    IN_PROGRESS
+    RESOLVED
+    ARCHIVED
+  }
+  enum Priority {
+    LOW
+    MEDIUM
+    HIGH
+    URGENT
+  }
+  enum HistoryAction {
+    CREATE
+    UPDATE
+    ASSIGN
+    COMMENT
+    ARCHIVE
+    DUPLICATE
+    LABELS_SET
+    ATTACHMENT_UPLOADED
+  }
+  class User <<entity>>
+  class Bug <<entity>>
+  class Comment <<entity>>
+  class History <<entity>>
+  class Label <<entity>>
+  class Notification <<entity>>
+  class BugAttachment <<value object>>
+}
+
+package "Application" {
+  class BugService <<service>>
+  class AuthService <<service>>
+  class AnalyticsService <<service>>
+  class ExportService <<service>>
+  class NotificationService <<service>>
+  class ScheduledArchiveService <<service>>
+}
+
+package "Persistence" {
+  interface UserRepository <<repository>>
+  interface BugRepository <<repository>>
+  interface CommentRepository <<repository>>
+  interface HistoryRepository <<repository>>
+  interface LabelRepository <<repository>>
+  interface NotificationRepository <<repository>>
+}
+
+package "Interface" {
+  class AuthController <<RestController>>
+  class BugController <<RestController>>
+  class AdminController <<RestController>>
+  class ExportController <<RestController>>
+  class NotificationController <<RestController>>
+}
+
+package "Security" {
+  class JwtService
+  class JwtAuthFilter
+  class SecurityConfig <<configuration>>
+}
+
+Bug "*" --> "1" User : createdBy
+Bug "*" --> "0..1" User : assignee
+Bug "*" --> "0..1" Bug : duplicateOf
+Bug "1" --> "*" Comment : comments
+Bug "1" --> "*" History : history
+Bug "*" --> "*" Label : labels
+Bug "1" *-- "*" BugAttachment : attachments
+Comment "*" --> "1" User : author
+History "*" --> "1" User : who
+Notification "*" --> "1" User : recipient
+Notification "*" --> "0..1" User : sender
+Notification "*" --> "1" Bug : bug
+User --> Role
+Bug --> BugType
+Bug --> BugStatus
+Bug --> Priority
+History --> HistoryAction
+BugController --> BugService
+AuthController --> AuthService
+AdminController --> AnalyticsService
+ExportController --> ExportService
+NotificationController --> NotificationService
+BugService --> BugRepository
+BugService --> UserRepository
+BugService --> CommentRepository
+BugService --> HistoryRepository
+BugService --> LabelRepository
+BugService --> NotificationService
+AuthService --> UserRepository
+AuthService --> JwtService
+AnalyticsService --> BugRepository
+AnalyticsService --> UserRepository
+AnalyticsService --> HistoryRepository
+ExportService --> BugRepository
+NotificationService --> NotificationRepository
+ScheduledArchiveService --> BugRepository
+JwtAuthFilter --> JwtService
+SecurityConfig --> JwtAuthFilter
+@enduml
