@@ -119,9 +119,8 @@ public class BugService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        // Any bug field change requires admin privileges or being the current assignee.
-        if (hasBugFieldChanges(request) && !isAdmin && !isCurrentAssignee(bug, userId)) {
-            throw new SecurityException("Only assignee or admin can modify bugs");
+        if (hasBugFieldChanges(request)) {
+            ensureCanModifyBug(bug, userId, isAdmin);
         }
 
         // Apply changes
@@ -132,6 +131,12 @@ public class BugService {
         if (request.priority() != null) bug.setPriority(request.priority());
         if (request.archived() != null) bug.setArchived(request.archived());
         if (request.deadline() != null) bug.setDeadline(request.deadline());
+        if (request.labels() != null) {
+            Set<Label> labels = request.labels().stream()
+                .map(this::findOrCreateLabel)
+                .collect(Collectors.toSet());
+            bug.setLabels(labels);
+        }
 
         if (request.duplicateOf() != null) {
             Bug duplicateOf = bugRepository.findById(request.duplicateOf())
@@ -248,10 +253,12 @@ public class BugService {
         return savedComment;
     }
 
-    public void setLabels(UUID bugId, LabelSetRequest request, UUID whoId) {
+    public void setLabels(UUID bugId, LabelSetRequest request, UUID whoId, boolean isAdmin) {
         Bug bug = get(bugId);
         User who = userRepository.findById(whoId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
+
+        ensureCanModifyBug(bug, whoId, isAdmin);
 
         Set<Label> labels = request.labels().stream()
             .map(this::findOrCreateLabel)
@@ -325,6 +332,7 @@ public class BugService {
         if (request.archived() != null) changes.add("archived");
         if (request.duplicateOf() != null) changes.add("duplicateOf");
         if (request.deadline() != null) changes.add("deadline");
+        if (request.labels() != null) changes.add("labels");
         if (request.assigneeId() != null) changes.add("assigneeId");
         return String.join(", ", changes);
     }
@@ -337,11 +345,18 @@ public class BugService {
             || request.priority() != null
             || request.archived() != null
             || request.duplicateOf() != null
-            || request.deadline() != null;
+            || request.deadline() != null
+            || request.labels() != null;
     }
 
     private boolean isCurrentAssignee(Bug bug, UUID userId) {
         return bug.getAssignee() != null && bug.getAssignee().getId().equals(userId);
+    }
+
+    private void ensureCanModifyBug(Bug bug, UUID userId, boolean isAdmin) {
+        if (!isAdmin && !isCurrentAssignee(bug, userId)) {
+            throw new SecurityException("Only assignee or admin can modify bugs");
+        }
     }
 
     public String uploadAttachment(UUID bugId, MultipartFile file, UUID userId) {

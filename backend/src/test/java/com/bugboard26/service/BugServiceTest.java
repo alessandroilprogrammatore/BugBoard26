@@ -247,7 +247,7 @@ class BugServiceTest {
             null,                  // type
             null,                  // status
             Priority.URGENT,       // priority
-            null, null, null, null
+            null, null, null, null, null
         );
 
         when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
@@ -272,7 +272,7 @@ class BugServiceTest {
         BugPatchRequest request = new BugPatchRequest(
             null, null, null,
             BugStatus.IN_PROGRESS,  // status change
-            null, null, null, null, null
+            null, null, null, null, null, null
         );
 
         when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
@@ -292,7 +292,7 @@ class BugServiceTest {
         // Arrange
         BugPatchRequest request = new BugPatchRequest(
             "Titolo cambiato da non assegnatario",
-            null, null, null, null, null, null, null, null
+            null, null, null, null, null, null, null, null, null
         );
 
         when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
@@ -312,7 +312,7 @@ class BugServiceTest {
     void patch_nonAdminChangesAssignee_throwsSecurityException() {
         // Arrange
         BugPatchRequest request = new BugPatchRequest(
-            null, null, null, null, null, null, null, null, adminId
+            null, null, null, null, null, null, null, null, null, adminId
         );
 
         when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
@@ -333,7 +333,7 @@ class BugServiceTest {
         // Arrange — il bug è assegnato ad adminUser; patchamo senza cambiare stato
         BugPatchRequest request = new BugPatchRequest(
             "Descrizione corretta",   // title
-            null, null, null, null, null, null, null, null
+            null, null, null, null, null, null, null, null, null
         );
 
         when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
@@ -347,5 +347,56 @@ class BugServiceTest {
         // Assert
         assertThat(result.getTitle()).isEqualTo("Descrizione corretta");
         verify(bugRepository).save(existingBug);
+    }
+
+    @Test
+    @DisplayName("patch: admin aggiorna le labels del bug — deve salvare etichette personalizzate")
+    void patch_adminUpdatesLabels_appliesLabelChanges() {
+        // Arrange
+        Label existingLabel = new Label("frontend");
+        Label newLabel = new Label("sicurezza");
+        existingBug.setLabels(new java.util.HashSet<>(List.of(existingLabel)));
+
+        BugPatchRequest request = new BugPatchRequest(
+            null, null, null, null, null, null, null, null,
+            List.of("frontend", "sicurezza"),
+            null
+        );
+
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(adminId)).thenReturn(Optional.of(adminUser));
+        when(labelRepository.findByName("frontend")).thenReturn(Optional.of(existingLabel));
+        when(labelRepository.findByName("sicurezza")).thenReturn(Optional.empty());
+        when(labelRepository.save(any(Label.class))).thenReturn(newLabel);
+        when(bugRepository.save(any(Bug.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(historyRepository.save(any(History.class))).thenReturn(null);
+
+        // Act
+        Bug result = bugService.patch(bugId, request, adminId, true);
+
+        // Assert
+        assertThat(result.getLabels()).extracting(Label::getName)
+            .containsExactlyInAnyOrder("frontend", "sicurezza");
+        verify(labelRepository).save(any(Label.class));
+        verify(bugRepository).save(existingBug);
+    }
+
+    @Test
+    @DisplayName("setLabels: utente non-assegnatario non-admin — deve lanciare SecurityException")
+    void setLabels_nonAssignee_throwsSecurityException() {
+        // Arrange
+        com.bugboard26.dto.LabelSetRequest request = new com.bugboard26.dto.LabelSetRequest(
+            List.of("backend", "qa")
+        );
+
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        // Act & Assert
+        assertThatThrownBy(() -> bugService.setLabels(bugId, request, userId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only assignee or admin can modify bugs");
+
+        verify(bugRepository, never()).save(any());
     }
 }

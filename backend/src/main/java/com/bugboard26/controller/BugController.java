@@ -98,7 +98,8 @@ public class BugController {
         Authentication auth
     ) {
         UUID userId = getCurrentUserId(auth);
-        bugService.setLabels(id, request, userId);
+        boolean isAdmin = isCurrentUserAdmin(auth);
+        bugService.setLabels(id, request, userId, isAdmin);
         return ResponseEntity.ok().build();
     }
 
