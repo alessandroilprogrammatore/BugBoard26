@@ -2,10 +2,10 @@ package com.bugboard26.service;
 
 import com.bugboard26.dto.LoginRequest;
 import com.bugboard26.dto.MeResponse;
+import com.bugboard26.exception.InvalidCredentialsException;
 import com.bugboard26.model.User;
 import com.bugboard26.repository.UserRepository;
 import com.bugboard26.security.JwtService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +24,10 @@ public class AuthService {
 
     public MeResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
-            .orElseThrow(() -> new EntityNotFoundException("Invalid credentials"));
+            .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-            throw new EntityNotFoundException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         String token = jwtService.issue(
