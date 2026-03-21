@@ -399,4 +399,44 @@ class BugServiceTest {
 
         verify(bugRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("patch: utente non-admin tenta di archiviare un bug")
+    void patch_nonAdminArchivesBug_throwsSecurityException() {
+        BugPatchRequest request = new BugPatchRequest(
+            null, null, null, null, null, true, null, null, null, null
+        );
+
+        existingBug.setAssignee(regularUser);
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        assertThatThrownBy(() -> bugService.patch(bugId, request, userId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only admins can archive bugs");
+
+        assertThat(existingBug.getArchived()).isFalse();
+        assertThat(existingBug.getStatus()).isEqualTo(BugStatus.TODO);
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("patch: admin archivia un bug")
+    void patch_adminArchivesBug_setsArchivedStatus() {
+        BugPatchRequest request = new BugPatchRequest(
+            null, null, null, null, null, true, null, null, null, null
+        );
+
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(adminId)).thenReturn(Optional.of(adminUser));
+        when(bugRepository.save(any(Bug.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(historyRepository.save(any(History.class))).thenReturn(null);
+
+        Bug result = bugService.patch(bugId, request, adminId, true);
+
+        assertThat(result.getArchived()).isTrue();
+        assertThat(result.getStatus()).isEqualTo(BugStatus.ARCHIVED);
+        verify(bugRepository).save(existingBug);
+        verify(historyRepository).save(any(History.class));
+    }
 }

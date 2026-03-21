@@ -129,7 +129,15 @@ public class BugService {
         if (request.type() != null) bug.setType(request.type());
         if (request.status() != null) bug.setStatus(request.status());
         if (request.priority() != null) bug.setPriority(request.priority());
-        if (request.archived() != null) bug.setArchived(request.archived());
+        if (request.archived() != null) {
+            if (!isAdmin) {
+                throw new SecurityException("Only admins can archive bugs");
+            }
+            bug.setArchived(request.archived());
+            if (Boolean.TRUE.equals(request.archived())) {
+                bug.setStatus(BugStatus.ARCHIVED);
+            }
+        }
         if (request.deadline() != null) bug.setDeadline(request.deadline());
         if (request.labels() != null) {
             Set<Label> labels = request.labels().stream()
