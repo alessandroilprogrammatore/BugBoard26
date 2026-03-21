@@ -78,7 +78,6 @@ BugBoard26 \`e un'applicazione web per il \textbf{tracciamento e la gestione col
 \begin{itemize}
   \item A.\ Cockburn, \emph{Writing Effective Use Cases}, Addison-Wesley, 2001
   \item Traccia progetto corso Ingegneria del Software --- Canale 2
-  \item Documentazione di riferimento: DietiDeals24 (esempio fornito dal docente)
 \end{itemize}
 
 % ==================== 2. GLOSSARIO ====================
@@ -288,7 +287,7 @@ Sistema &
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{diagramma_generale.png}
+\includegraphics[width=0.82\textwidth,height=0.82\textheight,keepaspectratio]{diagramma_generale.png}
 \caption{Diagramma generale dei casi d'uso --- BugBoard26}
 \end{figure}
 
@@ -346,7 +345,7 @@ Primary Actor & Utente registrato (USER) \\
 
 \begin{tabular}{|p{2cm}|p{5.5cm}|p{6.5cm}|}
 \hline
-\textbf{DESCRIPTION} & \textbf{Utente} & \textbf{Sistema} \\
+\textbf{Flusso} & \textbf{Utente} & \textbf{Sistema} \\
 \hline
 Step 1 & Accede alla sezione ``Nuovo Bug'' & Mostra il form con i campi obbligatori \\
 \hline
@@ -418,7 +417,7 @@ Primary Actor & Admin \\
 
 \begin{tabular}{|p{2cm}|p{5.5cm}|p{6.5cm}|}
 \hline
-\textbf{DESCRIPTION} & \textbf{Utente (Admin)} & \textbf{Sistema} \\
+\textbf{Flusso} & \textbf{Utente (Admin)} & \textbf{Sistema} \\
 \hline
 Step 1 & Visualizza i dettagli di un bug & Mostra la pagina di dettaglio con tutte le informazioni \\
 \hline
@@ -484,7 +483,7 @@ Primary Actor & Utente registrato (USER) assegnato al bug \\
 
 \begin{tabular}{|p{2cm}|p{5.5cm}|p{6.5cm}|}
 \hline
-\textbf{DESCRIPTION} & \textbf{Utente} & \textbf{Sistema} \\
+\textbf{Flusso} & \textbf{Utente} & \textbf{Sistema} \\
 \hline
 Step 1 & Visualizza i dettagli del bug assegnato & Mostra la pagina di dettaglio con lo stato attuale \\
 \hline
@@ -556,7 +555,7 @@ Primary Actor & Admin \\
 
 \begin{tabular}{|p{2cm}|p{5.5cm}|p{6.5cm}|}
 \hline
-\textbf{DESCRIPTION} & \textbf{Utente (Admin)} & \textbf{Sistema} \\
+\textbf{Flusso} & \textbf{Utente (Admin)} & \textbf{Sistema} \\
 \hline
 Step 1 & Accede alla sezione ``Analytics'' & Mostra la dashboard con le opzioni di reportistica \\
 \hline
@@ -1159,16 +1158,14 @@ Il database relazionale \`e gestito tramite JPA/Hibernate con strategia \texttt{
 
 \subsubsection{Diagramma E-R semplificato}
 
-\begin{verbatim}
-users  1 ---< N bugs         (createdBy)
-users  1 ---< N bugs         (assignee)
-bugs   1 ---< N comments
-bugs   1 ---< N history
-users  1 ---< N comments     (author)
-users  1 ---< N history      (who)
-bugs   N >---< M labels      (bug_labels)
-bugs   N --->  1 bugs        (duplicateOf, self-referential)
-\end{verbatim}
+Il diagramma E-R semplificato aggiornato, coerente con l'implementazione corrente del backend, \`e riportato in Figura~\ref{fig:er_diagram}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{diagramma_er_semplificato.png}
+\caption{Diagramma E-R semplificato del database di BugBoard26}
+\label{fig:er_diagram}
+\end{figure}
 
 \subsection{Diagramma delle classi di design}
 
