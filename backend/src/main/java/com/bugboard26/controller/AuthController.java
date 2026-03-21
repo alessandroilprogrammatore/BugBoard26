@@ -6,13 +6,16 @@ import com.bugboard26.model.User;
 import com.bugboard26.repository.UserRepository;
 import com.bugboard26.service.AuthService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,13 +45,7 @@ public class AuthController {
     ) {
         MeResponse me = authService.login(request);
 
-        // Set JWT token in HttpOnly cookie
-        Cookie cookie = new Cookie("token", me.token());
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setMaxAge(8 * 60 * 60); // 8 hours
-        response.addCookie(cookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, buildTokenCookie(me.token(), Duration.ofHours(8)).toString());
 
         return ResponseEntity.ok(me);
     }
@@ -57,13 +54,7 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         authService.logout();
 
-        // Clear the token cookie
-        Cookie cookie = new Cookie("token", "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, buildTokenCookie("", Duration.ZERO).toString());
 
         return ResponseEntity.ok().build();
     }
@@ -85,5 +76,15 @@ public class AuthController {
             user.getRole(),
             null  // no token on /me, already in cookie
         ));
+    }
+
+    private ResponseCookie buildTokenCookie(String value, Duration maxAge) {
+        return ResponseCookie.from("token", value)
+            .httpOnly(true)
+            .secure(cookieSecure)
+            .path("/")
+            .sameSite(cookieSameSite)
+            .maxAge(maxAge)
+            .build();
     }
 }
