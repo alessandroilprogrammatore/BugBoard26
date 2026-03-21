@@ -47,15 +47,18 @@ class BugServiceTest {
     /* ── fixture condivisi ── */
     private UUID   adminId;
     private UUID   userId;
+    private UUID   readonlyId;
     private UUID   bugId;
     private User   adminUser;
     private User   regularUser;
+    private User   readonlyUser;
     private Bug    existingBug;
 
     @BeforeEach
     void setUp() {
         adminId  = UUID.randomUUID();
         userId   = UUID.randomUUID();
+        readonlyId = UUID.randomUUID();
         bugId    = UUID.randomUUID();
 
         bugService = new BugService(
@@ -77,6 +80,11 @@ class BugServiceTest {
                                "$2a$10$hashedpasswordXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                                "Regular User", Role.USER);
         regularUser.setId(userId);
+
+        readonlyUser = new User("readonly@bugboard.com",
+                                "$2a$10$hashedpasswordXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                                "Readonly User", Role.READONLY);
+        readonlyUser.setId(readonlyId);
 
         existingBug = new Bug("Login non funziona su Safari",
                               "Descrizione del bug",
@@ -141,6 +149,27 @@ class BugServiceTest {
         assertThatThrownBy(() -> bugService.create(request, unknownUserId))
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessageContaining("User not found");
+
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("create: utente readonly tenta di creare un bug — deve lanciare SecurityException")
+    void create_readonlyUser_throwsSecurityException() {
+        BugCreateRequest request = new BugCreateRequest(
+            "Titolo",
+            "Descrizione",
+            BugType.BUG,
+            Priority.LOW,
+            null,
+            null
+        );
+
+        when(userRepository.findById(readonlyId)).thenReturn(Optional.of(readonlyUser));
+
+        assertThatThrownBy(() -> bugService.create(request, readonlyId))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Readonly users cannot modify bugs");
 
         verify(bugRepository, never()).save(any());
     }
@@ -438,5 +467,38 @@ class BugServiceTest {
         assertThat(result.getStatus()).isEqualTo(BugStatus.ARCHIVED);
         verify(bugRepository).save(existingBug);
         verify(historyRepository).save(any(History.class));
+    }
+
+    @Test
+    @DisplayName("patch: utente readonly assegnato tenta di modificare — deve lanciare SecurityException")
+    void patch_readonlyAssignee_throwsSecurityException() {
+        BugPatchRequest request = new BugPatchRequest(
+            "Titolo readonly",
+            null, null, null, null, null, null, null, null, null
+        );
+
+        existingBug.setAssignee(readonlyUser);
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(readonlyId)).thenReturn(Optional.of(readonlyUser));
+
+        assertThatThrownBy(() -> bugService.patch(bugId, request, readonlyId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Readonly users cannot modify bugs");
+
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("addComment: utente readonly tenta di commentare — deve lanciare SecurityException")
+    void addComment_readonlyUser_throwsSecurityException() {
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(readonlyId)).thenReturn(Optional.of(readonlyUser));
+
+        assertThatThrownBy(() -> bugService.addComment(bugId, readonlyId, "commento"))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Readonly users cannot modify bugs");
+
+        verify(commentRepository, never()).save(any());
+        verify(historyRepository, never()).save(any());
     }
 }

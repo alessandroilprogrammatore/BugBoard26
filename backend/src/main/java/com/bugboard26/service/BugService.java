@@ -88,6 +88,7 @@ public class BugService {
     public Bug create(BugCreateRequest request, UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
+        ensureCanWrite(user);
 
         Bug bug = new Bug(request.title(), request.description(), request.type(), user);
         bug.setPriority(request.priority());
@@ -118,6 +119,7 @@ public class BugService {
         Bug bug = get(id);
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
+        ensureCanWrite(user);
 
         if (hasBugFieldChanges(request)) {
             ensureCanModifyBug(bug, userId, isAdmin);
@@ -250,6 +252,7 @@ public class BugService {
         Bug bug = get(bugId);
         User author = userRepository.findById(authorId)
             .orElseThrow(() -> new EntityNotFoundException("Author not found"));
+        ensureCanWrite(author);
 
         Comment comment = new Comment(text, bug, author);
         Comment savedComment = commentRepository.save(comment);
@@ -265,6 +268,7 @@ public class BugService {
         Bug bug = get(bugId);
         User who = userRepository.findById(whoId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
+        ensureCanWrite(who);
 
         ensureCanModifyBug(bug, whoId, isAdmin);
 
@@ -367,10 +371,17 @@ public class BugService {
         }
     }
 
+    private void ensureCanWrite(User user) {
+        if (user.getRole() == Role.READONLY) {
+            throw new SecurityException("Readonly users cannot modify bugs");
+        }
+    }
+
     public String uploadAttachment(UUID bugId, MultipartFile file, UUID userId) {
         Bug bug = get(bugId);
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MESSAGE));
+        ensureCanWrite(user);
 
         try {
             Files.createDirectories(attachmentsDir);
