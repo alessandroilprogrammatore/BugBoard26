@@ -18,9 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Files;
@@ -101,7 +100,7 @@ class BugAttachmentIntegrationTest {
             pngBytes
         );
 
-        MockMultipartHttpServletRequestBuilder uploadRequest = MockMvcRequestBuilders
+        var uploadRequest = MockMvcRequestBuilders
             .multipart("/api/bugs/{id}/attachments", bug.getId())
             .file(file)
             .header("Authorization", "Bearer " + token);
