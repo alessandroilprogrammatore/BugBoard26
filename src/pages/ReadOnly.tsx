@@ -47,14 +47,14 @@ export default function ReadOnly() {
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">Modalità Solo Lettura</h1>
+          <h1 className="text-2xl font-bold">Modalita solo lettura</h1>
         </div>
 
         <Alert className="mb-6">
           <Eye className="h-4 w-4" />
           <AlertDescription>
-            Stai visualizzando i bug in modalità solo lettura. Non puoi creare, modificare
-            o eliminare bug.
+            In questo ruolo puoi consultare i bug e segnalarne di nuovi, ma non puoi
+            modificare quelli esistenti o gestire operazioni amministrative.
           </AlertDescription>
         </Alert>
 
@@ -65,12 +65,13 @@ export default function ReadOnly() {
               <p className="font-medium">Cosa puoi fare:</p>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
                 <li>Visualizzare lista bug e dettagli</li>
+                <li>Creare nuove issue</li>
                 <li>Leggere commenti e cronologia</li>
                 <li>Cercare e filtrare bug</li>
               </ul>
               <p className="font-medium mt-3">Cosa non puoi fare:</p>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>Creare o modificare bug</li>
+                <li>Modificare bug esistenti</li>
                 <li>Aggiungere commenti</li>
                 <li>Cambiare stati o assegnazioni</li>
               </ul>
@@ -94,5 +95,3 @@ export default function ReadOnly() {
     </Layout>
   );
 }
-
-
