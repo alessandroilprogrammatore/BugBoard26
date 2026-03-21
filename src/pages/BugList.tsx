@@ -126,10 +126,12 @@ export default function BugList() {
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Bug</h1>
-          <Button size="sm" onClick={() => navigate('/bug/new')}>
-            <Plus className="h-4 w-4 mr-1" />
-            Nuovo
-          </Button>
+          {!user?.role.includes('readonly') && (
+            <Button size="sm" onClick={() => navigate('/bug/new')}>
+              <Plus className="h-4 w-4 mr-1" />
+              Nuovo
+            </Button>
+          )}
         </div>
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
@@ -210,10 +212,14 @@ export default function BugList() {
             icon={<FileQuestion className="h-16 w-16" />}
             title="Nessun bug trovato"
             description="Prova a cambiare i filtri o crea un nuovo bug"
-            action={{
-              label: 'Crea bug',
-              onClick: () => navigate('/bug/new'),
-            }}
+            action={
+              !user?.role.includes('readonly')
+                ? {
+                    label: 'Crea bug',
+                    onClick: () => navigate('/bug/new'),
+                  }
+                : undefined
+            }
           />
         ) : (
           <div className="space-y-3">
@@ -224,13 +230,15 @@ export default function BugList() {
         )}
       </div>
 
-      <button
-        onClick={() => navigate('/bug/new')}
-        className="fixed bottom-20 right-4 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
-        aria-label="Crea nuovo bug"
-      >
-        <Plus className="h-6 w-6" />
-      </button>
+      {!user?.role.includes('readonly') && (
+        <button
+          onClick={() => navigate('/bug/new')}
+          className="fixed bottom-20 right-4 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+          aria-label="Crea nuovo bug"
+        >
+          <Plus className="h-6 w-6" />
+        </button>
+      )}
     </Layout>
   );
 }

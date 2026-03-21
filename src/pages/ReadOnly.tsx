@@ -53,8 +53,7 @@ export default function ReadOnly() {
         <Alert className="mb-6">
           <Eye className="h-4 w-4" />
           <AlertDescription>
-            In questo ruolo puoi consultare i bug e segnalarne di nuovi, ma non puoi
-            modificare quelli esistenti o gestire operazioni amministrative.
+            In questo ruolo puoi consultare i bug, ma non puoi crearli o modificarli.
           </AlertDescription>
         </Alert>
 
@@ -65,13 +64,12 @@ export default function ReadOnly() {
               <p className="font-medium">Cosa puoi fare:</p>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
                 <li>Visualizzare lista bug e dettagli</li>
-                <li>Creare nuove issue</li>
                 <li>Leggere commenti e cronologia</li>
                 <li>Cercare e filtrare bug</li>
               </ul>
               <p className="font-medium mt-3">Cosa non puoi fare:</p>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>Modificare bug esistenti</li>
+                <li>Creare o modificare bug</li>
                 <li>Aggiungere commenti</li>
                 <li>Cambiare stati o assegnazioni</li>
               </ul>
