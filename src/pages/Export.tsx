@@ -2,7 +2,7 @@ import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Download, FileText, Table, FileSpreadsheet } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Table } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Export() {
@@ -23,6 +23,13 @@ export default function Export() {
       url: '/api/export/bugs.xlsx',
       description: 'File Excel con formattazione automatica'
     },
+    {
+      value: 'pdf',
+      label: 'PDF',
+      icon: FileText,
+      url: '/api/export/bugs.pdf',
+      description: 'File PDF condivisibile pronto da stampare'
+    },
   ];
 
   const handleDownload = (url: string) => {
@@ -42,7 +49,7 @@ export default function Export() {
         <div className="space-y-6">
           <div>
             <Label className="text-base mb-3 block">Formato di esportazione</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {formats.map((f) => {
                 const Icon = f.icon;
                 return (

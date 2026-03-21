@@ -44,4 +44,17 @@ public class ExportController {
             .headers(headers)
             .body(excelBytes);
     }
+
+    @GetMapping("/bugs.pdf")
+    public ResponseEntity<byte[]> exportBugsPdf() throws IOException {
+        byte[] pdfBytes = exportService.exportToPdf();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "bugs.pdf");
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(pdfBytes);
+    }
 }
