@@ -142,6 +142,9 @@ public class BugService {
         }
 
         if (request.assigneeId() != null) {
+            if (!isAdmin) {
+                throw new SecurityException("Only admins can assign bugs");
+            }
             User assignee = userRepository.findById(request.assigneeId())
                 .orElseThrow(() -> new EntityNotFoundException("Assignee not found"));
             bug.setAssignee(assignee);

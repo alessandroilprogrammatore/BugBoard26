@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -41,8 +40,8 @@ class BugServiceTest {
     @Mock private CommentRepository commentRepository;
     @Mock private LabelRepository   labelRepository;
     @Mock private HistoryRepository historyRepository;
+    @Mock private NotificationService notificationService;
 
-    @InjectMocks
     private BugService bugService;
 
     /* ── fixture condivisi ── */
@@ -58,6 +57,16 @@ class BugServiceTest {
         adminId  = UUID.randomUUID();
         userId   = UUID.randomUUID();
         bugId    = UUID.randomUUID();
+
+        bugService = new BugService(
+            bugRepository,
+            userRepository,
+            commentRepository,
+            labelRepository,
+            historyRepository,
+            notificationService,
+            "build/test-attachments"
+        );
 
         adminUser = new User("admin@bugboard.com",
                              "$2a$10$hashedpasswordXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -274,6 +283,26 @@ class BugServiceTest {
             .isInstanceOf(SecurityException.class)
             .hasMessageContaining("Only assignee or admin can change status");
 
+        verify(bugRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("patch: utente non-admin tenta di riassegnare un bug — deve lanciare SecurityException")
+    void patch_nonAdminChangesAssignee_throwsSecurityException() {
+        // Arrange
+        BugPatchRequest request = new BugPatchRequest(
+            null, null, null, null, null, null, null, null, adminId
+        );
+
+        when(bugRepository.findById(bugId)).thenReturn(Optional.of(existingBug));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(regularUser));
+
+        // Act & Assert
+        assertThatThrownBy(() -> bugService.patch(bugId, request, userId, false))
+            .isInstanceOf(SecurityException.class)
+            .hasMessageContaining("Only admins can assign bugs");
+
+        assertThat(existingBug.getAssignee()).isEqualTo(adminUser);
         verify(bugRepository, never()).save(any());
     }
 
