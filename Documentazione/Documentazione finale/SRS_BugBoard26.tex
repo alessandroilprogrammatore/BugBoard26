@@ -22,10 +22,12 @@
 \fancyhead[L]{\thepage}
 \fancyhead[R]{BugBoard26 --- Specifica dei Requisiti Software}
 \renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
 
 \graphicspath{{immagini/}}
 
 \begin{document}
+\hypersetup{pageanchor=false}
 
 % ==================== TITLE PAGE ====================
 \begin{titlepage}
@@ -53,6 +55,9 @@
 \vfill
 {\large Anno Accademico 2025/2026\par}
 \end{titlepage}
+\clearpage
+\pagenumbering{arabic}
+\hypersetup{pageanchor=true}
 
 % ==================== TABLE OF CONTENTS ====================
 \tableofcontents
@@ -930,7 +935,7 @@ React & 18.x & Libreria UI component-based matura e con vasto ecosistema; facili
 \hline
 TypeScript & 5.x & Tipizzazione statica che riduce i bug a runtime e migliora la manutenibilit\`a del codice. \\
 \hline
-Vite & 6.x & Build tool moderno, significativamente pi\`u veloce di Webpack grazie a ESBuild e HMR nativo. \\
+Vite & 5.4.x & Build tool moderno, significativamente pi\`u veloce di Webpack grazie a ESBuild e HMR nativo. \\
 \hline
 Tailwind CSS & 3.x & Framework CSS utility-first che accelera lo sviluppo della UI e garantisce consistenza visiva. \\
 \hline
@@ -938,7 +943,7 @@ Radix UI & -- & Componenti accessibili e non stilizzati (\emph{headless}), confo
 \hline
 React Query & 5.x & Gestione dello stato server-side (caching, refetching, invalidation) che semplifica le chiamate API. \\
 \hline
-React Router & 7.x & Routing dichiarativo per SPA con supporto a lazy loading e route protette. \\
+React Router & 6.30.x & Routing dichiarativo per SPA con supporto a route protette e navigazione client-side. \\
 \hline
 \end{tabular}
 
@@ -948,7 +953,7 @@ React Router & 7.x & Routing dichiarativo per SPA con supporto a lazy loading e 
 \hline
 \textbf{Tecnologia} & \textbf{Versione} & \textbf{Motivazione} \\
 \hline
-Java & 23 & Linguaggio robusto e type-safe, con record e pattern matching per DTO concisi. \\
+Java & 17 & Linguaggio robusto e type-safe, con record per DTO concisi e ottimo supporto nell'ecosistema Spring Boot. \\
 \hline
 Spring Boot & 3.3.4 & Framework enterprise standard per applicazioni Java; auto-configuration, starter dependencies, embedded server. \\
 \hline
@@ -966,7 +971,7 @@ SpringDoc & 2.6.0 & Generazione automatica della documentazione OpenAPI 3.0 dall
 \hline
 Apache POI & 5.3.0 & Generazione di file Excel (.xlsx) per l'export dei dati bug. \\
 \hline
-PDFBox & 3.0.2 & Generazione di documenti PDF per l'export dell'elenco bug. \\
+PDFBox & 2.0.30 & Generazione di documenti PDF per l'export dell'elenco bug. \\
 \hline
 \end{tabular}
 
@@ -992,7 +997,7 @@ AssertJ & Asserzioni fluenti che migliorano la leggibilit\`a dei test. \\
 \hline
 Docker & Containerizzazione per ambienti riproducibili; Dockerfile multi-stage per build ottimizzati. \\
 \hline
-Docker Compose & Orchestrazione dei tre servizi (database, backend, frontend) con un solo comando. \\
+Docker Compose & Orchestrazione dei servizi del sistema (database, backend, frontend e tooling di qualit\`a) con un solo comando. \\
 \hline
 Git / GitHub & Version control distribuito; collaborazione, code review, CI/CD integration. \\
 \hline
