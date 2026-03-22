@@ -149,7 +149,6 @@ class AnalyticsServiceTest {
         assertThat(adminStats.managed()).isEqualTo(1);
         assertThat(adminStats.resolved()).isZero();
         assertThat(adminStats.avgResolutionDays()).isZero();
-
         assertThat(regularStats.opened()).isEqualTo(1);
         assertThat(regularStats.managed()).isEqualTo(1);
         assertThat(regularStats.resolved()).isEqualTo(1);
