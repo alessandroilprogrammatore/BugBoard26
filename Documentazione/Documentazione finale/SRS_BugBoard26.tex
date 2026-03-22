@@ -1335,13 +1335,13 @@ TC-P3 & Assegnatario modifica il proprio bug senza cambiare stato & Modifica app
 
 \subsection{Criteri di ingresso e uscita}
 
-\textbf{Ingresso:} codice sorgente compilabile; dipendenze Maven risolte; ambiente Java 23 configurato.
+\textbf{Ingresso:} codice sorgente compilabile; dipendenze Maven risolte; ambiente Java 17+ configurato.
 
-\textbf{Uscita:} tutti i 9 test passano (\texttt{BUILD SUCCESS}) con 0 failures e 0 errors; copertura dei rami decisionali principali raggiunta.
+\textbf{Uscita:} la suite di unit test dedicata a \texttt{BugService} esegue 20 test con \texttt{BUILD SUCCESS}, 0 failures e 0 errors; copertura dei rami decisionali principali raggiunta.
 
 \subsection{Ambiente di esecuzione}
 \begin{itemize}
-  \item \textbf{JDK}: Amazon Corretto 23.0.2
+  \item \textbf{JDK}: Java 17 come baseline di progetto; esecuzione verificata anche su Eclipse Temurin 21.0.7 in ambiente containerizzato
   \item \textbf{Build tool}: Apache Maven con plugin Surefire 3.1.2
   \item \textbf{CI locale}: \texttt{mvn test} dalla directory \texttt{backend/}
 \end{itemize}
@@ -1527,7 +1527,7 @@ Per isolare il \emph{System Under Test} (SUT) dalle dipendenze esterne, tutti i 
 Questo approccio garantisce:
 \begin{itemize}
   \item \textbf{Determinismo}: i test non dipendono dallo stato di un database reale; ogni esecuzione produce lo stesso risultato.
-  \item \textbf{Velocit\`a}: nessun I/O di rete o disco; l'intera suite viene eseguita in meno di 2 secondi.
+  \item \textbf{Velocit\`a}: nessun I/O di rete o disco; la suite resta comunque eseguibile in pochi secondi anche in ambiente containerizzato.
   \item \textbf{Granularit\`a}: ogni test verifica un singolo comportamento della logica di servizio, facilitando la localizzazione dei difetti.
 \end{itemize}
 
@@ -1536,11 +1536,11 @@ Questo approccio garantisce:
 L'esecuzione della suite produce il seguente esito:
 
 \begin{verbatim}
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 \end{verbatim}
 
-Tutti i 9 casi di test passano con successo, confermando il corretto funzionamento della logica di business per le tre funzionalit\`a testate.
+Tutti i 20 test della suite dedicata a \texttt{BugService} passano con successo, confermando il corretto funzionamento della logica di business per le tre funzionalit\`a testate.
 
 % ==================== 13. REPORT QUALITA' ====================
 \section{Report di Qualit\`a del Codice (Backend)}
