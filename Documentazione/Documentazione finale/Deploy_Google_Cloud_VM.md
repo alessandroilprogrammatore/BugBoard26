@@ -1,16 +1,13 @@
 # Deploy Pubblico Economico su Google Cloud
 
-Questa guida propone il percorso piu' semplice ed economico per mostrare **BugBoard26** su public cloud:
+Questa guida descrive il percorso piu' semplice ed economico per mostrare **BugBoard26** su public cloud:
 
 - **1 VM pubblica su Google Compute Engine**
 - **Docker Compose**
 - **PostgreSQL containerizzato** con volume persistente
 - **frontend** e **backend** separati in container distinti
 
-Questa soluzione ha due vantaggi pratici:
-
-1. riusa quasi integralmente la repository attuale
-2. evita di introdurre componenti cloud aggiuntivi non necessari per una demo
+Per il deploy pubblico si usa il file dedicato `docker-compose.cloud.yml`, piu' leggero del compose completo di sviluppo perche' esclude tooling non necessario alla demo.
 
 ## Quando scegliere questa strada
 
@@ -28,14 +25,6 @@ Google Cloud offre credito iniziale ai nuovi account e una free tier su alcune V
 - per una **demo stabile** con frontend + backend + database insieme, una `e2-micro` puo' essere troppo stretta
 - per stare piu' tranquillo, per pochi giorni di demo conviene spesso una `e2-small`
 
-Se vuoi massimizzare il risparmio, prova prima con:
-
-- `e2-micro` se il carico e' minimo
-
-Se vuoi piu' margine:
-
-- `e2-small`
-
 ## Architettura finale
 
 Sulla VM girano:
@@ -51,7 +40,7 @@ Il backend resta il punto centrale di gestione dello stato, mentre il database p
 1. account Google Cloud attivo
 2. progetto GCP creato
 3. [gcloud CLI](https://cloud.google.com/sdk/docs/install) installata
-4. repository gia' disponibile su GitHub oppure copiata sulla VM
+4. repository disponibile su GitHub
 
 Esegui login:
 
@@ -62,24 +51,10 @@ gcloud config set project YOUR_PROJECT_ID
 
 ## 1. Crea la VM
 
-Puoi farlo da Console oppure da CLI. Da CLI:
-
 ```powershell
 gcloud compute instances create bugboard26-vm `
-  --zone=europe-west8-b `
+  --zone=europe-west1-b `
   --machine-type=e2-small `
-  --image-family=debian-12 `
-  --image-project=debian-cloud `
-  --boot-disk-size=20GB `
-  --tags=bugboard26,http-server,https-server
-```
-
-Se vuoi tentare la configurazione piu' economica possibile:
-
-```powershell
-gcloud compute instances create bugboard26-vm `
-  --zone=us-west1-b `
-  --machine-type=e2-micro `
   --image-family=debian-12 `
   --image-project=debian-cloud `
   --boot-disk-size=20GB `
@@ -88,38 +63,25 @@ gcloud compute instances create bugboard26-vm `
 
 ## 2. Apri le porte necessarie
 
-Per una demo semplice conviene esporre:
-
-- `5173` per il frontend
-- `8081` per il backend
-
 ```powershell
 gcloud compute firewall-rules create bugboard26-frontend `
   --allow tcp:5173 `
   --target-tags=bugboard26 `
-  --description=\"Frontend BugBoard26\"
+  --description="Frontend BugBoard26"
 
 gcloud compute firewall-rules create bugboard26-backend `
   --allow tcp:8081 `
   --target-tags=bugboard26 `
-  --description=\"Backend BugBoard26\"
+  --description="Backend BugBoard26"
 ```
 
 ## 3. Collegati alla VM
 
 ```powershell
-gcloud compute ssh bugboard26-vm --zone=europe-west8-b
-```
-
-oppure, se hai usato la VM free-tier:
-
-```powershell
-gcloud compute ssh bugboard26-vm --zone=us-west1-b
+gcloud compute ssh bugboard26-vm --zone=europe-west1-b
 ```
 
 ## 4. Installa Docker e Compose sulla VM
-
-Dentro la VM:
 
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -137,29 +99,21 @@ git clone https://github.com/alessandroilprogrammatore/BugBoard26.git
 cd BugBoard26
 ```
 
-Se il repository e' privato, usa HTTPS con credenziali oppure carica il progetto via SCP.
-
 ## 6. Recupera l'IP pubblico della VM
 
 Da locale:
 
 ```powershell
 gcloud compute instances describe bugboard26-vm `
-  --zone=europe-west8-b `
-  --format=\"get(networkInterfaces[0].accessConfigs[0].natIP)\"
+  --zone=europe-west1-b `
+  --format="get(networkInterfaces[0].accessConfigs[0].natIP)"
 ```
 
-Salva il valore come:
+Salva il valore come `VM_PUBLIC_IP`.
 
-```text
-VM_PUBLIC_IP
-```
+## 7. Configura le variabili ambiente per il deploy pubblico
 
-## 7. Adatta le variabili ambiente per il deploy pubblico
-
-La vostra repo usa gia' Docker Compose. Per il deploy pubblico serve solo aggiornare i valori runtime del backend.
-
-Nella VM, crea un file `.env.prod-demo` nella root del progetto:
+Nella VM:
 
 ```bash
 cat > .env.prod-demo <<EOF
@@ -172,23 +126,21 @@ EOF
 
 Poi sostituisci `VM_PUBLIC_IP` con il vero IP pubblico.
 
-## 8. Avvia lo stack con Docker Compose
-
-Per una demo veloce puoi esportare le variabili e lanciare lo stack:
+## 8. Avvia lo stack cloud
 
 ```bash
 set -a
 source .env.prod-demo
 set +a
-docker compose up -d --build
+docker compose -f docker-compose.cloud.yml up -d --build
 ```
 
 ## 9. Verifica i container
 
 ```bash
-docker compose ps
-docker compose logs backend --tail=100
-docker compose logs frontend --tail=100
+docker compose -f docker-compose.cloud.yml ps
+docker compose -f docker-compose.cloud.yml logs backend --tail=100
+docker compose -f docker-compose.cloud.yml logs frontend --tail=100
 ```
 
 Dovresti vedere:
@@ -202,18 +154,13 @@ Dovresti vedere:
 Apri:
 
 - `http://VM_PUBLIC_IP:5173` per il frontend
-- `http://VM_PUBLIC_IP:8081/actuator/health` per il backend
+- `http://VM_PUBLIC_IP:8081/api/auth/login` come endpoint backend raggiungibile
 
-Se tutto e' corretto:
-
-1. il frontend si apre
-2. il login funziona
-3. la lista bug risponde
-4. il backend risponde anche separatamente via rete
+Nota: l'endpoint `/actuator/health` puo' risultare protetto dalla security, quindi per la demo e' piu' affidabile verificare direttamente il login e il funzionamento applicativo.
 
 ## 11. Persistenza dei dati
 
-Nel vostro progetto la persistenza distribuita usa **PostgreSQL**, definito in `docker-compose.yml`.
+Nel progetto la persistenza distribuita usa **PostgreSQL**, definito nel compose cloud.
 
 Quindi la frase corretta da usare in discussione e':
 
@@ -222,7 +169,7 @@ Quindi la frase corretta da usare in discussione e':
 Per non perdere i dati:
 
 - **non eliminare il volume Docker** `pgdata`
-- fai ripartire lo stack con `docker compose up -d`
+- fai ripartire lo stack con `docker compose -f docker-compose.cloud.yml up -d`
 
 Verifica i volumi:
 
@@ -235,54 +182,34 @@ docker volume ls
 ### Riavvio stack
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.cloud.yml up -d
 ```
 
 ### Stop
 
 ```bash
-docker compose down
+docker compose -f docker-compose.cloud.yml down
 ```
-
-### Stop senza perdere i dati
-
-Va bene il comando sopra: i dati restano nel volume PostgreSQL.
 
 ### Stop distruttivo da evitare
 
 ```bash
-docker compose down -v
+docker compose -f docker-compose.cloud.yml down -v
 ```
 
 Questo rimuove anche il volume del database.
 
 ## 13. Come presentarlo al professore
 
-Durante la demo ti conviene mostrare:
+Durante la demo conviene mostrare:
 
 1. browser aperto su `http://VM_PUBLIC_IP:5173`
-2. endpoint backend su `http://VM_PUBLIC_IP:8081/actuator/health`
-3. `docker compose ps` sulla VM
+2. login funzionante via frontend
+3. `docker compose -f docker-compose.cloud.yml ps` sulla VM
 4. `docker volume ls` per mostrare che la persistenza e' separata
-5. che il frontend e il backend sono due componenti distinti e comunicano via rete
+5. che frontend e backend sono due componenti distinti e comunicano via rete
 
-## 14. Limiti di questa soluzione
-
-Questa e' la soluzione piu' economica e piu' semplice, ma non la piu' elegante in assoluto:
-
-- usa una singola VM invece di servizi managed separati
-- espone porte tecniche (`5173`, `8081`)
-- non configura HTTPS e dominio custom
-
-Per una demo universitaria, pero', e' spesso piu' che sufficiente e dimostra comunque:
-
-- deploy su public cloud
-- accessibilita' via Internet
-- backend autonomo
-- persistenza centralizzata
-- containerizzazione
-
-## 15. Evoluzione futura
+## 14. Evoluzione futura
 
 Se dopo la demo vuoi una soluzione piu' pulita:
 
