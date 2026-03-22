@@ -1250,6 +1250,9 @@ Il codice sorgente del progetto \`e ospitato su un repository \textbf{GitHub} ac
   \item \textbf{Release}: la release ``Specifica dei requisiti'' \`e stata pubblicata il 19 ottobre 2025
   \item \textbf{Branching strategy}: sviluppo su branch feature, merge su \texttt{main} tramite pull request
   \item \textbf{Commit}: messaggi descrittivi che seguono il formato convenzionale (\texttt{feat:}, \texttt{fix:}, \texttt{docs:}, \texttt{test:})
+  \item \textbf{Statistiche repository}: 76 commit complessivi e 3 contributor rilevati nella history Git
+  \item \textbf{Contributors}: Alessandro Minopoli (55 commit), Simoalvin (23 commit), PorfirioTramontana (2 commit)
+  \item \textbf{Frequenza dei commit}: attivit\`a distribuita tra ottobre 2025 e marzo 2026, con picco finale nel mese di marzo 2026 (45 commit)
 \end{itemize}
 
 % ==================== 11. TEST PLAN ====================
@@ -1534,15 +1537,16 @@ Tutti i 9 casi di test passano con successo, confermando il corretto funzionamen
 
 L'analisi della qualit\`a del codice del backend \`e stata condotta utilizzando:
 \begin{itemize}
-  \item \textbf{SonarLint 10.x} integrato in IntelliJ IDEA, con regole allineate al profilo \emph{Sonar way} per Java
-  \item \textbf{Compilatore Java 23} (Amazon Corretto) con \texttt{-Xlint:all}
-  \item \textbf{JUnit 5 + Mockito 5} per la verifica della copertura funzionale
+  \item \textbf{SonarQube 10 Community Edition} eseguito localmente tramite container Docker, con task registrato in \texttt{backend/target/sonar/report-task.txt}
+  \item \textbf{JaCoCo} per la generazione automatica del report di coverage in \texttt{backend/target/site/jacoco/}
+  \item \textbf{SonarLint 10.x} integrato in IntelliJ IDEA come supporto durante lo sviluppo
+  \item \textbf{JUnit 5 + Mockito 5} per la verifica della copertura funzionale dei casi di business principali
   \item Revisione manuale del codice (\emph{code review})
 \end{itemize}
 
-\subsection{Dashboard di qualit\`a (stile SonarQube)}
+\subsection{Dashboard di qualit\`a}
 
-La seguente tabella riassume le metriche principali, emulando la dashboard di un server SonarQube con il profilo \emph{Sonar way} per Java.
+La seguente tabella riassume le metriche principali emerse dal report SonarQube del backend, integrate con la copertura prodotta da JaCoCo.
 
 \begin{tabular}{|l|c|c|}
 \hline
@@ -1552,19 +1556,19 @@ La seguente tabella riassume le metriche principali, emulando la dashboard di un
 \hline
 Bugs & 0 & A \\
 \hline
-Vulnerabilities & 0 & A \\
+Vulnerabilities & 2 & B \\
 \hline
-Code Smells & 5 & A \\
+Code Smells & 24 & A \\
 \hline
-Security Hotspots & 1 (reviewed) & A \\
+Security Hotspots & 4 & B \\
 \hline
-Duplications & 1.6\% & A \\
+Duplications & 0.0\% & A \\
 \hline
-Technical Debt & $\sim$1h & A \\
+Technical Debt & contenuto & A \\
 \hline
-Lines of Code & 2\,120 & --- \\
+Lines of Code (NCLOC) & 1\,855 & --- \\
 \hline
-Test Coverage (funzionale) & 3 metodi / 9 test & --- \\
+Test Coverage (JaCoCo) & 22.0\% & --- \\
 \hline
 Test Success Rate & 100\% (9/9) & A \\
 \hline
@@ -1572,7 +1576,7 @@ Test Success Rate & 100\% (9/9) & A \\
 
 \vspace{0.3cm}
 
-\emph{Rating SonarQube: A = ottimo, B = buono, C = accettabile, D = scarso, E = critico. Il Quality Gate ``Passed'' indica che il progetto soddisfa le soglie minime di qualit\`a.}
+\emph{Rating SonarQube: A = ottimo, B = buono, C = accettabile, D = scarso, E = critico. Il Quality Gate ``Passed'' indica che il progetto soddisfa le soglie minime di qualit\`a. Il report analitico dedicato \`e allegato anche nel file \texttt{SonarQube\_Report.md}.}
 
 \subsection{Metriche di dimensione}
 
