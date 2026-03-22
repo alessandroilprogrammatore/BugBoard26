@@ -86,7 +86,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \begin{description}[style=nextline,leftmargin=3.5cm,labelwidth=3.3cm]
 
-\item[\textbf{Admin}] Utente con privilegi amministrativi completi. Pu\`o gestire utenti, accedere a tutti i bug del sistema, generare report e modificare configurazioni.
+\item[\textbf{Admin}] Utente con privilegi amministrativi completi. Pu\`o gestire utenti, accedere a tutti i bug del sistema, generare report ed esportare i dati.
 
 \item[\textbf{Allegato}] File immagine (JPEG, PNG, GIF, WebP, dimensione massima 5\,MB) caricato in associazione a un bug per documentarne visivamente il problema o la soluzione.
 
@@ -94,7 +94,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Assegnatario}] Utente registrato responsabile della risoluzione di un determinato bug.
 
-\item[\textbf{Bug}] Segnalazione di un comportamento anomalo, errato o inatteso di un sistema software. Nel contesto di BugBoard26 il termine indica genericamente qualsiasi segnalazione inserita nel sistema, indipendentemente dal tipo (Bug, Feature, Enhancement).
+\item[\textbf{Bug}] Segnalazione di un comportamento anomalo, errato o inatteso di un sistema software. Nel contesto di BugBoard26 il termine indica genericamente qualsiasi segnalazione inserita nel sistema, indipendentemente dal tipo (Question, Bug, Documentation, Feature).
 
 \item[\textbf{BugBoard26}] Il sistema software oggetto di questo documento. Applicazione web per il tracciamento e la gestione collaborativa delle segnalazioni di bug.
 
@@ -104,7 +104,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Docker}] Piattaforma di containerizzazione utilizzata per impacchettare e distribuire i componenti dell'applicazione (frontend e backend) in modo indipendente dall'ambiente host.
 
-\item[\textbf{Enhancement}] Tipo di segnalazione che indica una richiesta di miglioramento di una funzionalit\`a gi\`a esistente. Distinto da un Bug (errore) e da una Feature (nuova funzionalit\`a).
+\item[\textbf{Documentation}] Tipo di segnalazione che indica un problema o una richiesta di correzione relativa alla documentazione del progetto o del prodotto.
 
 \item[\textbf{Feature}] Tipo di segnalazione che indica la richiesta di implementazione di una nuova funzionalit\`a nel sistema.
 
@@ -114,7 +114,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Label}] Etichetta testuale opzionale associabile a un bug per categorizzarlo ulteriormente (es.\ ``frontend'', ``performance'', ``regression'').
 
-\item[\textbf{Priorit\`a}] Livello di urgenza di un bug. I valori previsti sono: \emph{Low}, \emph{Medium}, \emph{High}, \emph{Critical}.
+\item[\textbf{Priorit\`a}] Livello di urgenza opzionale di un bug. I valori previsti sono: \emph{Low}, \emph{Medium}, \emph{High}, \emph{Urgent}.
 
 \item[\textbf{ReadOnly (Utente)}] Ruolo con accesso in sola lettura. L'utente ReadOnly pu\`o visualizzare bug, commenti e allegati, ma non pu\`o creare, modificare o commentare.
 
@@ -130,9 +130,9 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
     \item \emph{Archived}: bug archiviato
   \end{itemize}
 
-\item[\textbf{Tipo (Type)}] Categoria della segnalazione. I valori previsti sono: \emph{Bug}, \emph{Feature}, \emph{Enhancement}.
+\item[\textbf{Tipo (Type)}] Categoria della segnalazione. I valori previsti sono: \emph{Question}, \emph{Bug}, \emph{Documentation}, \emph{Feature}.
 
-\item[\textbf{USER (Utente registrato)}] Ruolo standard. L'utente pu\`o creare bug, commentare, caricare allegati, assegnare bug (se Admin) e gestire il proprio profilo.
+\item[\textbf{USER (Utente registrato)}] Ruolo standard. L'utente pu\`o creare bug, commentare, caricare allegati, visualizzare i bug assegnati a lui e gestire il proprio profilo.
 
 \end{description}
 
@@ -142,7 +142,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 
 \begin{description}[style=nextline]
-\item[\textbf{Utente non registrato (Guest)}] Chiunque acceda all'applicazione senza credenziali. Pu\`o accedere alla pagina di login e di registrazione. Non ha accesso ad alcuna funzionalit\`a interna.
+\item[\textbf{Utente non registrato (Guest)}] Chiunque acceda all'applicazione senza credenziali. Pu\`o accedere alla pagina di login e alla pagina informativa del progetto. Non ha accesso ad alcuna funzionalit\`a interna.
 
 \item[\textbf{Utente registrato (USER)}] Utente autenticato con ruolo standard. Pu\`o creare e modificare bug, aggiungere commenti e allegati, visualizzare lo storico, gestire il proprio profilo.
 
@@ -166,7 +166,7 @@ Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 \hline
 Utente non registrato &
 \begin{itemize}[nosep,leftmargin=*]
-  \item Registrazione al sistema tramite email
+  \item Visualizzazione informazioni pubbliche dell'applicazione
   \item Visualizzazione informazioni pubbliche dell'applicazione
   \item Accesso alla pagina di login
 \end{itemize} \\
@@ -177,11 +177,11 @@ Utente registrato (USER) &
   \item Visualizzazione lista bug con filtri (tipo, stato, priorit\`a, label)
   \item Visualizzazione dettagli singolo bug
   \item Creazione nuovo bug
-  \item Modifica bug propri o assegnati
+  \item Modifica bug assegnati all'utente
   \item Aggiunta commenti ai bug
   \item Upload allegati immagini ai bug
-  \item Assegnazione bug ad altri utenti
-  \item Archiviazione bug risolti
+  \item Visualizzazione bug assegnati all'utente
+  \item Modifica stato dei bug assegnati
   \item Marcatura bug come duplicati
   \item Visualizzazione storico modifiche bug
   \item Gestione profilo personale
@@ -201,23 +201,23 @@ Utente ReadOnly &
 Admin &
 \begin{itemize}[nosep,leftmargin=*]
   \item Tutti i casi d'uso dell'Utente registrato
-  \item Gestione completa utenti (visualizzazione, modifica ruoli, disabilitazione)
+  \item Gestione utenti (visualizzazione e creazione account con ruolo)
   \item Visualizzazione metriche di sistema
   \item Generazione report mensili
-  \item Esportazione dati in formato Excel
+  \item Esportazione dati in formato CSV, Excel e PDF
   \item Accesso completo a tutti i bug del sistema
-  \item Gestione label e categorie
-  \item Configurazione parametri di sistema
+  \item Gestione assegnazioni, archiviazione e scadenze dei bug
+  \item Accesso completo a tutti i bug del sistema
 \end{itemize} \\
 \hline
 Sistema &
 \begin{itemize}[nosep,leftmargin=*]
-  \item Invio notifiche automatiche su cambiamenti bug
+  \item Invio notifiche automatiche in-app su cambiamenti bug
   \item Archiviazione automatica bug dopo periodo di inattivit\`a
   \item Generazione automatica storico modifiche
   \item Validazione automatica allegati (tipo e dimensione)
-  \item Pulizia automatica dati obsoleti
-  \item Backup automatico dati
+  \item Generazione automatica storico modifiche
+  \item Validazione automatica allegati (tipo e dimensione)
 \end{itemize} \\
 \hline
 \caption{Tabella completa dei casi d'uso per BugBoard26}
@@ -227,7 +227,7 @@ Sistema &
 
 \subsubsection{Utente non registrato}
 \begin{itemize}
-  \item \textbf{Registrazione al sistema tramite email}: L'utente pu\`o creare un nuovo account fornendo email, password e informazioni personali. Il sistema invia una email di conferma per verificare l'indirizzo.
+  \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking e indicazioni su come richiedere un account.
   \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking.
   \item \textbf{Accesso alla pagina di login}: Possibilit\`a di accedere al sistema utilizzando credenziali esistenti.
 \end{itemize}
@@ -237,12 +237,12 @@ Sistema &
   \item \textbf{Login/logout al sistema}: Autenticazione tramite credenziali email/password con generazione di token JWT per sessioni sicure.
   \item \textbf{Visualizzazione lista bug con filtri}: Consultazione dell'elenco completo dei bug con possibilit\`a di filtrare per tipo, stato, priorit\`a, label e ricerca testuale.
   \item \textbf{Visualizzazione dettagli singolo bug}: Accesso completo alle informazioni di un bug specifico, inclusi descrizione, commenti, allegati e storico modifiche.
-  \item \textbf{Creazione nuovo bug}: Inserimento di una nuova segnalazione con descrizione dettagliata, assegnazione priorit\`a, tipo e label appropriate.
-  \item \textbf{Modifica bug propri o assegnati}: Possibilit\`a di aggiornare informazioni, stato e dettagli dei bug creati dall'utente o assegnati al suo account.
+  \item \textbf{Creazione nuovo bug}: Inserimento di una nuova segnalazione con descrizione dettagliata, priorit\`a opzionale, tipo e label appropriate.
+  \item \textbf{Modifica bug assegnati all'utente}: Possibilit\`a di aggiornare informazioni e stato dei bug assegnati al proprio account; gli Admin possono modificare qualsiasi bug.
   \item \textbf{Aggiunta commenti ai bug}: Inserimento di commenti testuali per fornire aggiornamenti, soluzioni o richiedere chiarimenti.
   \item \textbf{Upload allegati immagini ai bug}: Caricamento di immagini (JPEG, PNG, GIF, WebP) fino a 5MB per documentare visivamente il problema.
-  \item \textbf{Assegnazione bug ad altri utenti}: Trasferimento della responsabilit\`a di un bug a un altro utente registrato nel sistema.
-  \item \textbf{Archiviazione bug risolti}: Spostamento dei bug risolti in stato archiviato per mantenere pulita la lista attiva.
+  \item \textbf{Visualizzazione bug assegnati all'utente}: Consultazione rapida delle issue assegnate al proprio account tramite sezione dedicata.
+  \item \textbf{Modifica stato dei bug assegnati}: L'assegnatario pu\`o aggiornare lo stato del bug lungo il workflow TODO / IN\_PROGRESS / RESOLVED.
   \item \textbf{Marcatura bug come duplicati}: Collegamento di un bug a un altro esistente quando viene identificato come duplicato.
   \item \textbf{Visualizzazione storico modifiche bug}: Consultazione cronologica di tutte le modifiche apportate a un bug nel tempo.
   \item \textbf{Gestione profilo personale}: Modifica delle informazioni personali, preferenze e impostazioni dell'account.
@@ -262,23 +262,21 @@ Sistema &
 \subsubsection{Admin}
 \begin{itemize}
   \item \textbf{Tutti i casi d'uso dell'Utente registrato}: L'amministratore eredita tutte le funzionalit\`a dell'utente standard.
-  \item \textbf{Gestione completa utenti}: Creazione, modifica, disabilitazione e gestione ruoli degli utenti del sistema.
+  \item \textbf{Gestione utenti}: Creazione di nuovi account e assegnazione del ruolo appropriato agli utenti del sistema.
   \item \textbf{Visualizzazione metriche di sistema}: Accesso a dashboard con statistiche, grafici e KPI del sistema.
   \item \textbf{Generazione report mensili}: Creazione di report dettagliati sull'attivit\`a del sistema per periodo specificato.
-  \item \textbf{Esportazione dati in formato Excel}: Estrazione completa dei dati in formato spreadsheet per analisi esterne.
+  \item \textbf{Esportazione dati}: Estrazione completa dei dati in formato CSV, Excel o PDF per analisi esterne e condivisione.
   \item \textbf{Accesso completo a tutti i bug}: Possibilit\`a di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
-  \item \textbf{Gestione label e categorie}: Creazione, modifica ed eliminazione delle etichette e categorie di classificazione.
-  \item \textbf{Configurazione parametri di sistema}: Modifica delle impostazioni globali, limiti e comportamenti dell'applicazione.
+  \item \textbf{Gestione assegnazioni, archiviazione e scadenze}: Possibilit\`a di assegnare bug, archiviarli e impostare deadline opzionali per la risoluzione.
+  \item \textbf{Accesso completo a tutti i bug}: Possibilit\`a di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
 \end{itemize}
 
 \subsubsection{Sistema}
 \begin{itemize}
-  \item \textbf{Invio notifiche automatiche}: Meccanismo automatico di notifica via email o push per aggiornamenti sui bug seguiti.
+  \item \textbf{Invio notifiche automatiche}: Meccanismo automatico di notifica in-app per aggiornamenti sui bug che riguardano l'utente.
   \item \textbf{Archiviazione automatica}: Processo schedulato per archiviare automaticamente bug inattivi dopo un periodo configurabile.
   \item \textbf{Generazione automatica storico}: Registrazione automatica di ogni modifica apportata ai bug nel database.
   \item \textbf{Validazione automatica allegati}: Controllo automatico di tipo, dimensione e sicurezza dei file caricati.
-  \item \textbf{Pulizia automatica dati obsoleti}: Eliminazione periodica di dati temporanei, cache e informazioni non pi\`u necessarie.
-  \item \textbf{Backup automatico dati}: Salvataggio automatico periodico del database e dei file allegati per disaster recovery.
 \end{itemize}
 
 \subsection{Diagrammi UML dei Casi d'Uso}
@@ -351,11 +349,11 @@ Step 1 & Accede alla sezione ``Nuovo Bug'' & Mostra il form con i campi obbligat
 \hline
 Step 2 & Inserisce il titolo del bug & Valida che il titolo non sia vuoto \\
 \hline
-Step 3 & Seleziona il tipo (Bug, Feature, Enhancement) & Carica le categorie disponibili \\
+Step 3 & Seleziona il tipo (Question, Bug, Documentation, Feature) & Carica le categorie disponibili \\
 \hline
 Step 4 & Inserisce la descrizione dettagliata & Fornisce un'area di testo \\
 \hline
-Step 5 & Seleziona la priorit\`a (Low, Medium, High, Critical) & Mostra le opzioni con colori identificativi \\
+Step 5 & Seleziona la priorit\`a opzionale (Low, Medium, High, Urgent) & Mostra le opzioni con colori identificativi \\
 \hline
 Step 6 & Aggiunge label/tag opzionali & Permette selezione multipla da lista \\
 \hline
@@ -571,7 +569,7 @@ Step 6 & & Calcola metriche: bug creati, risolti, tempo medio \\
 \hline
 Step 7 & & Genera grafici e statistiche aggregate \\
 \hline
-Step 8 & & Crea il documento in formato Excel \\
+Step 8 & & Prepara il documento nel formato di esportazione selezionato \\
 \hline
 Step 9 & & Fornisce il link per il download \\
 \hline
@@ -620,7 +618,7 @@ I requisiti non funzionali definiscono le caratteristiche qualitative che il sis
 
 \subsection{Sicurezza}
 \begin{itemize}
-  \item \textbf{RNF-S1 --- Autenticazione}: Tutti gli endpoint (eccetto login e registrazione) richiedono un token JWT valido. Il token ha una durata configurabile (default: 8 ore).
+  \item \textbf{RNF-S1 --- Autenticazione}: Tutti gli endpoint (eccetto login) richiedono un token JWT valido. Il token ha una durata configurabile (default: 8 ore).
   \item \textbf{RNF-S2 --- Autorizzazione per ruolo}: Le operazioni privilegiate (gestione utenti, report, assegnazione bug) sono accessibili esclusivamente agli utenti con ruolo ADMIN.
   \item \textbf{RNF-S3 --- Validazione input}: Tutti i dati in input (lato client e lato server) sono validati prima dell'elaborazione. I file caricati sono verificati per tipo MIME e dimensione.
   \item \textbf{RNF-S4 --- Trasmissione sicura}: In produzione, tutte le comunicazioni tra client e server avvengono tramite HTTPS. I cookie di sessione sono configurati con i flag \texttt{Secure} e \texttt{SameSite}.
@@ -666,9 +664,9 @@ La prototipazione visuale di BugBoard26 \`e stata realizzata direttamente come a
 
 \subsubsection{Palette Colori e Badge}
 \begin{itemize}
-  \item \textbf{Priorit\`a}: \emph{Critical} (rosso), \emph{High} (arancione), \emph{Medium} (giallo), \emph{Low} (verde)
+  \item \textbf{Priorit\`a}: \emph{Urgent} (rosso), \emph{High} (arancione), \emph{Medium} (giallo), \emph{Low} (verde)
   \item \textbf{Stato}: \emph{Todo} (grigio chiaro), \emph{In Progress} (blu), \emph{Resolved} (verde), \emph{Archived} (grigio scuro)
-  \item \textbf{Tipo}: \emph{Bug} (rosso), \emph{Feature} (viola), \emph{Enhancement} (azzurro)
+  \item \textbf{Tipo}: \emph{Bug} (rosso), \emph{Feature} (viola), \emph{Question} (azzurro), \emph{Documentation} (grigio)
   \item \textbf{Azioni primarie}: blu (\#007BFF); superfici neutre: grigi Tailwind
 \end{itemize}
 
@@ -689,22 +687,22 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 
 \begin{itemize}
   \item \textbf{Scopo}: autenticazione dell'utente al sistema
-  \item \textbf{Elementi}: campo email, campo password, pulsante ``Accedi'', link alla pagina di registrazione
+  \item \textbf{Elementi}: campo email, campo password, pulsante ``Accedi'', link alla pagina informativa del progetto
   \item \textbf{Comportamento}: in caso di credenziali errate viene mostrato un messaggio di errore inline; in caso di successo l'utente viene reindirizzato alla Dashboard
 \end{itemize}
 
-\subsubsection{Mock-up 2 --- Pagina di Registrazione}
+\subsubsection{Mock-up 2 --- Pagina Informativa Richiesta Account}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_02_register.png}
-\caption{Pagina di Registrazione: form con dati personali e creazione account}
+\caption{Pagina Informativa: indicazioni per l'accesso al sistema e richiesta di un account}
 \end{figure}
 
 \begin{itemize}
-  \item \textbf{Scopo}: creazione di un nuovo account utente
-  \item \textbf{Elementi}: campi nome, email, password, conferma password; pulsante ``Registrati''
-  \item \textbf{Validazione}: i campi vengono validati in tempo reale con messaggi di errore inline
+  \item \textbf{Scopo}: presentare il progetto e spiegare come ottenere un account creato da un amministratore
+  \item \textbf{Elementi}: testo descrittivo, contatti o istruzioni per richiedere l'accesso, link al login
+  \item \textbf{Comportamento}: nessuna registrazione self-service; l'utente viene indirizzato verso il canale corretto per la creazione dell'account
 \end{itemize}
 
 \subsubsection{Mock-up 3 --- Home / Dashboard}
@@ -754,13 +752,13 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_06_form_creazione_bug.png}
-\caption{Form Creazione Bug (UC01): campi titolo, tipo, priorit\`a, descrizione, label, allegati}
+\caption{Form Creazione Bug (UC01): campi titolo, tipo, priorit\`a opzionale, descrizione, label, allegati}
 \end{figure}
 
 \begin{itemize}
   \item \textbf{Caso d'uso}: UC01 --- Creazione nuovo bug
-  \item \textbf{Elementi}: campo titolo, selettori tipo e priorit\`a, area di testo descrizione, selezione label multipla, upload allegati immagine, selezione assegnatario opzionale, pulsante ``Salva''
-  \item \textbf{Validazione}: i campi obbligatori (titolo, tipo, priorit\`a) sono evidenziati se lasciati vuoti; il formato e la dimensione degli allegati sono verificati prima dell'invio
+  \item \textbf{Elementi}: campo titolo, selettore tipo, selettore priorit\`a opzionale, area di testo descrizione, selezione label multipla, upload allegati immagine, pulsante ``Salva''; il campo deadline compare solo per Admin
+  \item \textbf{Validazione}: i campi obbligatori (titolo e descrizione) sono evidenziati se lasciati vuoti; priorit\`a e allegati sono opzionali, mentre formato e dimensione degli allegati sono verificati prima dell'invio
 \end{itemize}
 
 \subsubsection{Mock-up 7 --- Assegnazione Bug \textbf{[UC02]}}
@@ -808,12 +806,12 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_10_report_mensile.png}
-\caption{Report Mensile Admin (UC04): statistiche, grafici e pulsante di export Excel}
+\caption{Report Mensile Admin (UC04): statistiche aggregate e dettaglio per utente con opzioni di export}
 \end{figure}
 
 \begin{itemize}
   \item \textbf{Caso d'uso}: UC04 --- Generazione report mensile (solo Admin)
-  \item \textbf{Elementi}: selettore mese/anno, grafici (distribuzione stato, priorit\`a, trend temporale), tabella riassuntiva metriche, pulsante ``Esporta Excel''
+  \item \textbf{Elementi}: selettore mese/anno, statistiche aggregate, tabella riassuntiva metriche, dettaglio per utente e opzioni di export
   \item \textbf{Accesso}: solo Admin; gli altri utenti vengono reindirizzati alla Dashboard
 \end{itemize}
 
@@ -822,12 +820,12 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_11_admin_utenti.png}
-\caption{Gestione Utenti Admin: lista utenti con ruoli, stato e azioni di modifica}
+\caption{Gestione Utenti Admin: lista utenti con ruoli e form di creazione account}
 \end{figure}
 
 \begin{itemize}
-  \item \textbf{Scopo}: permettere all'Admin di gestire gli account del sistema (visualizzazione ruoli, disabilitazione utenti)
-  \item \textbf{Elementi}: tabella utenti con email, nome, ruolo e stato; azioni per modifica ruolo e disabilitazione account
+  \item \textbf{Scopo}: permettere all'Admin di gestire gli account del sistema tramite visualizzazione utenti e creazione di nuovi account con ruolo
+  \item \textbf{Elementi}: tabella utenti con email, nome e ruolo; form per creazione di nuovi account Admin, User o ReadOnly
 \end{itemize}
 
 \subsubsection{Mock-up 12 --- Archivio Bug}
@@ -848,12 +846,12 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_13_export.png}
-\caption{Export Dati: download dell'elenco bug in formato CSV o Excel}
+\caption{Export Dati: download dell'elenco bug in formato CSV, Excel o PDF}
 \end{figure}
 
 \begin{itemize}
   \item \textbf{Scopo}: consentire l'esportazione dei dati per analisi esterne
-  \item \textbf{Elementi}: pulsanti ``Scarica CSV'' e ``Scarica Excel''; i file vengono generati dal backend e scaricati direttamente
+  \item \textbf{Elementi}: pulsanti ``Scarica CSV'', ``Scarica Excel'' e ``Scarica PDF''; i file vengono generati dal backend e scaricati direttamente
 \end{itemize}
 
 \subsection{Osservazioni emerse dalla prototipazione}
@@ -967,6 +965,8 @@ JJWT & 0.12.5 & Libreria per la creazione e validazione di token JWT; API fluent
 SpringDoc & 2.6.0 & Generazione automatica della documentazione OpenAPI 3.0 dalle annotazioni Spring. \\
 \hline
 Apache POI & 5.3.0 & Generazione di file Excel (.xlsx) per l'export dei dati bug. \\
+\hline
+PDFBox & 3.0.2 & Generazione di documenti PDF per l'export dell'elenco bug. \\
 \hline
 \end{tabular}
 
@@ -1176,7 +1176,7 @@ Il diagramma delle classi di design \`e organizzato secondo il pattern architett
 
 \item[\texttt{repository}] Interfacce Spring Data JPA che estendono \texttt{JpaRepository<T, UUID>}: \texttt{UserRepository}, \texttt{BugRepository} (+ \texttt{JpaSpecificationExecutor}), \texttt{CommentRepository}, \texttt{LabelRepository}, \texttt{HistoryRepository}.
 
-\item[\texttt{service}] Classi di business logic: \texttt{BugService} (gestione completa del ciclo di vita dei bug), \texttt{AuthService} (registrazione, login, generazione token).
+\item[\texttt{service}] Classi di business logic: \texttt{BugService} (gestione completa del ciclo di vita dei bug), \texttt{AuthService} (login, logout, generazione token).
 
 \item[\texttt{dto}] Record Java per i dati di trasferimento: \texttt{BugCreateRequest}, \texttt{BugPatchRequest}, \texttt{AssignRequest}, \texttt{LabelSetRequest}, \texttt{LoginRequest}.
 
