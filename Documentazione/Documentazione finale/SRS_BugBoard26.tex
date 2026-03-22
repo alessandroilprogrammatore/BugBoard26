@@ -5,8 +5,9 @@
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 \usepackage{graphicx}
+\usepackage[table]{xcolor}
 \usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\usepackage{caption}
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{array}
@@ -16,12 +17,54 @@
 \usepackage{titlesec}
 \usepackage{float}
 \usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+
+\definecolor{bbPrimary}{HTML}{0F4C5C}
+\definecolor{bbSecondary}{HTML}{2E7D6E}
+\definecolor{bbAccent}{HTML}{D17A22}
+\definecolor{bbLight}{HTML}{EEF6F7}
+\definecolor{bbMuted}{HTML}{5F6B6D}
+
+\hypersetup{colorlinks=true,linkcolor=bbPrimary,urlcolor=bbAccent,citecolor=bbSecondary}
+\captionsetup{
+  font=small,
+  labelfont={bf,color=bbPrimary},
+  textfont={color=bbMuted}
+}
+\arrayrulecolor{bbPrimary}
+\renewcommand{\arraystretch}{1.15}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{bbPrimary}}
+  {\thesection}{0.8em}{}
+  [\vspace{0.2em}\color{bbAccent}\titlerule]
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{bbSecondary}}
+  {\thesubsection}{0.7em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{bbPrimary}}
+  {\thesubsubsection}{0.6em}{}
+
+\newtcolorbox{highlightbox}{
+  colback=bbLight,
+  colframe=bbSecondary,
+  boxrule=0.8pt,
+  arc=2mm,
+  left=2mm,
+  right=2mm,
+  top=1.2mm,
+  bottom=1.2mm
+}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\thepage}
-\fancyhead[R]{BugBoard26 --- Specifica dei Requisiti Software}
-\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\textcolor{bbPrimary}{\textbf{BugBoard26}}}
+\fancyhead[R]{\textcolor{bbMuted}{\nouppercase{\leftmark}}}
+\fancyfoot[C]{\textcolor{bbPrimary}{\thepage}}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0pt}
 \setlength{\headheight}{14pt}
 
 \graphicspath{{immagini/}}
@@ -32,19 +75,29 @@
 % ==================== TITLE PAGE ====================
 \begin{titlepage}
 \centering
-\vspace*{2cm}
-{\LARGE\bfseries Universit\`a degli Studi di Napoli Federico II\par}
-\vspace{0.3cm}
-{\large Corso di Ingegneria del Software --- Canale 2\par}
-\vspace{3cm}
-\rule{\textwidth}{0.8pt}
-\vspace{0.5cm}
-{\Huge\bfseries BugBoard26\par}
-\vspace{0.3cm}
-{\Large Documento di Specifica dei Requisiti Software (SRS)\par}
-\vspace{0.5cm}
-\rule{\textwidth}{0.8pt}
-\vspace{2cm}
+\vspace*{1.2cm}
+{\large\color{bbMuted}\bfseries Universit\`a degli Studi di Napoli Federico II\par}
+\vspace{0.25cm}
+{\normalsize\color{bbMuted} Corso di Ingegneria del Software --- Canale 2\par}
+\vspace{2.2cm}
+{\color{bbAccent}\rule{0.88\textwidth}{1.3pt}\par}
+\vspace{0.8cm}
+{\Huge\bfseries\color{bbPrimary} BugBoard26\par}
+\vspace{0.35cm}
+{\Large\bfseries\color{bbSecondary} Documento di Specifica dei Requisiti Software\par}
+\vspace{0.25cm}
+{\normalsize\color{bbMuted} Sistema distribuito per issue tracking, collaborazione e reporting\par}
+\vspace{0.8cm}
+{\color{bbAccent}\rule{0.88\textwidth}{1.3pt}\par}
+\vspace{1.4cm}
+
+{\small
+\colorbox{bbLight}{\parbox{0.82\textwidth}{\centering
+\textcolor{bbPrimary}{\textbf{Stack di riferimento}} \quad
+\textcolor{bbMuted}{React 18 \textbullet{} Spring Boot 3.3 \textbullet{} PostgreSQL \textbullet{} Docker \textbullet{} JWT}
+}}
+\par}
+\vspace{1.8cm}
 
 \begin{tabular}{ll}
 \textbf{Versione:} & 2.0 \\
@@ -78,6 +131,10 @@ BugBoard26 \`e un'applicazione web per il \textbf{tracciamento e la gestione col
   \item aggiungere commenti e allegati fotografici;
   \item visualizzare statistiche e generare report mensili sull'attivit\`a del team.
 \end{itemize}
+
+\begin{highlightbox}
+\textbf{Sintesi del documento.} Questo PDF raccoglie in modo integrato requisiti, casi d'uso, prototipi, design architetturale, strategie di testing e indicatori di qualit\`a del progetto \textbf{BugBoard26}, mantenendo coerenza con il codice e gli artefatti presenti nel repository.
+\end{highlightbox}
 
 \subsection{Riferimenti}
 \begin{itemize}
@@ -648,9 +705,9 @@ I requisiti non funzionali definiscono le caratteristiche qualitative che il sis
 \subsection{Vincoli di Sistema}
 \begin{itemize}
   \item \textbf{RNF-VS1 --- Tecnologie frontend}: React 18, TypeScript, Vite, Tailwind CSS, Radix UI, React Query, React Router.
-  \item \textbf{RNF-VS2 --- Tecnologie backend}: Java 23, Spring Boot 3.3, Spring Security, Spring Data JPA, database H2 (sviluppo).
+  \item \textbf{RNF-VS2 --- Tecnologie backend}: Java 17, Spring Boot 3.3, Spring Security, Spring Data JPA, database H2 (sviluppo).
   \item \textbf{RNF-VS3 --- Browser supportati}: Le ultime due versioni stabili di Chrome, Firefox, Edge e Safari.
-  \item \textbf{RNF-VS4 --- Requisiti server}: JDK 23+, Maven 3.8+, Node.js 18+ per la build del frontend.
+  \item \textbf{RNF-VS4 --- Requisiti server}: JDK 17+, Maven 3.8+, Node.js 18+ per la build del frontend.
 \end{itemize}
 
 % ==================== 8. MOCK-UP ====================
@@ -1174,7 +1231,7 @@ Il diagramma E-R semplificato aggiornato, coerente con l'implementazione corrent
 
 \subsection{Diagramma delle classi di design}
 
-Il diagramma delle classi di design \`e organizzato secondo il pattern architetturale \textbf{layered architecture} con i seguenti package:
+I diagrammi UML di analisi e design sono stati modellati tramite un \textbf{CASE tool} dedicato, nello specifico \textbf{StarUML}, e successivamente esportati e rifiniti per l'inclusione nella documentazione finale. Il diagramma delle classi di design \`e organizzato secondo il pattern architetturale \textbf{layered architecture} con i seguenti package:
 
 \begin{description}[style=nextline]
 \item[\texttt{model}] Entit\`a JPA che mappano le tabelle del database: \texttt{User}, \texttt{Bug}, \texttt{Comment}, \texttt{History}, \texttt{Label} e le enumerazioni \texttt{Role}, \texttt{BugType}, \texttt{BugStatus}, \texttt{Priority}, \texttt{HistoryAction}.
