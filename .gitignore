@@ -33,10 +33,10 @@ dist-ssr/
 # ---------- Maven / Backend ----------
 backend/target/
 backend/data/
+backend/uploads/
 backend/*.iml
 
-# ---------- LaTeX (sorgenti, il PDF compilato resta) ----------
-*.tex
+# ---------- LaTeX (i sorgenti restano, gli artefatti no) ----------
 *.aux
 *.out
 *.toc
@@ -45,6 +45,7 @@ backend/*.iml
 *.fdb_latexmk
 *.mmd
 !Documentazione/Secondo homework/diagrammi/*.mmd
+*.mmd.legacy
 
 # ---------- OS ----------
 Thumbs.db
@@ -55,8 +56,6 @@ ehthumbs.db
 bun.lockb
 
 # ---------- Temp / debug / utility scripts ----------
-*.mjs
-*.py
 p.txt
 pdf_output.txt
 mvn_output.txt
@@ -65,6 +64,10 @@ _temp_*.html
 debug_*.png
 tmp_*.png
 verify_*.png
+tmp_req*.txt
+*.bak_codex_*
+*.tmp
+*.temp
 
 # ---------- Video / recording / tutorial assets ----------
 generated_*
@@ -72,6 +75,13 @@ gemini_*
 tutorial_*
 tutorial_screenshots/
 tutorial_scripts/
+**/tutorial_scripts/*.log
+**/tutorial_scripts/*.err.log
+**/tutorial_scripts/*.txt
+**/tutorial_scripts/debug_*.png
+**/tutorial_scripts/tmp_*.png
+**/tutorial_scripts/verify_*.png
+**/tutorial_scripts/*debug*.mjs
 frame_*
 **/immagini/frame_*
 **/immagini/screenshot_*
@@ -87,5 +97,8 @@ frame_*
 
 # ---------- Misc ----------
 *.zip
-*.pptx
 .claude/
+*_record.log
+*_record.err.log
+*_check.log
+*_check.err.log
