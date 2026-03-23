@@ -197,25 +197,65 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Commento}] Testo inserito da un utente in associazione a un bug per fornire aggiornamenti, chiarimenti o informazioni aggiuntive.
 
+\item[\textbf{Cookie HttpOnly}] Cookie accessibile dal browser ma non leggibile direttamente da script JavaScript lato client. In BugBoard26 viene usato per trasportare il token JWT in modo pi\`u sicuro.
+
+\item[\textbf{CORS (Cross-Origin Resource Sharing)}] Meccanismo di sicurezza del browser che regola quali origini possono inviare richieste HTTP a un server diverso dal proprio dominio/porta.
+
+\item[\textbf{CSRF (Cross-Site Request Forgery)}] Attacco in cui un sito malevolo induce il browser dell'utente a inviare richieste non volute a un altro servizio autenticato.
+
+\item[\textbf{Dashboard}] Schermata iniziale dell'applicazione dopo il login, che mostra metriche riassuntive e scorciatoie verso le funzionalit\`a principali.
+
+\item[\textbf{Database relazionale}] Sistema di persistenza che organizza i dati in tabelle collegate tra loro tramite chiavi primarie e chiavi esterne.
+
+\item[\textbf{Deployment}] Fase di rilascio e pubblicazione del software in un ambiente eseguibile, ad esempio su cloud o tramite container.
+
+\item[\textbf{DTO (Data Transfer Object)}] Struttura dati usata per trasferire informazioni tra frontend e backend o tra livelli applicativi, evitando di esporre direttamente le entit\`a interne.
+
 \item[\textbf{Docker}] Piattaforma di containerizzazione utilizzata per impacchettare e distribuire i componenti dell'applicazione (frontend e backend) in modo indipendente dall'ambiente host.
 
 \item[\textbf{Documentation}] Tipo di segnalazione che indica un problema o una richiesta di correzione relativa alla documentazione del progetto o del prodotto.
 
+\item[\textbf{Export}] Funzionalit\`a che consente di scaricare i dati del sistema in formati esterni come CSV, Excel o PDF.
+
 \item[\textbf{Feature}] Tipo di segnalazione che indica la richiesta di implementazione di una nuova funzionalit\`a nel sistema.
+
+\item[\textbf{Figma}] Strumento di progettazione UI/UX usato dal team per realizzare wireframe e mock-up delle schermate prima dell'implementazione React.
+
+\item[\textbf{Frontend}] Parte dell'applicazione con cui interagisce direttamente l'utente, sviluppata in questo progetto con React, TypeScript e Vite.
+
+\item[\textbf{H2}] Database relazionale leggero ed embeddable usato nell'ambiente di sviluppo locale per avviare rapidamente il backend senza installazioni esterne.
 
 \item[\textbf{History (Storico)}] Registro cronologico di tutte le modifiche apportate a un bug nel tempo: cambi di stato, assegnazioni, commenti, aggiunta di allegati.
 
+\item[\textbf{Hibernate}] Implementazione ORM integrata in Spring Data JPA che traduce operazioni su oggetti Java in operazioni sul database relazionale.
+
 \item[\textbf{JWT (JSON Web Token)}] Standard aperto (RFC 7519) utilizzato per autenticare in modo sicuro le richieste HTTP tra frontend e backend. Il token viene generato al login e incluso in ogni richiesta successiva.
 
+\item[\textbf{KPI (Key Performance Indicator)}] Indicatore sintetico usato per monitorare l'andamento del sistema, ad esempio numero di bug aperti o tempo medio di risoluzione.
+
 \item[\textbf{Label}] Etichetta testuale opzionale associabile a un bug per categorizzarlo ulteriormente (es.\ ``frontend'', ``performance'', ``regression'').
+
+\item[\textbf{Mock object}] Oggetto simulato usato nei test per sostituire dipendenze reali come repository o servizi esterni, permettendo di verificare la sola logica del componente sotto test.
+
+\item[\textbf{OpenAPI / Swagger}] Standard e relativa interfaccia usati per documentare e consultare gli endpoint REST esposti dal backend.
+
+\item[\textbf{ORM (Object-Relational Mapping)}] Tecnica che collega classi e oggetti del linguaggio di programmazione alle tabelle del database.
 
 \item[\textbf{Priorit\`a}] Livello di urgenza opzionale di un bug. I valori previsti sono: \emph{Low}, \emph{Medium}, \emph{High}, \emph{Urgent}.
 
 \item[\textbf{ReadOnly (Utente)}] Ruolo con accesso in sola lettura. L'utente ReadOnly pu\`o visualizzare bug, commenti e allegati, ma non pu\`o creare, modificare o commentare.
 
+\item[\textbf{Repository}] Componente del backend incaricato dell'accesso ai dati persistiti. In Spring Data JPA viene tipicamente modellato come interfaccia dedicata a una certa entit\`a.
+
 \item[\textbf{Report Mensile}] Vista amministrativa relativa a un mese selezionato che riassume numero di bug aperti, gestiti e risolti, tempo medio di risoluzione e dettaglio per utente; i dati possono essere successivamente esportati nei formati supportati dal sistema.
 
+\item[\textbf{REST API}] Insieme di endpoint HTTP che permettono la comunicazione tra frontend e backend tramite richieste come GET, POST, PATCH o DELETE.
+
 \item[\textbf{Ruolo}] Insieme di permessi associato a un utente. I ruoli previsti sono: \emph{USER} (utente standard), \emph{READONLY} (sola lettura), \emph{ADMIN} (amministratore).
+
+\item[\textbf{SonarQube}] Strumento di analisi statica del codice usato per misurare qualit\`a, vulnerabilit\`a, duplicazioni e code smell del backend.
+
+\item[\textbf{Spring Boot}] Framework Java usato per sviluppare il backend, configurare l'applicazione e pubblicare rapidamente servizi REST.
 
 \item[\textbf{Stato (Status)}] Fase del ciclo di vita di un bug. Gli stati previsti sono:
   \begin{itemize}
@@ -227,7 +267,13 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Tipo (Type)}] Categoria della segnalazione. I valori previsti sono: \emph{Question}, \emph{Bug}, \emph{Documentation}, \emph{Feature}.
 
+\item[\textbf{UI (User Interface)}] Insieme degli elementi grafici con cui l'utente interagisce, come bottoni, form, card, badge e pagine.
+
 \item[\textbf{USER (Utente registrato)}] Ruolo standard. L'utente pu\`o creare bug, commentare, caricare allegati, visualizzare i bug assegnati a lui e consultare il proprio profilo/account.
+
+\item[\textbf{Vite}] Build tool moderno usato nel frontend per avvio rapido in sviluppo, bundling e gestione del proxy verso il backend.
+
+\item[\textbf{WCAG}] Linee guida internazionali per l'accessibilit\`a dei contenuti web, utili per valutare contrasto, leggibilit\`a e usabilit\`a dell'interfaccia.
 
 \end{description}
 
@@ -237,7 +283,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 
 \begin{description}[style=nextline]
-\item[\textbf{Utente non registrato (Guest)}] Chiunque acceda all'applicazione senza credenziali. Pu\`o accedere alla pagina di login e alla pagina informativa del progetto. Non ha accesso ad alcuna funzionalit\`a interna.
+\item[\textbf{Utente non registrato (Guest)}] Chiunque acceda all'applicazione senza credenziali. Pu\`o accedere alla pagina di login e alla pagina informativa per richiesta account. Non ha accesso ad alcuna funzionalit\`a interna.
 
 \item[\textbf{Utente registrato (USER)}] Utente autenticato con ruolo standard. Pu\`o creare e modificare bug, aggiungere commenti e allegati, visualizzare lo storico e consultare il proprio profilo.
 
@@ -261,7 +307,6 @@ Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 \hline
 Utente non registrato &
 \begin{itemize}[nosep,leftmargin=*]
-  \item Visualizzazione pagina di presentazione del progetto
   \item Accesso alla pagina informativa per richiesta account
   \item Accesso alla pagina di login
 \end{itemize} \\
@@ -987,6 +1032,34 @@ Il deployment diagram mostra la distribuzione fisica dei componenti tra i contai
 
 Il component diagram illustra i componenti software del sistema e le loro dipendenze, organizzati per layer architetturale.
 
+\subsubsection{Diagrammi di approfondimento architetturale}
+
+Accanto ai diagrammi sintetici principali, sono stati inclusi anche diagrammi UML pi\`u dettagliati, utili per descrivere con maggior precisione i layer interni del backend e le dipendenze effettivamente presenti nel repository.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{component_diagram_detailed.png}
+\caption{Component Diagram dettagliato, allineato alla struttura effettiva del repository}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{deployment_diagram_detailed.png}
+\caption{Deployment Diagram dettagliato con ambiente Docker, fallback locale e volumi persistenti}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{interface_controller_security_layer.png}
+\caption{Vista dettagliata del layer Interface / Controller / Security}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{service_application_layer.png}
+\caption{Vista dettagliata del layer Service / Application}
+\end{figure}
+
 \subsection{Criteri di design adottati}
 
 \begin{description}[style=nextline]
@@ -1298,6 +1371,17 @@ Il diagramma E-R semplificato aggiornato, coerente con l'implementazione corrent
 \label{fig:er_diagram}
 \end{figure}
 
+\subsubsection{Diagramma di persistenza dettagliato}
+
+Per affiancare la vista E-R semplificata, in Figura~\ref{fig:persistence_detailed} \`e riportata anche una rappresentazione UML pi\`u dettagliata del layer di persistenza e dominio, utile a evidenziare repository, entit\`a, enumerazioni e associazioni principali in modo pi\`u vicino al codice.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{persistence_domain_detailed.png}
+\caption{Diagramma UML dettagliato del layer di persistenza e dominio}
+\label{fig:persistence_detailed}
+\end{figure}
+
 \subsection{Diagramma delle classi di design}
 
 I diagrammi UML di analisi e design sono stati modellati tramite un \textbf{CASE tool} dedicato, nello specifico \textbf{StarUML}, e successivamente esportati e rifiniti per l'inclusione nella documentazione finale. Il diagramma delle classi di design \`e organizzato secondo il pattern architetturale \textbf{layered architecture} con i seguenti package:
@@ -1338,6 +1422,15 @@ Il sequence diagram in Figura~\ref{fig:sequence_diagram} illustra il flusso comp
 \includegraphics[width=\textwidth]{sequence_create_bug.png}
 \caption{Sequence Diagram --- Creazione di un bug}
 \label{fig:sequence_diagram}
+\end{figure}
+
+Per completezza \`e stato incluso anche un secondo sequence diagram relativo all'assegnazione di un bug, con evidenza esplicita del controllo ruolo amministratore, della scelta dell'assegnatario e della generazione della notifica.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{sequence_assign_bug.png}
+\caption{Sequence Diagram --- Assegnazione di un bug con notifica}
+\label{fig:sequence_assign}
 \end{figure}
 
 \subsection{Scelte di software design}
