@@ -262,7 +262,7 @@ Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 Utente non registrato &
 \begin{itemize}[nosep,leftmargin=*]
   \item Visualizzazione informazioni pubbliche dell'applicazione
-  \item Visualizzazione informazioni pubbliche dell'applicazione
+  \item Accesso alla pagina informativa per richiesta account
   \item Accesso alla pagina di login
 \end{itemize} \\
 \hline
@@ -277,10 +277,10 @@ Utente registrato (USER) &
   \item Upload allegati immagini ai bug
   \item Visualizzazione bug assegnati all'utente
   \item Modifica stato dei bug assegnati
-  \item Marcatura bug come duplicati
   \item Visualizzazione storico modifiche bug
-  \item Gestione profilo personale
-  \item Cambio password
+  \item Visualizzazione notifiche in-app
+  \item Visualizzazione profilo personale
+  \item Esportazione dati in formato CSV, Excel e PDF
 \end{itemize} \\
 \hline
 Utente ReadOnly &
@@ -290,7 +290,9 @@ Utente ReadOnly &
   \item Visualizzazione dettagli singolo bug
   \item Visualizzazione commenti e allegati
   \item Visualizzazione storico modifiche
+  \item Visualizzazione notifiche in-app
   \item Visualizzazione profilo proprio (sola lettura)
+  \item Esportazione dati in formato CSV, Excel e PDF
 \end{itemize} \\
 \hline
 Admin &
@@ -299,18 +301,16 @@ Admin &
   \item Gestione utenti (visualizzazione e creazione account con ruolo)
   \item Visualizzazione metriche di sistema
   \item Generazione report mensili
-  \item Esportazione dati in formato CSV, Excel e PDF
   \item Accesso completo a tutti i bug del sistema
-  \item Gestione assegnazioni, archiviazione e scadenze dei bug
-  \item Accesso completo a tutti i bug del sistema
+  \item Gestione assegnazioni dei bug
+  \item Marcatura bug come duplicati
+  \item Archiviazione manuale e gestione scadenze dei bug
 \end{itemize} \\
 \hline
 Sistema &
 \begin{itemize}[nosep,leftmargin=*]
   \item Invio notifiche automatiche in-app su cambiamenti bug
-  \item Archiviazione automatica bug dopo periodo di inattivit\`a
-  \item Generazione automatica storico modifiche
-  \item Validazione automatica allegati (tipo e dimensione)
+  \item Archiviazione automatica bug risolti dopo periodo di inattivit\`a
   \item Generazione automatica storico modifiche
   \item Validazione automatica allegati (tipo e dimensione)
 \end{itemize} \\
@@ -323,7 +323,7 @@ Sistema &
 \subsubsection{Utente non registrato}
 \begin{itemize}
   \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking e indicazioni su come richiedere un account.
-  \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking.
+  \item \textbf{Accesso alla pagina informativa per richiesta account}: Consultazione della pagina ``Registrati'', che chiarisce che la creazione degli account \`e gestita dall'amministratore e non avviene in self-service.
   \item \textbf{Accesso alla pagina di login}: Possibilit\`a di accedere al sistema utilizzando credenziali esistenti.
 \end{itemize}
 
@@ -338,10 +338,10 @@ Sistema &
   \item \textbf{Upload allegati immagini ai bug}: Caricamento di immagini (JPEG, PNG, GIF, WebP) fino a 5MB per documentare visivamente il problema.
   \item \textbf{Visualizzazione bug assegnati all'utente}: Consultazione rapida delle issue assegnate al proprio account tramite sezione dedicata.
   \item \textbf{Modifica stato dei bug assegnati}: L'assegnatario pu\`o aggiornare lo stato del bug lungo il workflow TODO / IN\_PROGRESS / RESOLVED.
-  \item \textbf{Marcatura bug come duplicati}: Collegamento di un bug a un altro esistente quando viene identificato come duplicato.
   \item \textbf{Visualizzazione storico modifiche bug}: Consultazione cronologica di tutte le modifiche apportate a un bug nel tempo.
-  \item \textbf{Gestione profilo personale}: Modifica delle informazioni personali, preferenze e impostazioni dell'account.
-  \item \textbf{Cambio password}: Aggiornamento della password di accesso con validazione di sicurezza.
+  \item \textbf{Visualizzazione notifiche in-app}: Consultazione delle notifiche ricevute per assegnazioni, commenti e aggiornamenti rilevanti sui bug.
+  \item \textbf{Visualizzazione profilo personale}: Accesso ai dati del proprio account e alle scorciatoie verso le funzionalit\`a disponibili.
+  \item \textbf{Esportazione dati}: Download dell'elenco bug nei formati CSV, Excel e PDF.
 \end{itemize}
 
 \subsubsection{Utente ReadOnly}
@@ -351,7 +351,9 @@ Sistema &
   \item \textbf{Visualizzazione dettagli singolo bug}: Accesso in sola lettura alle informazioni complete di un bug.
   \item \textbf{Visualizzazione commenti e allegati}: Lettura di tutti i commenti e download/visualizzazione degli allegati associati.
   \item \textbf{Visualizzazione storico modifiche}: Consultazione della cronologia delle modifiche senza possibilit\`a di intervento.
+  \item \textbf{Visualizzazione notifiche in-app}: Consultazione del centro notifiche senza possibilit\`a di modificare i bug.
   \item \textbf{Visualizzazione profilo proprio}: Accesso limitato alle informazioni del proprio profilo utente.
+  \item \textbf{Esportazione dati}: Download dei dati in formato CSV, Excel o PDF anche in modalit\`a sola lettura.
 \end{itemize}
 
 \subsubsection{Admin}
@@ -360,10 +362,10 @@ Sistema &
   \item \textbf{Gestione utenti}: Creazione di nuovi account e assegnazione del ruolo appropriato agli utenti del sistema.
   \item \textbf{Visualizzazione metriche di sistema}: Accesso a dashboard con statistiche, grafici e KPI del sistema.
   \item \textbf{Generazione report mensili}: Creazione di report dettagliati sull'attivit\`a del sistema per periodo specificato.
-  \item \textbf{Esportazione dati}: Estrazione completa dei dati in formato CSV, Excel o PDF per analisi esterne e condivisione.
   \item \textbf{Accesso completo a tutti i bug}: Possibilit\`a di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
-  \item \textbf{Gestione assegnazioni, archiviazione e scadenze}: Possibilit\`a di assegnare bug, archiviarli e impostare deadline opzionali per la risoluzione.
-  \item \textbf{Accesso completo a tutti i bug}: Possibilit\`a di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
+  \item \textbf{Gestione assegnazioni}: Possibilit\`a di assegnare o riassegnare un bug a un membro del team, con suggerimento dell'utente meno carico.
+  \item \textbf{Marcatura bug come duplicati}: Collegamento di un bug a un altro esistente, con archiviazione automatica del duplicato.
+  \item \textbf{Archiviazione manuale e gestione scadenze}: Possibilit\`a di archiviare manualmente un bug e impostare deadline opzionali in creazione o modifica.
 \end{itemize}
 
 \subsubsection{Sistema}
@@ -454,13 +456,13 @@ Step 6 & Aggiunge label/tag opzionali & Permette selezione multipla da lista \\
 \hline
 Step 7 & Carica immagini allegati (opzionale) & Valida formato (JPEG, PNG, GIF, WebP) e dimensione (max 5\,MB) \\
 \hline
-Step 8 & Seleziona assegnatario (opzionale) & Mostra lista utenti attivi \\
+Step 8 & Se previsto dal ruolo Admin, imposta una deadline opzionale & Mostra il selettore data solo agli utenti amministratori \\
 \hline
 Step 9 & Clicca su ``Crea Bug'' & Valida tutti i campi obbligatori \\
 \hline
 Step 10 & & Salva il bug nel database \\
 \hline
-Step 11 & & Invia notifica all'utente assegnato (se presente) \\
+Step 11 & & Registra la creazione nello storico delle modifiche \\
 \hline
 Step 12 & & Mostra conferma con l'ID del bug creato \\
 \hline
@@ -480,9 +482,9 @@ Validazione campi fallita & 9.a & Evidenzia i campi con errori \\
 \cline{2-3}
  & 9.b & Mostra messaggi di errore per ciascun campo \\
 \hline
-Utente assegnatario non trovato & 8.a & Mostra errore ``Utente non trovato'' \\
+Deadline non consentita al ruolo corrente & 8.a & Il campo non viene mostrato agli utenti non Admin \\
 \cline{2-3}
- & 8.b & L'utente pu\`o eseguire una nuova ricerca \\
+ & 8.b & Il sistema ignora eventuali tentativi client-side di impostarla senza autorizzazione \\
 \hline
 \end{tabular}
 
@@ -516,23 +518,19 @@ Step 1 & Visualizza i dettagli di un bug & Mostra la pagina di dettaglio con tut
 \hline
 Step 2 & Clicca su ``Assegna'' & Apre il form di assegnazione \\
 \hline
-Step 3 & Inserisce email o nome del nuovo assegnatario & Fornisce autocomplete con ricerca utenti \\
+Step 3 & Visualizza la lista dei membri del team con carico di lavoro corrente & Evidenzia l'utente suggerito con meno bug assegnati \\
 \hline
-Step 4 & Seleziona l'utente dalla lista & Valida che l'utente esista e sia attivo \\
+Step 4 & Seleziona l'utente dalla lista & Valida che l'utente esista e sia assegnabile \\
 \hline
-Step 5 & Aggiunge una nota (opzionale) & Fornisce un campo testo per la motivazione \\
+Step 5 & Clicca su ``Assegna'' & Verifica i permessi dell'utente richiedente e la presenza di una selezione valida \\
 \hline
-Step 6 & Clicca su ``Conferma Assegnazione'' & Verifica i permessi dell'utente richiedente \\
+Step 6 & & Aggiorna il campo ``assegnato a'' nel database \\
 \hline
-Step 7 & & Aggiorna il campo ``assegnato a'' nel database \\
+Step 7 & & Registra la modifica nella tabella history \\
 \hline
-Step 8 & & Registra la modifica nella tabella history \\
+Step 8 & & Invia notifica al nuovo assegnatario \\
 \hline
-Step 9 & & Invia notifica al nuovo assegnatario \\
-\hline
-Step 10 & & Invia notifica all'assegnatario precedente (se diverso) \\
-\hline
-Step 11 & & Mostra messaggio di conferma \\
+Step 9 & & Mostra messaggio di conferma e reindirizza al dettaglio del bug \\
 \hline
 \end{tabular}
 
@@ -544,31 +542,31 @@ Step 11 & & Mostra messaggio di conferma \\
 \hline
 Utente non trovato & 4.a & Mostra errore ``Utente non esistente'' \\
 \cline{2-3}
- & 4.b & L'admin pu\`o eseguire una nuova ricerca \\
+ & 4.b & L'admin pu\`o selezionare un altro membro del team \\
 \hline
-Bug gi\`a assegnato & 6.a & Chiede conferma per il cambio di assegnazione \\
+Nessun utente selezionato & 5.a & Mostra errore ``Seleziona un utente'' \\
 \cline{2-3}
- & 6.b & Se confermato, procede con la riassegnazione \\
+ & 5.b & L'assegnazione non viene inviata finch\'e non viene scelta una destinazione valida \\
 \hline
 \end{tabular}
 
-\subsection{Caso d'Uso 3: Risoluzione e chiusura bug}
+\subsection{Caso d'Uso 3: Aggiornamento stato di un bug assegnato}
 
 \begin{tabular}{|p{3cm}|p{11cm}|}
 \hline
 \textbf{Campo} & \textbf{Descrizione} \\
 \hline
-USE CASE \#03 & RISOLUZIONE E CHIUSURA BUG \\
+USE CASE \#03 & AGGIORNAMENTO STATO DI UN BUG ASSEGNATO \\
 \hline
-Goal & L'utente vuole marcare un bug come risolto \\
+Goal & L'utente vuole aggiornare lo stato di un bug che pu\`o modificare \\
 \hline
-Preconditions & L'utente deve essere autenticato e assegnatario del bug; il bug deve essere in stato \emph{In Progress} \\
+Preconditions & L'utente deve essere autenticato; deve essere Admin oppure assegnatario del bug \\
 \hline
-Success End Condition & Il bug viene aggiornato allo stato \emph{Resolved} con data di risoluzione registrata \\
+Success End Condition & Il bug viene salvato con il nuovo stato e la modifica viene registrata nello storico \\
 \hline
-Failed End Condition & La risoluzione fallisce per permessi insufficienti o stato del bug non valido \\
+Failed End Condition & L'aggiornamento fallisce per permessi insufficienti, dati non validi o bug inesistente \\
 \hline
-Primary Actor & Utente registrato (USER) assegnato al bug \\
+Primary Actor & Utente registrato (USER) assegnato al bug oppure Admin \\
 \hline
 \end{tabular}
 
@@ -580,27 +578,23 @@ Primary Actor & Utente registrato (USER) assegnato al bug \\
 \hline
 Step 1 & Visualizza i dettagli del bug assegnato & Mostra la pagina di dettaglio con lo stato attuale \\
 \hline
-Step 2 & Clicca su ``Risolvi Bug'' & Verifica che il bug sia in stato \emph{In Progress} \\
+Step 2 & Clicca su ``Modifica'' & Verifica che l'utente abbia i permessi per intervenire sul bug \\
 \hline
-Step 3 & & Mostra il form di risoluzione \\
+Step 3 & & Mostra il form di modifica con i campi editabili \\
 \hline
-Step 4 & Seleziona il tipo di risoluzione & Mostra opzioni: \emph{Fixed}, \emph{Won't Fix}, \emph{Duplicate}, \emph{Cannot Reproduce} \\
+Step 4 & Aggiorna lo stato del bug (\emph{Todo}, \emph{In Progress}, \emph{Resolved}) & Valida il nuovo valore selezionato \\
 \hline
-Step 5 & Inserisce la descrizione della soluzione adottata & Fornisce un'area di testo \\
+Step 5 & Eventualmente modifica titolo, descrizione, priorit\`a o label & Mostra i campi consentiti dal ruolo corrente \\
 \hline
-Step 6 & Carica immagini di conferma (opzionale) & Valida formato e dimensione degli allegati \\
+Step 6 & Clicca su ``Salva'' & Valida i dati inviati \\
 \hline
-Step 7 & Clicca su ``Conferma Risoluzione'' & Valida tutti i campi obbligatori \\
+Step 7 & & Aggiorna il bug nel database \\
 \hline
-Step 8 & & Aggiorna lo stato a \emph{Resolved} \\
+Step 8 & & Registra la modifica nella tabella history \\
 \hline
-Step 9 & & Registra la data di risoluzione \\
+Step 9 & & Se lo stato diventa \emph{Resolved}, invia una notifica al creatore del bug \\
 \hline
-Step 10 & & Crea un record nella tabella history \\
-\hline
-Step 11 & & Invia notifiche al creatore e ai follower del bug \\
-\hline
-Step 12 & & Mostra la pagina aggiornata con il nuovo stato \\
+Step 10 & & Mostra il dettaglio aggiornato del bug \\
 \hline
 \end{tabular}
 
@@ -610,33 +604,33 @@ Step 12 & & Mostra la pagina aggiornata con il nuovo stato \\
 \hline
 \textbf{EXTENSIONS} & \textbf{Step} & \textbf{Descrizione} \\
 \hline
-Bug non in stato corretto & 2.a & Mostra ``Bug non pu\`o essere risolto in questo stato'' \\
+Permessi insufficienti & 2.a & Nega l'accesso alla modifica se l'utente non \`e Admin n\'e assegnatario \\
 \cline{2-3}
- & 2.b & Suggerisce azioni alternative disponibili \\
+ & 2.b & Mantiene il bug in sola lettura \\
 \hline
-Tipo risoluzione ``Duplicate'' & 4.a & Richiede la selezione del bug padre \\
+Validazione campi fallita & 6.a & Evidenzia i campi obbligatori mancanti o non validi \\
 \cline{2-3}
- & 4.b & Crea automaticamente la relazione di duplicazione \\
+ & 6.b & Il salvataggio non viene completato finch\'e gli errori non sono corretti \\
 \hline
-Caricamento immagini fallito & 6.a & Mostra errore di formato o dimensione \\
+Bug non trovato & 1.a & Mostra un messaggio di errore nel dettaglio \\
 \cline{2-3}
- & 6.b & L'utente pu\`o proseguire senza allegati \\
+ & 1.b & Interrompe il flusso di modifica \\
 \hline
 \end{tabular}
 
-\subsection{Caso d'Uso 4: Generazione report mensile (Admin)}
+\subsection{Caso d'Uso 4: Consultazione report mensile (Admin)}
 
 \begin{tabular}{|p{3cm}|p{11cm}|}
 \hline
 \textbf{Campo} & \textbf{Descrizione} \\
 \hline
-USE CASE \#04 & GENERAZIONE REPORT MENSILE \\
+USE CASE \#04 & CONSULTAZIONE REPORT MENSILE \\
 \hline
-Goal & L'amministratore vuole generare un report sull'attivit\`a del sistema per un mese specifico \\
+Goal & L'amministratore vuole consultare il report mensile dell'attivit\`a del sistema per un mese specifico \\
 \hline
 Preconditions & L'utente deve essere autenticato con ruolo ADMIN \\
 \hline
-Success End Condition & Il report viene generato e reso disponibile per il download \\
+Success End Condition & Il report del mese selezionato viene mostrato con metriche aggregate e dettaglio per utente \\
 \hline
 Failed End Condition & La generazione fallisce per assenza di dati nel periodo selezionato o errori di sistema \\
 \hline
@@ -650,25 +644,19 @@ Primary Actor & Admin \\
 \hline
 \textbf{Flusso} & \textbf{Utente (Admin)} & \textbf{Sistema} \\
 \hline
-Step 1 & Accede alla sezione ``Analytics'' & Mostra la dashboard con le opzioni di reportistica \\
+Step 1 & Accede alla sezione ``Report Mensili'' & Mostra la schermata con il selettore del mese \\
 \hline
-Step 2 & Seleziona ``Report Mensili'' & Carica la lista dei mesi disponibili \\
+Step 2 & Visualizza il mese corrente preimpostato oppure ne seleziona uno differente & Valida che il mese non sia futuro \\
 \hline
-Step 3 & Seleziona mese e anno desiderati & Valida che il periodo esista e contenga dati \\
+Step 3 & Conferma la scelta del periodo tramite il campo mese & Richiede al backend i dati aggregati del mese selezionato \\
 \hline
-Step 4 & Clicca su ``Genera Report'' & Avvia il processo di generazione \\
+Step 4 & & Raccoglie dati dalle tabelle bugs, users e history \\
 \hline
-Step 5 & & Raccoglie dati dalle tabelle bugs, users, history \\
+Step 5 & & Calcola metriche aggregate e medie di risoluzione \\
 \hline
-Step 6 & & Calcola metriche: bug creati, risolti, tempo medio \\
+Step 6 & & Mostra card riepilogative e tabella di dettaglio per utente \\
 \hline
-Step 7 & & Genera grafici e statistiche aggregate \\
-\hline
-Step 8 & & Prepara il documento nel formato di esportazione selezionato \\
-\hline
-Step 9 & & Fornisce il link per il download \\
-\hline
-Step 10 & Scarica il report & Serve il file con nome che include il timestamp \\
+Step 7 & Pu\`o scegliere ``Esporta report completo'' & Reindirizza alla sezione export per il download dei dati \\
 \hline
 \end{tabular}
 
@@ -678,15 +666,15 @@ Step 10 & Scarica il report & Serve il file con nome che include il timestamp \\
 \hline
 \textbf{EXTENSIONS} & \textbf{Step} & \textbf{Descrizione} \\
 \hline
-Mese senza dati & 3.a & Avvisa ``Nessun dato disponibile per il periodo selezionato'' \\
+Report non disponibile & 3.a & Mostra un messaggio di errore per il mese selezionato \\
 \cline{2-3}
- & 3.b & Suggerisce periodi alternativi \\
+ & 3.b & L'admin pu\`o selezionare un altro periodo \\
 \hline
-Errore generazione & 8.a & Registra l'errore nel log \\
+Errore nel caricamento & 4.a & Registra l'errore nel log \\
 \cline{2-3}
- & 8.b & Mostra un messaggio di errore all'amministratore \\
+ & 4.b & Mostra un messaggio di errore all'amministratore \\
 \cline{2-3}
- & 8.c & Suggerisce di riprovare o contattare il supporto \\
+ & 4.c & Suggerisce di riprovare o selezionare un altro mese \\
 \hline
 \end{tabular}
 
@@ -746,7 +734,7 @@ I requisiti non funzionali definiscono le caratteristiche qualitative che il sis
 % ==================== 8. MOCK-UP ====================
 \section{Prototipazione visuale attraverso Mock-up}
 
-La prototipazione visuale di BugBoard26 \`e stata realizzata direttamente come applicazione React funzionante, con dati simulati (\emph{mock data}). Le schermate qui mostrate sono catture reali del prototipo interattivo, e non semplici bozzetti grafici. Questo approccio ha permesso di validare il flusso utente in modo concreto fin dalla fase di analisi.
+La prototipazione visuale di BugBoard26 \`e stata realizzata in \textbf{Figma} attraverso mock-up ad alta fedelt\`a, successivamente usati come riferimento per l'implementazione React del prototipo funzionante. Le schermate riportate in questa sezione corrispondono quindi a tavole progettuali definite in fase di design e poi validate rispetto ai flussi effettivamente implementati.
 
 \subsection{Scelte Progettuali}
 
@@ -941,17 +929,17 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_13_export.png}
-\caption{Export Dati: download dell'elenco bug in formato CSV, Excel o PDF}
+\caption{Export Dati: schermata di esportazione con opzioni CSV ed Excel; il PDF \`e supportato nella versione implementata}
 \end{figure}
 
 \begin{itemize}
   \item \textbf{Scopo}: consentire l'esportazione dei dati per analisi esterne
-  \item \textbf{Elementi}: pulsanti ``Scarica CSV'', ``Scarica Excel'' e ``Scarica PDF''; i file vengono generati dal backend e scaricati direttamente
+  \item \textbf{Elementi}: pulsanti ``Scarica CSV'' e ``Scarica Excel'' visibili nel mock-up; nella versione implementata la stessa pagina espone anche il download PDF
 \end{itemize}
 
 \subsection{Osservazioni emerse dalla prototipazione}
 
-La realizzazione del prototipo funzionante ha permesso di identificare alcune scelte migliorative rispetto all'analisi iniziale:
+La costruzione dei mock-up in Figma e la loro successiva validazione sul prototipo funzionante hanno permesso di identificare alcune scelte migliorative rispetto all'analisi iniziale:
 
 \begin{itemize}
   \item \textbf{Chiarezza dei ruoli}: \`e stato necessario rendere esplicito nel UI quali azioni sono riservate all'Admin (assegnazione, report, gestione utenti), aggiungendo reindirizzamenti automatici per utenti non autorizzati
@@ -1857,7 +1845,7 @@ T7 --- Archiviazione di un bug risolto & 4/5 & 80\% & 28s & 0.4 \\
 
 L'ispezione euristica \`e stata condotta dal team di sviluppo analizzando l'interfaccia rispetto alle 10 euristiche di Nielsen. Sono state identificate le seguenti violazioni:
 
-\begin{tabular}{|c|l|l|c|}
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}X|c|}
 \hline
 \textbf{ID} & \textbf{Euristica violata} & \textbf{Descrizione} & \textbf{Gravit\`a} \\
 \hline
@@ -1873,7 +1861,7 @@ HE-5 & Design minimalista & La dashboard mostra troppe informazioni senza raggru
 \hline
 HE-6 & Aiuto e documentazione & Assenza di tooltip sui pulsanti con sola icona & 2 \\
 \hline
-\end{tabular}
+\end{tabularx}
 
 \vspace{0.2cm}
 \noindent Scala di gravit\`a: 0 = nessun problema, 1 = cosmetico, 2 = minore, 3 = maggiore, 4 = catastrofico.
