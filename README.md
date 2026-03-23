@@ -28,6 +28,28 @@ npm run dev
 docker-compose up --build
 `
 
+## Deploy Produzione Sicuro
+
+Per il deploy HTTPS di produzione e' disponibile il file di esempio `.env.production.example`.
+
+Variabili minime da valorizzare:
+
+- `APP_DOMAIN`
+- `APP_JWT_SECRET`
+- `POSTGRES_PASSWORD`
+
+Avvio del compose cloud con file ambiente dedicato:
+
+`bash
+docker compose --env-file .env.production -f docker-compose.cloud.yml up -d --build
+`
+
+Controllo configurazione prima del deploy:
+
+`bash
+docker compose --env-file .env.production -f docker-compose.cloud.yml config
+`
+
 ## Documentazione
 
 Il documento SRS completo e' disponibile in `SRS_BugBoard26.pdf`.
