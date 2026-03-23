@@ -25,17 +25,20 @@ public class AuthController {
     private final UserRepository userRepository;
     private final boolean cookieSecure;
     private final String cookieSameSite;
+    private final Duration tokenTtl;
 
     public AuthController(
         AuthService authService,
         UserRepository userRepository,
         @Value("${app.cookie.secure}") boolean cookieSecure,
-        @Value("${app.cookie.samesite}") String cookieSameSite
+        @Value("${app.cookie.samesite}") String cookieSameSite,
+        @Value("${app.jwt.ttl-hours}") int tokenTtlHours
     ) {
         this.authService = authService;
         this.userRepository = userRepository;
         this.cookieSecure = cookieSecure;
         this.cookieSameSite = cookieSameSite;
+        this.tokenTtl = Duration.ofHours(tokenTtlHours);
     }
 
     @PostMapping("/login")
@@ -45,9 +48,9 @@ public class AuthController {
     ) {
         MeResponse me = authService.login(request);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, buildTokenCookie(me.token(), Duration.ofHours(8)).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, buildTokenCookie(me.token(), tokenTtl).toString());
 
-        return ResponseEntity.ok(me);
+        return ResponseEntity.ok(withoutToken(me));
     }
 
     @PostMapping("/logout")
@@ -86,5 +89,15 @@ public class AuthController {
             .sameSite(cookieSameSite)
             .maxAge(maxAge)
             .build();
+    }
+
+    private MeResponse withoutToken(MeResponse me) {
+        return new MeResponse(
+            me.id(),
+            me.name(),
+            me.email(),
+            me.role(),
+            null
+        );
     }
 }

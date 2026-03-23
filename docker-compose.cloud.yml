@@ -3,15 +3,13 @@ services:
     image: postgres:16-alpine
     container_name: bugboard-db
     environment:
-      POSTGRES_USER: bug
-      POSTGRES_PASSWORD: bug
-      POSTGRES_DB: bugboard
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-bugboard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-bugboard}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bug -d bugboard"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bugboard} -d ${POSTGRES_DB:-bugboard}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -20,18 +18,22 @@ services:
     build: ./backend
     container_name: bugboard-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bugboard
-      SPRING_DATASOURCE_USERNAME: bug
-      SPRING_DATASOURCE_PASSWORD: bug
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-bugboard}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-bugboard}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      APP_JWT_SECRET: ${APP_JWT_SECRET:-ThisIsAVeryLongAndSecureJWTSecretKeyThatIsAtLeast32CharactersLongForSecurity123456789}
-      APP_FRONT_ORIGIN: ${APP_FRONT_ORIGIN:-http://34.77.106.57:5173}
-      APP_COOKIE_SECURE: "${APP_COOKIE_SECURE:-false}"
-      APP_COOKIE_SAMESITE: ${APP_COOKIE_SAMESITE:-Lax}
-    ports:
-      - "8081:8081"
+      APP_JWT_SECRET: ${APP_JWT_SECRET:?set APP_JWT_SECRET}
+      APP_FRONT_ORIGIN: https://${APP_DOMAIN:?set APP_DOMAIN}
+      APP_COOKIE_SECURE: "true"
+      APP_COOKIE_SAMESITE: Lax
+      APP_SECURITY_ALLOW_LOCAL_ORIGINS: "false"
+      APP_SECURITY_EXPOSE_DOCS: "${APP_SECURITY_EXPOSE_DOCS:-false}"
+      APP_SECURITY_EXPOSE_H2_CONSOLE: "false"
+    expose:
+      - "8081"
     depends_on:
       db:
         condition: service_healthy
@@ -39,15 +41,20 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
+      dockerfile: Dockerfile.frontend.prod
     container_name: bugboard-frontend
-    ports:
-      - "5173:5173"
     environment:
-      VITE_API_BASE_URL: /api
-      VITE_BACKEND_PROXY_TARGET: http://backend:8081
+      APP_DOMAIN: ${APP_DOMAIN:?set APP_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
       - backend
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:

@@ -1,34 +1,36 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
+  forward-headers-strategy: framework
 
 spring:
+  profiles:
+    default: dev
   datasource:
-    url: jdbc:h2:file:./data/devdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: false
-    open-in-view: true
-
+    open-in-view: false
   h2:
     console:
-      enabled: true
+      enabled: false
       path: /h2
 
 app:
   jwt:
-    secret: "ThisIsAVeryLongAndSecureJWTSecretKeyThatIsAtLeast32CharactersLongForSecurity123456789"
-    ttl-hours: 8
-
-  front-origin: "http://localhost:8080"
-
+    secret: ${APP_JWT_SECRET:}
+    ttl-hours: ${APP_JWT_TTL_HOURS:8}
+  front-origin: ${APP_FRONT_ORIGIN:http://localhost:8080}
+  additional-origins: ${APP_ADDITIONAL_ORIGINS:}
   cookie:
-    secure: false
-    samesite: Lax
-
+    secure: ${APP_COOKIE_SECURE:false}
+    samesite: ${APP_COOKIE_SAMESITE:Lax}
+  security:
+    allow-local-origins: ${APP_SECURITY_ALLOW_LOCAL_ORIGINS:false}
+    expose-docs: ${APP_SECURITY_EXPOSE_DOCS:false}
+    expose-h2-console: ${APP_SECURITY_EXPOSE_H2_CONSOLE:false}
   attachments:
-    dir: uploads
+    dir: ${APP_ATTACHMENTS_DIR:uploads}

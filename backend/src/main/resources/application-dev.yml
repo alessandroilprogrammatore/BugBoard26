@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/devdb}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    open-in-view: true
+  h2:
+    console:
+      enabled: true
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:ThisIsAVeryLongAndSecureJWTSecretKeyThatIsAtLeast32CharactersLongForSecurity123456789}
+  cookie:
+    secure: false
+    samesite: Lax
+  security:
+    allow-local-origins: true
+    expose-docs: true
+    expose-h2-console: true

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { api, setStoredToken, getStoredToken } from '@/api/client';
+import { api } from '@/api/client';
 
 export type UserRole = 'admin' | 'user' | 'readonly';
 
@@ -14,7 +14,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isAdmin: boolean;
   isReadonly: boolean;
 }
@@ -26,18 +26,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  // Try to load user from token on mount
+  // Try to load the authenticated user from the HttpOnly cookie on mount
   useEffect(() => {
     loadCurrentUser();
   }, []);
 
   const loadCurrentUser = async () => {
     try {
-      if (!getStoredToken()) {
-        setUser(null);
-        return;
-      }
-
       const me = await api('/auth/me');
       if (me && me.id) {
         setUser({
@@ -51,11 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
       }
     } catch (error) {
-      // User not authenticated, clear any stale state
       setUser(null);
-      setStoredToken(null);
-      localStorage.clear();
-      sessionStorage.clear();
     }
   };
 
@@ -72,8 +63,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
 
-      setStoredToken(me.token ?? null);
-
       setUser({
         id: me.id,
         name: me.name,
@@ -88,24 +77,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      // Clear user state first
       setUser(null);
-      setStoredToken(null);
-      
-      // Try to call logout API (but don't fail if it doesn't work)
+
       try {
         await api('/auth/logout', { method: 'POST' });
       } catch (apiError) {
         console.warn('Logout API call failed:', apiError);
       }
-      
-      // Clear any cached data
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Clear any cookies by setting them to expire
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      
     } catch (error) {
       console.error('Logout error:', error);
     }

@@ -1,0 +1,19 @@
+{$APP_DOMAIN} {
+    encode gzip zstd
+
+    @api path /api/*
+    reverse_proxy @api backend:8081
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
+
+    root * /srv
+    try_files {path} /index.html
+    file_server
+}

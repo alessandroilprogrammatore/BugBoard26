@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  h2:
+    console:
+      enabled: false
+  jpa:
+    open-in-view: false
+
+app:
+  cookie:
+    secure: true
+    samesite: Lax
+  security:
+    allow-local-origins: false
+    expose-docs: false
+    expose-h2-console: false

@@ -22,6 +22,7 @@ services:
     build: ./backend
     container_name: bugboard-backend
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bugboard
       SPRING_DATASOURCE_USERNAME: bug
       SPRING_DATASOURCE_PASSWORD: bug
@@ -32,6 +33,9 @@ services:
       APP_FRONT_ORIGIN: ${APP_FRONT_ORIGIN:-http://localhost:5173}
       APP_COOKIE_SECURE: "${APP_COOKIE_SECURE:-false}"
       APP_COOKIE_SAMESITE: ${APP_COOKIE_SAMESITE:-Lax}
+      APP_SECURITY_ALLOW_LOCAL_ORIGINS: "${APP_SECURITY_ALLOW_LOCAL_ORIGINS:-true}"
+      APP_SECURITY_EXPOSE_DOCS: "${APP_SECURITY_EXPOSE_DOCS:-true}"
+      APP_SECURITY_EXPOSE_H2_CONSOLE: "${APP_SECURITY_EXPOSE_H2_CONSOLE:-true}"
     ports:
       - "8081:8081"
     depends_on:
