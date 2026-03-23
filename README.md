@@ -1,66 +1,84 @@
-﻿# BugBoard26
+# BugBoard26
 
-Sistema di issue tracking costruito con **React** (TypeScript) e **Spring Boot** (Java 23).
+BugBoard26 e' un sistema di issue tracking sviluppato con **React**, **TypeScript** e **Spring Boot** per supportare la gestione collaborativa dei bug all'interno di un team.
 
-## Struttura del progetto
+## Panoramica
 
-- `backend/` - API REST Spring Boot (Java 23, Maven, H2/PostgreSQL, JWT)
-- `src/` - Frontend React (Vite, TypeScript, Tailwind CSS, Radix UI)
-- `immagini/` - Diagrammi UML e mockup interfacce
-- `*.tex` - Documentazione LaTeX (SRS, Design, Testing)
+- gestione completa del ciclo di vita dei bug
+- ruoli distinti `admin`, `user` e `readonly`
+- assegnazione bug, storico modifiche, commenti e notifiche
+- report mensili ed export dei dati
+- deploy locale con Docker e deploy cloud con HTTPS
 
-## Quick Start
+## Stack Tecnologico
+
+| Area | Tecnologie |
+|------|------------|
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, Radix UI |
+| Backend | Java 17, Spring Boot 3.3.4, Spring Security, JPA |
+| Database | H2 in sviluppo, PostgreSQL 16 in produzione |
+| Autenticazione | JWT gestito tramite cookie HttpOnly |
+| Testing | JUnit 5, Mockito, AssertJ |
+| Deploy | Docker, Docker Compose, Caddy |
+
+## Struttura della Repository
+
+- `backend/` contiene l'API REST Spring Boot
+- `src/` contiene il frontend React
+- `Documentazione/` raccoglie SRS, UML, mockup e materiale dei homework
+- `docker-compose.yml` avvia l'ambiente locale
+- `docker-compose.cloud.yml` prepara il deploy di produzione con HTTPS
+
+## Avvio Rapido
 
 ### Backend
-`ash
+
+```bash
 cd backend
 mvn spring-boot:run
-`
+```
 
 ### Frontend
-`ash
+
+```bash
 npm install
 npm run dev
-`
+```
 
-### Docker
-`ash
+### Ambiente locale completo
+
+```bash
 docker-compose up --build
-`
+```
 
 ## Deploy Produzione Sicuro
 
-Per il deploy HTTPS di produzione e' disponibile il file di esempio `.env.production.example`.
+La repository include un template pronto all'uso in `.env.production.example`.
 
-Variabili minime da valorizzare:
+Variabili minime da configurare:
 
 - `APP_DOMAIN`
 - `APP_JWT_SECRET`
 - `POSTGRES_PASSWORD`
 
-Avvio del compose cloud con file ambiente dedicato:
+Validazione della configurazione:
 
-`bash
-docker compose --env-file .env.production -f docker-compose.cloud.yml up -d --build
-`
-
-Controllo configurazione prima del deploy:
-
-`bash
+```bash
 docker compose --env-file .env.production -f docker-compose.cloud.yml config
-`
+```
+
+Avvio del deploy:
+
+```bash
+docker compose --env-file .env.production -f docker-compose.cloud.yml up -d --build
+```
 
 ## Documentazione
 
-Il documento SRS completo e' disponibile in `SRS_BugBoard26.pdf`.
+- SRS finale: `Documentazione/Documentazione finale/SRS_BugBoard26.pdf`
+- report SonarQube: `Documentazione/Documentazione finale/SonarQube_Report.md`
+- diagrammi UML sorgente: `Documentazione/Secondo homework/diagrammi/`
 
-## Tecnologie
+## Stato della Repository
 
-| Componente | Tecnologia |
-|------------|-----------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, Radix UI |
-| Backend | Java 17, Spring Boot 3.3.4, Spring Security, JPA |
-| Database | H2 (dev) / PostgreSQL 16 (prod) |
-| Auth | JWT (stateless) |
-| Testing | JUnit 5, Mockito, AssertJ |
-| Deploy | Docker, Docker Compose |
+La repository e' stata ripulita per mantenere fuori dal versionamento file temporanei, log, backup automatici e artefatti locali di compilazione o debug.
