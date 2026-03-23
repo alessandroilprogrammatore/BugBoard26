@@ -66,6 +66,10 @@ debug_*.png
 tmp_*.png
 verify_*.png
 tmp_req*.txt
+*_spiegazione.tex
+*_spiegazione.pdf
+*_spiegazione.aux
+*_spiegazione.out
 **/inputs.txt
 *.bak_codex_*
 *.orig

@@ -41,11 +41,14 @@ public class AuthController {
         this.tokenTtl = Duration.ofHours(tokenTtlHours);
     }
 
+    /**
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
-    public ResponseEntity<MeResponse> login(
-        @Valid @RequestBody LoginRequest request,
-        HttpServletResponse response
-    ) {
+    public ResponseEntity<MeResponse> login( @Valid @RequestBody LoginRequest request, HttpServletResponse response) 
+    {
         MeResponse me = authService.login(request);
 
         response.addHeader(HttpHeaders.SET_COOKIE, buildTokenCookie(me.token(), tokenTtl).toString());
@@ -53,6 +56,10 @@ public class AuthController {
         return ResponseEntity.ok(withoutToken(me));
     }
 
+    /**
+     * @param response
+     * @return
+     */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         authService.logout();
