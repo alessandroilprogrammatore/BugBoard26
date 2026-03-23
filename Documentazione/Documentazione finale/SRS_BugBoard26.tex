@@ -213,7 +213,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{ReadOnly (Utente)}] Ruolo con accesso in sola lettura. L'utente ReadOnly pu\`o visualizzare bug, commenti e allegati, ma non pu\`o creare, modificare o commentare.
 
-\item[\textbf{Report Mensile}] Documento generato dal sistema contenente statistiche aggregate sull'attivit\`a del periodo selezionato: numero di bug creati, risolti, tempo medio di risoluzione, distribuzione per priorit\`a e tipo.
+\item[\textbf{Report Mensile}] Vista amministrativa relativa a un mese selezionato che riassume numero di bug aperti, gestiti e risolti, tempo medio di risoluzione e dettaglio per utente; i dati possono essere successivamente esportati nei formati supportati dal sistema.
 
 \item[\textbf{Ruolo}] Insieme di permessi associato a un utente. I ruoli previsti sono: \emph{USER} (utente standard), \emph{READONLY} (sola lettura), \emph{ADMIN} (amministratore).
 
@@ -227,7 +227,7 @@ Di seguito sono riportati i termini tecnici e di dominio utilizzati nel presente
 
 \item[\textbf{Tipo (Type)}] Categoria della segnalazione. I valori previsti sono: \emph{Question}, \emph{Bug}, \emph{Documentation}, \emph{Feature}.
 
-\item[\textbf{USER (Utente registrato)}] Ruolo standard. L'utente pu\`o creare bug, commentare, caricare allegati, visualizzare i bug assegnati a lui e gestire il proprio profilo.
+\item[\textbf{USER (Utente registrato)}] Ruolo standard. L'utente pu\`o creare bug, commentare, caricare allegati, visualizzare i bug assegnati a lui e consultare il proprio profilo/account.
 
 \end{description}
 
@@ -239,7 +239,7 @@ Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 \begin{description}[style=nextline]
 \item[\textbf{Utente non registrato (Guest)}] Chiunque acceda all'applicazione senza credenziali. Pu\`o accedere alla pagina di login e alla pagina informativa del progetto. Non ha accesso ad alcuna funzionalit\`a interna.
 
-\item[\textbf{Utente registrato (USER)}] Utente autenticato con ruolo standard. Pu\`o creare e modificare bug, aggiungere commenti e allegati, visualizzare lo storico, gestire il proprio profilo.
+\item[\textbf{Utente registrato (USER)}] Utente autenticato con ruolo standard. Pu\`o creare e modificare bug, aggiungere commenti e allegati, visualizzare lo storico e consultare il proprio profilo.
 
 \item[\textbf{Utente ReadOnly}] Utente autenticato con accesso in sola lettura. Pu\`o visualizzare bug, commenti e allegati, ma non pu\`o eseguire operazioni di scrittura.
 
@@ -261,7 +261,7 @@ Il sistema prevede quattro tipologie di attori umani e un attore di sistema:
 \hline
 Utente non registrato &
 \begin{itemize}[nosep,leftmargin=*]
-  \item Visualizzazione informazioni pubbliche dell'applicazione
+  \item Visualizzazione pagina di presentazione del progetto
   \item Accesso alla pagina informativa per richiesta account
   \item Accesso alla pagina di login
 \end{itemize} \\
@@ -300,7 +300,7 @@ Admin &
   \item Tutti i casi d'uso dell'Utente registrato
   \item Gestione utenti (visualizzazione e creazione account con ruolo)
   \item Visualizzazione metriche di sistema
-  \item Generazione report mensili
+  \item Consultazione report mensili
   \item Accesso completo a tutti i bug del sistema
   \item Gestione assegnazioni dei bug
   \item Marcatura bug come duplicati
@@ -322,7 +322,7 @@ Sistema &
 
 \subsubsection{Utente non registrato}
 \begin{itemize}
-  \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina principale dell'applicazione con informazioni generali sul servizio di bug tracking e indicazioni su come richiedere un account.
+  \item \textbf{Visualizzazione informazioni pubbliche}: Accesso alla pagina informativa pubblica del progetto, con presentazione sintetica del servizio e indicazioni su come richiedere un account.
   \item \textbf{Accesso alla pagina informativa per richiesta account}: Consultazione della pagina ``Registrati'', che chiarisce che la creazione degli account \`e gestita dall'amministratore e non avviene in self-service.
   \item \textbf{Accesso alla pagina di login}: Possibilit\`a di accedere al sistema utilizzando credenziali esistenti.
 \end{itemize}
@@ -361,7 +361,7 @@ Sistema &
   \item \textbf{Tutti i casi d'uso dell'Utente registrato}: L'amministratore eredita tutte le funzionalit\`a dell'utente standard.
   \item \textbf{Gestione utenti}: Creazione di nuovi account e assegnazione del ruolo appropriato agli utenti del sistema.
   \item \textbf{Visualizzazione metriche di sistema}: Accesso a dashboard con statistiche, grafici e KPI del sistema.
-  \item \textbf{Generazione report mensili}: Creazione di report dettagliati sull'attivit\`a del sistema per periodo specificato.
+  \item \textbf{Consultazione report mensili}: Accesso al riepilogo mensile delle attivit\`a del sistema per il periodo selezionato, con possibilit\`a di passare poi alla sezione export.
   \item \textbf{Accesso completo a tutti i bug}: Possibilit\`a di visualizzare e modificare qualsiasi bug del sistema indipendentemente dall'assegnazione.
   \item \textbf{Gestione assegnazioni}: Possibilit\`a di assegnare o riassegnare un bug a un membro del team, con suggerimento dell'utente meno carico.
   \item \textbf{Marcatura bug come duplicati}: Collegamento di un bug a un altro esistente, con archiviazione automatica del duplicato.
@@ -694,14 +694,14 @@ I requisiti non funzionali definiscono le caratteristiche qualitative che il sis
 \subsection{Prestazioni}
 \begin{itemize}
   \item \textbf{RNF-P1 --- Tempo di risposta API}: Le richieste API standard (lista bug, dettaglio bug, login) devono avere un tempo di risposta inferiore a 500\,ms in condizioni normali di carico.
-  \item \textbf{RNF-P2 --- Paginazione}: La lista dei bug \`e paginata (default 20 elementi per pagina) per evitare il caricamento di dataset molto grandi.
+  \item \textbf{RNF-P2 --- Paginazione}: Il backend espone la lista bug in forma paginata (default 20 elementi per pagina) per contenere i dataset molto grandi; il frontend pu\`o aggregare pi\`u pagine quando deve offrire una vista continua all'utente.
   \item \textbf{RNF-P3 --- Dimensione allegati}: I file immagine caricati non possono superare 5\,MB ciascuno. Formati accettati: JPEG, PNG, GIF, WebP.
   \item \textbf{RNF-P4 --- Generazione report}: La generazione di un report mensile deve completarsi entro 10 secondi per dataset fino a 10\,000 bug.
 \end{itemize}
 
 \subsection{Sicurezza}
 \begin{itemize}
-  \item \textbf{RNF-S1 --- Autenticazione}: Tutti gli endpoint (eccetto login) richiedono un token JWT valido. Il token ha una durata configurabile (default: 8 ore).
+  \item \textbf{RNF-S1 --- Autenticazione}: Tutti gli endpoint applicativi protetti richiedono un token JWT valido; restano pubblici solo login/logout e gli endpoint di supporto allo sviluppo (Swagger/H2). Il token ha una durata configurabile (default: 8 ore).
   \item \textbf{RNF-S2 --- Autorizzazione per ruolo}: Le operazioni privilegiate (gestione utenti, report, assegnazione bug) sono accessibili esclusivamente agli utenti con ruolo ADMIN.
   \item \textbf{RNF-S3 --- Validazione input}: Tutti i dati in input (lato client e lato server) sono validati prima dell'elaborazione. I file caricati sono verificati per tipo MIME e dimensione.
   \item \textbf{RNF-S4 --- Trasmissione sicura}: In produzione, tutte le comunicazioni tra client e server avvengono tramite HTTPS. I cookie di sessione sono configurati con i flag \texttt{Secure} e \texttt{SameSite}.
@@ -734,14 +734,14 @@ I requisiti non funzionali definiscono le caratteristiche qualitative che il sis
 % ==================== 8. MOCK-UP ====================
 \section{Prototipazione visuale attraverso Mock-up}
 
-La prototipazione visuale di BugBoard26 \`e stata realizzata in \textbf{Figma} attraverso mock-up ad alta fedelt\`a, successivamente usati come riferimento per l'implementazione React del prototipo funzionante. Le schermate riportate in questa sezione corrispondono quindi a tavole progettuali definite in fase di design e poi validate rispetto ai flussi effettivamente implementati.
+La prototipazione visuale di BugBoard26 \`e stata realizzata in \textbf{Figma} attraverso un file condiviso di progetto, costruito prima con wireframe a bassa fedelt\`a e poi raffinato in mock-up ad alta fedelt\`a con componenti riutilizzabili, palette colori e varianti di stato. Le tavole esportate da Figma sono state usate come riferimento per l'implementazione React del prototipo funzionante e successivamente ricontrollate rispetto ai flussi effettivamente implementati.
 
 \subsection{Scelte Progettuali}
 
 \subsubsection{Layout e Navigazione}
 \begin{itemize}
-  \item \textbf{Header fisso}: barra superiore con logo, link alle sezioni principali (Dashboard, Bug, Report, Admin) e menu utente con avatar, email e pulsante logout
-  \item \textbf{Navigazione mobile}: menu a comparsa (hamburger) con le stesse voci, ottimizzato per touch
+  \item \textbf{Navigazione principale persistente}: barra inferiore con accesso rapido a Home, lista bug, notifiche e profilo
+  \item \textbf{Sezioni contestuali}: le schermate amministrative e di dettaglio presentano header locale con pulsante di ritorno e azioni disponibili nel contesto corrente
   \item \textbf{Layout responsive}: design \emph{mobile-first} realizzato con Tailwind CSS; le griglie si adattano automaticamente a qualsiasi larghezza schermo
 \end{itemize}
 
@@ -798,8 +798,8 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 
 \begin{itemize}
   \item \textbf{Scopo}: fornire una panoramica immediata dello stato del sistema dopo il login
-  \item \textbf{Elementi}: card metriche (bug aperti, assegnati a me, risolti, scadenze prossime), header con navigazione principale
-  \item \textbf{Accessi rapidi}: da qui si pu\`o navigare alla lista bug, al form di creazione e ai report
+  \item \textbf{Elementi}: card riepilogative delle metriche principali, saluto iniziale e area ``Azioni rapide''
+  \item \textbf{Accessi rapidi}: da qui si pu\`o navigare alla lista bug, al form di creazione e, per gli Admin, alla gestione utenti
 \end{itemize}
 
 \subsubsection{Mock-up 4 --- Lista Bug con Filtri}
@@ -807,13 +807,13 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_04_lista_bug.png}
-\caption{Lista Bug: tabella con filtri per tipo, stato, priorit\`a e ricerca testuale}
+\caption{Lista Bug: elenco di card filtrabili per tipo, stato, priorit\`a e ricerca testuale}
 \end{figure}
 
 \begin{itemize}
   \item \textbf{Scopo}: visualizzazione e filtraggio dell'elenco completo dei bug
-  \item \textbf{Elementi}: barra filtri orizzontale (tipo, stato, priorit\`a), campo ricerca full-text, tabella bug con badge colorati, paginazione
-  \item \textbf{Interazione}: clic su una riga apre il dettaglio del bug; i filtri si applicano in tempo reale
+  \item \textbf{Elementi}: tab ``Tutti / Assegnati a me / Archiviati'', barra filtri orizzontale, campo ricerca full-text, card bug con badge colorati
+  \item \textbf{Interazione}: il clic su una card apre il dettaglio del bug; i filtri si applicano in tempo reale e il frontend ricompone le pagine restituite dal backend
 \end{itemize}
 
 \subsubsection{Mock-up 5 --- Dettaglio Bug}
@@ -826,8 +826,8 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 
 \begin{itemize}
   \item \textbf{Scopo}: visualizzazione completa di un bug specifico e gestione delle azioni disponibili
-  \item \textbf{Elementi}: header con titolo, stato e priorit\`a; sezioni descrizione, commenti, allegati, storico; barra azioni laterale (modifica, assegna, risolvi, archivia, duplica)
-  \item \textbf{Azioni visibili}: dipendono dal ruolo dell'utente (USER vede meno azioni rispetto ad Admin)
+  \item \textbf{Elementi}: header con breadcrumb locale, titolo, stato e priorit\`a; sezioni descrizione, dettagli, etichette, allegati, commenti e storico; barra azioni orizzontale sticky (modifica, assegna, archivia, duplica, esporta)
+  \item \textbf{Azioni visibili}: dipendono dal ruolo dell'utente e dai permessi sul bug corrente
 \end{itemize}
 
 \subsubsection{Mock-up 6 --- Form Creazione/Modifica Bug \textbf{[UC01]}}
@@ -876,12 +876,12 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_09_profilo.png}
-\caption{Profilo Utente: gestione informazioni personali e cambio password}
+\caption{Profilo Utente: consultazione dati account e accesso alle sezioni personali}
 \end{figure}
 
 \begin{itemize}
-  \item \textbf{Scopo}: consentire all'utente di visualizzare e modificare le proprie informazioni e la password
-  \item \textbf{Elementi}: nome, email, ruolo (in sola lettura), form cambio password con validazione
+  \item \textbf{Scopo}: consentire all'utente di consultare i dati del proprio account e raggiungere rapidamente le funzioni personali disponibili
+  \item \textbf{Elementi}: nome, email, ruolo, ID utente, scorciatoie a export e modalit\`a sola lettura; per gli Admin compaiono anche collegamenti a gestione utenti, report e archivio
 \end{itemize}
 
 \subsubsection{Mock-up 10 --- Report Mensile \textbf{[UC04]}}
@@ -889,12 +889,12 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mockup_10_report_mensile.png}
-\caption{Report Mensile Admin (UC04): statistiche aggregate e dettaglio per utente con opzioni di export}
+\caption{Report Mensile Admin (UC04): consultazione delle statistiche aggregate del mese e dettaglio per utente}
 \end{figure}
 
 \begin{itemize}
-  \item \textbf{Caso d'uso}: UC04 --- Generazione report mensile (solo Admin)
-  \item \textbf{Elementi}: selettore mese/anno, statistiche aggregate, tabella riassuntiva metriche, dettaglio per utente e opzioni di export
+  \item \textbf{Caso d'uso}: UC04 --- Consultazione report mensile (solo Admin)
+  \item \textbf{Elementi}: selettore mese, statistiche aggregate, tabella riassuntiva per utente e collegamento alla sezione export
   \item \textbf{Accesso}: solo Admin; gli altri utenti vengono reindirizzati alla Dashboard
 \end{itemize}
 
@@ -921,7 +921,7 @@ Di seguito sono illustrate le schermate principali del prototipo, raggruppate pe
 
 \begin{itemize}
   \item \textbf{Scopo}: visualizzare i bug archiviati per storico e consultazione senza influire sulla lista attiva
-  \item \textbf{Elementi}: tabella bug in stato \emph{Archived} con filtri e ricerca; solo Admin pu\`o archiviare/ripristinare bug
+  \item \textbf{Elementi}: elenco dei bug in stato \emph{Archived} con ricerca; solo Admin pu\`o accedere alla sezione e archiviare manualmente i bug dalla vista di dettaglio
 \end{itemize}
 
 \subsubsection{Mock-up 13 --- Export Dati}
@@ -945,7 +945,7 @@ La costruzione dei mock-up in Figma e la loro successiva validazione sul prototi
   \item \textbf{Chiarezza dei ruoli}: \`e stato necessario rendere esplicito nel UI quali azioni sono riservate all'Admin (assegnazione, report, gestione utenti), aggiungendo reindirizzamenti automatici per utenti non autorizzati
   \item \textbf{Filtri immediati}: la lista bug con filtri in tempo reale si \`e rivelata la funzionalit\`a pi\`u usata nelle sessioni di test, confermando la scelta di renderla la pagina principale
   \item \textbf{Badge colorati}: l'uso di badge cromatici per stato, priorit\`a e tipo ha migliorato significativamente la leggibilit\`a della lista bug senza aprire il dettaglio
-  \item \textbf{Navigazione mobile}: il menu hamburger con le stesse voci del desktop ha garantito piena parit\`a funzionale su dispositivi mobili
+  \item \textbf{Navigazione mobile}: l'adozione di una bottom navigation persistente ha reso pi\`u immediato l'accesso alle sezioni principali sui dispositivi mobili
 \end{itemize}
 
 % ==================== 9. DESIGN DEL SISTEMA ====================
@@ -1019,7 +1019,7 @@ Tailwind CSS & 3.x & Framework CSS utility-first che accelera lo sviluppo della 
 \hline
 Radix UI & -- & Componenti accessibili e non stilizzati (\emph{headless}), conformi a WAI-ARIA, personalizzabili con Tailwind. \\
 \hline
-React Query & 5.x & Gestione dello stato server-side (caching, refetching, invalidation) che semplifica le chiamate API. \\
+React Query & 5.x & Infrastruttura condivisa per la gestione dello stato server-side; nell'implementazione corrente \`e predisposto tramite \texttt{QueryClientProvider} e integrato gradualmente accanto alle chiamate API manuali. \\
 \hline
 React Router & 6.30.x & Routing dichiarativo per SPA con supporto a route protette e navigazione client-side. \\
 \hline
@@ -1092,16 +1092,20 @@ La comunicazione tra frontend e backend avviene tramite API REST su HTTP/HTTPS:
 \begin{itemize}
   \item \textbf{Formato dati}: JSON (Content-Type: \texttt{application/json})
   \item \textbf{Autenticazione}: Token JWT trasportato tramite cookie HttpOnly (\texttt{token}) oppure header \texttt{Authorization: Bearer <token>}
-  \item \textbf{Proxy in sviluppo}: Vite redirige \texttt{/api/*} a \texttt{localhost:8081}, evitando problemi CORS durante lo sviluppo
+  \item \textbf{Proxy in sviluppo}: Vite espone il frontend su \texttt{localhost:8080} e redirige \texttt{/api/*} al backend configurato (default \texttt{localhost:18081}), evitando problemi CORS durante lo sviluppo
   \item \textbf{Endpoint principali}:
   \begin{itemize}
     \item \texttt{POST /api/auth/login} --- Autenticazione
+    \item \texttt{GET /api/auth/me} --- Profilo dell'utente autenticato
     \item \texttt{GET/POST /api/bugs} --- Listing e creazione bug
     \item \texttt{PATCH /api/bugs/\{id\}} --- Modifica bug
     \item \texttt{POST /api/bugs/\{id\}/assign} --- Assegnazione (admin)
+    \item \texttt{GET /api/notifications} --- Centro notifiche
     \item \texttt{GET /api/bugs/workload} --- Carico di lavoro utenti per suggerimento assegnatario
     \item \texttt{GET /api/admin/metrics} --- Metriche (admin)
     \item \texttt{GET /api/export/bugs.csv} --- Export CSV
+    \item \texttt{GET /api/export/bugs.xlsx} --- Export Excel
+    \item \texttt{GET /api/export/bugs.pdf} --- Export PDF
   \end{itemize}
 \end{itemize}
 
@@ -1164,6 +1168,8 @@ Il database relazionale \`e gestito tramite JPA/Hibernate con strategia \texttt{
 \texttt{archived} & BOOLEAN & default false & Flag di archiviazione \\
 \hline
 \texttt{created\_at} & TIMESTAMP & & Data di creazione \\
+\hline
+\texttt{updated\_at} & TIMESTAMP & & Data ultimo aggiornamento \\
 \hline
 \texttt{deadline} & TIMESTAMP & nullable & Scadenza opzionale \\
 \hline
@@ -1239,6 +1245,48 @@ Il database relazionale \`e gestito tramite JPA/Hibernate con strategia \texttt{
 \hline
 \end{tabular}
 
+\subsubsection{Tabella \texttt{notifications}}
+
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{id} & UUID & PK, AUTO & Identificativo univoco \\
+\hline
+\texttt{recipient\_id} & UUID & FK $\to$ users.id, NOT NULL & Destinatario della notifica \\
+\hline
+\texttt{sender\_id} & UUID & FK $\to$ users.id & Utente che ha generato l'evento, se presente \\
+\hline
+\texttt{bug\_id} & UUID & FK $\to$ bugs.id, NOT NULL & Bug correlato alla notifica \\
+\hline
+\texttt{message} & TEXT & NOT NULL & Messaggio mostrato nel centro notifiche \\
+\hline
+\texttt{is\_read} & BOOLEAN & default false & Stato di lettura \\
+\hline
+\texttt{created\_at} & TIMESTAMP & & Data di creazione \\
+\hline
+\end{tabular}
+
+\subsubsection{Collection table \texttt{bug\_attachments}}
+
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Colonna} & \textbf{Tipo} & \textbf{Vincoli} & \textbf{Note} \\
+\hline
+\texttt{bug\_id} & UUID & FK $\to$ bugs.id, NOT NULL & Bug proprietario dell'allegato \\
+\hline
+\texttt{stored\_filename} & VARCHAR & NOT NULL & Nome interno del file memorizzato \\
+\hline
+\texttt{original\_filename} & VARCHAR & NOT NULL & Nome originale del file caricato \\
+\hline
+\texttt{content\_type} & VARCHAR & NOT NULL & MIME type dell'allegato \\
+\hline
+\texttt{file\_size} & BIGINT & NOT NULL & Dimensione in byte \\
+\hline
+\texttt{uploaded\_at} & TIMESTAMP & NOT NULL & Data di caricamento \\
+\hline
+\end{tabular}
+
 \subsubsection{Diagramma E-R semplificato}
 
 Il diagramma E-R semplificato aggiornato, coerente con l'implementazione corrente del backend, \`e riportato in Figura~\ref{fig:er_diagram}.
@@ -1255,19 +1303,21 @@ Il diagramma E-R semplificato aggiornato, coerente con l'implementazione corrent
 I diagrammi UML di analisi e design sono stati modellati tramite un \textbf{CASE tool} dedicato, nello specifico \textbf{StarUML}, e successivamente esportati e rifiniti per l'inclusione nella documentazione finale. Il diagramma delle classi di design \`e organizzato secondo il pattern architetturale \textbf{layered architecture} con i seguenti package:
 
 \begin{description}[style=nextline]
-\item[\texttt{model}] Entit\`a JPA che mappano le tabelle del database: \texttt{User}, \texttt{Bug}, \texttt{Comment}, \texttt{History}, \texttt{Label} e le enumerazioni \texttt{Role}, \texttt{BugType}, \texttt{BugStatus}, \texttt{Priority}, \texttt{HistoryAction}.
+\item[\texttt{model}] Entit\`a JPA che mappano le tabelle del database: \texttt{User}, \texttt{Bug}, \texttt{Comment}, \texttt{History}, \texttt{Label}, \texttt{Notification}, \texttt{BugAttachment} e le enumerazioni \texttt{Role}, \texttt{BugType}, \texttt{BugStatus}, \texttt{Priority}, \texttt{HistoryAction}.
 
-\item[\texttt{repository}] Interfacce Spring Data JPA che estendono \texttt{JpaRepository<T, UUID>}: \texttt{UserRepository}, \texttt{BugRepository} (+ \texttt{JpaSpecificationExecutor}), \texttt{CommentRepository}, \texttt{LabelRepository}, \texttt{HistoryRepository}.
+\item[\texttt{repository}] Interfacce Spring Data JPA che estendono \texttt{JpaRepository<T, UUID>}: \texttt{UserRepository}, \texttt{BugRepository} (+ \texttt{JpaSpecificationExecutor}), \texttt{CommentRepository}, \texttt{LabelRepository}, \texttt{HistoryRepository}, \texttt{NotificationRepository}.
 
-\item[\texttt{service}] Classi di business logic: \texttt{BugService} (gestione completa del ciclo di vita dei bug), \texttt{AuthService} (login, logout, generazione token).
+\item[\texttt{service}] Classi di business logic: \texttt{BugService}, \texttt{AuthService}, \texttt{AnalyticsService}, \texttt{ExportService}, \texttt{NotificationService}, \texttt{ScheduledArchiveService}, oltre a \texttt{BugSpecification} per la costruzione delle query dinamiche.
 
-\item[\texttt{dto}] Record Java per i dati di trasferimento: \texttt{BugCreateRequest}, \texttt{BugPatchRequest}, \texttt{AssignRequest}, \texttt{LabelSetRequest}, \texttt{LoginRequest}.
+\item[\texttt{dto}] Record Java per i dati di trasferimento: \texttt{BugCreateRequest}, \texttt{BugPatchRequest}, \texttt{AssignRequest}, \texttt{LabelSetRequest}, \texttt{LoginRequest}, \texttt{CreateUserRequest}, \texttt{MeResponse}, \texttt{MetricsResponse}, \texttt{MonthlyReportResponse}, \texttt{MonthlyUserReportResponse}, \texttt{UserWorkloadDTO}.
 
-\item[\texttt{controller}] Controller REST: \texttt{BugController} (\texttt{/api/bugs}), \texttt{AuthController} (\texttt{/api/auth}), \texttt{AdminController} (\texttt{/api/admin}), \texttt{ExportController} (\texttt{/api/export}).
+\item[\texttt{controller}] Controller REST: \texttt{BugController} (\texttt{/api/bugs}), \texttt{AuthController} (\texttt{/api/auth}), \texttt{AdminController} (\texttt{/api/admin}), \texttt{NotificationController} (\texttt{/api/notifications}), \texttt{ExportController} (\texttt{/api/export}) e \texttt{RestExceptionHandler} per la gestione centralizzata degli errori HTTP.
 
 \item[\texttt{security}] Infrastruttura di sicurezza: \texttt{JwtService} (generazione/validazione token), \texttt{JwtAuthFilter} (filtro per estrarre e verificare il JWT).
 
 \item[\texttt{config}] Configurazione dell'applicazione: \texttt{SecurityConfig} (CORS, CSRF, filter chain), \texttt{DataSeeder} (dati iniziali per lo sviluppo).
+
+\item[\texttt{exception}] Eccezioni applicative dedicate, ad esempio \texttt{InvalidCredentialsException}, usate per segnalare errori di dominio in modo esplicito.
 \end{description}
 
 Il diagramma delle classi di design aggiornato in coerenza con l'implementazione corrente è riportato in Figura~\ref{fig:class_diagram}.
@@ -1328,7 +1378,7 @@ Il codice sorgente del progetto \`e ospitato su un repository \textbf{GitHub} ac
   \item \textbf{Release}: la release ``Specifica dei requisiti'' \`e stata pubblicata il 19 ottobre 2025
   \item \textbf{Branching strategy}: sviluppo su branch feature, merge su \texttt{main} tramite pull request
   \item \textbf{Commit}: messaggi descrittivi che seguono il formato convenzionale (\texttt{feat:}, \texttt{fix:}, \texttt{docs:}, \texttt{test:})
-  \item \textbf{Statistiche repository}: 77 commit complessivi e 3 contributor rilevati nella history Git
+  \item \textbf{Statistiche repository}: 86 commit complessivi e 3 contributor rilevati nella history Git
   \item \textbf{Contributors}: Alessandro Minopoli, Simoalvin (Simone Mollo), PorfirioTramontana
   \item \textbf{Frequenza dei commit}: attivit\`a distribuita tra ottobre 2025 e marzo 2026, con una chiara intensificazione nella fase finale del progetto
 \end{itemize}
@@ -1364,7 +1414,7 @@ Le funzionalit\`a coperte dal piano sono quelle esposte dal servizio \texttt{Bug
   \item \textbf{Livello}: test di unit\`a (\emph{unit test}).
   \item \textbf{Tecnica}: \emph{black-box} (classi di equivalenza, valori limite) combinata con ispezione \emph{white-box} (copertura dei rami decisionali interni).
   \item \textbf{Framework}: JUnit 5 + Mockito 5 (via \texttt{spring-boot-starter-test}).
-  \item \textbf{Isolamento}: le dipendenze (repository JPA) sono sostituite da \emph{mock objects} iniettati con \texttt{@Mock} / \texttt{@InjectMocks}, garantendo che i test verifichino esclusivamente la logica di business senza accesso al database.
+  \item \textbf{Isolamento}: le dipendenze esterne (\emph{repository} JPA e servizi ausiliari come \texttt{NotificationService}) sono sostituite da \emph{mock objects} iniettati con \texttt{@Mock} / \texttt{@InjectMocks}, garantendo che i test verifichino esclusivamente la logica di business senza accesso al database.
 \end{itemize}
 
 \subsection{Casi di test pianificati}
@@ -1660,8 +1710,6 @@ Lines of Code (NCLOC) & 1\,855 & --- \\
 \hline
 Test Coverage (JaCoCo) & 22.0\% & --- \\
 \hline
-Test Success Rate & 100\% (9/9) & A \\
-\hline
 \end{tabular}
 
 \vspace{0.3cm}
@@ -1674,21 +1722,23 @@ Test Success Rate & 100\% (9/9) & A \\
 \hline
 \textbf{Metrica} & \textbf{Valore} \\
 \hline
-File sorgente Java & 38 \\
+File sorgente Java & 48 \\
 \hline
-Linee di codice (LOC) & 2\,048 \\
+Linee di codice Java & 2\,547 \\
 \hline
-Classi & 18 \\
+Classi & 26 \\
 \hline
-Interfacce (Repository) & 5 \\
+Interfacce (Repository) & 6 \\
 \hline
 Enumerazioni & 5 \\
 \hline
-Record (DTO) & 8 \\
+Record (DTO) & 11 \\
 \hline
-Package & 7 \\
+Package & 8 \\
 \hline
-Test di unit\`a & 9 \\
+File di test backend & 6 \\
+\hline
+Casi di test backend & 32 \\
 \hline
 \end{tabular}
 
@@ -1698,21 +1748,23 @@ Test di unit\`a & 9 \\
 \hline
 \textbf{Package} & \textbf{File} & \textbf{LOC} & \textbf{Contenuto} \\
 \hline
-\texttt{model} & 10 & $\sim$550 & Entit\`a JPA + 5 enumerazioni \\
+\texttt{model} & 12 & 663 & Entit\`a JPA, embeddable e 5 enumerazioni \\
 \hline
-\texttt{service} & 5 & $\sim$610 & Business logic e specifiche \\
+\texttt{service} & 7 & 932 & Business logic, export, notifiche, schedulazione e specifiche \\
 \hline
-\texttt{controller} & 5 & $\sim$490 & Endpoint REST \\
+\texttt{controller} & 6 & 465 & Endpoint REST e gestione centralizzata degli errori \\
 \hline
-\texttt{dto} & 8 & $\sim$95 & Record per request/response \\
+\texttt{dto} & 11 & 117 & Record per request/response e metriche \\
 \hline
-\texttt{repository} & 5 & $\sim$61 & Interfacce Spring Data JPA \\
+\texttt{repository} & 6 & 69 & Interfacce Spring Data JPA \\
 \hline
-\texttt{security} & 2 & $\sim$145 & JWT service e filter \\
+\texttt{security} & 2 & 122 & JWT service e filter \\
 \hline
-\texttt{config} & 2 & $\sim$90 & Security config e seed \\
+\texttt{config} & 2 & 162 & Security config e seed \\
 \hline
-\texttt{root} & 1 & $\sim$7 & Entry point \\
+\texttt{exception} & 1 & 6 & Eccezioni applicative dedicate \\
+\hline
+\texttt{root} & 1 & 11 & Entry point \\
 \hline
 \end{tabular}
 
@@ -1722,7 +1774,9 @@ Test di unit\`a & 9 \\
 
 Nessun bug rilevato. I due bug precedentemente segnalati (UUID hard-coded in \texttt{getCurrentUserId()} e \texttt{isCurrentUserAdmin()} che ritornava sempre \texttt{true}) sono stati corretti: entrambi i metodi ora estraggono l'identit\`a dell'utente autenticato direttamente dal token JWT tramite il \texttt{JwtAuthFilter}.
 
-\subsubsection{Code Smells (5 issue --- Rating A)}
+\subsubsection{Code Smells (24 issue --- Rating A)}
+
+Tra i 24 code smell rilevati dal report, i seguenti risultano i pi\`u rappresentativi per impatto sulla manutenibilit\`a:
 
 \begin{tabular}{|l|l|p{2.5cm}|l|p{4cm}|}
 \hline
@@ -1740,31 +1794,31 @@ CS-5 & BugSpecification & S1118 (Utility class) & Minor & Manca costruttore priv
 \hline
 \end{tabular}
 
-\subsubsection{Security Hotspot (1 issue --- Rating A)}
+\subsubsection{Security Hotspot (4 issue --- Rating B)}
 
-Il security hotspot rilevato riguarda la configurazione CORS che potrebbe essere troppo permissiva in ambiente di produzione. In sviluppo, la configurazione consente richieste da \texttt{localhost} per facilitare il debug.
+I security hotspot rilevati riguardano soprattutto la configurazione CORS per gli ambienti di sviluppo, la gestione dei cookie JWT e alcuni punti sensibili da riesaminare in vista di un deployment produttivo. Nel contesto del progetto didattico risultano circoscritti e documentati, ma non possono essere descritti come assenti.
 
 \subsection{Duplicazioni}
-Il tasso di duplicazione del codice \`e dell'1.6\%, ben al di sotto della soglia di allerta del 3\%. Le duplicazioni residue si trovano principalmente nei metodi di lookup utente nei servizi.
+Il tasso di duplicazione del codice \`e pari allo 0.0\%, segnale di una buona separazione delle responsabilit\`a e di assenza di porzioni copiate in modo sistematico.
 
 \subsection{Punti di forza}
 \begin{itemize}
-  \item Zero vulnerabilit\`a di sicurezza identificate
+  \item Nessun bug bloccante rilevato dall'analisi statica
   \item Architettura pulita con separazione netta tra layer
   \item DTO immutabili implementati come record Java
-  \item Test di unit\`a con copertura funzionale completa (9/9 passati)
+  \item Suite di test backend articolata su 6 file di test e 32 casi, con copertura mirata della business logic e dei flussi di sicurezza
   \item Technical debt contenuto ($\sim$1h)
 \end{itemize}
 
 \subsection{Riepilogo Quality Gate}
-Il progetto supera il Quality Gate con \textbf{Rating A} su tutte le metriche principali:
+Il progetto supera il Quality Gate con un quadro complessivamente positivo e con criticit\`a concentrate in un numero limitato di aspetti da monitorare:
 \begin{itemize}
   \item Bugs: 0 (soglia: 0) \checkmark
-  \item Vulnerabilit\`a: 0 (soglia: 0) \checkmark
-  \item Security Hotspots: 1, reviewed \checkmark
-  \item Code Smells: 5, Rating A \checkmark
-  \item Duplicazioni: 1.6\% < 3\% \checkmark
-  \item Test Success Rate: 100\% (9/9) \checkmark
+  \item Vulnerabilit\`a: 2, da considerare in un eventuale hardening produttivo
+  \item Security Hotspots: 4, da riesaminare in fase di deployment \checkmark
+  \item Code Smells: 24, Rating A \checkmark
+  \item Duplicazioni: 0.0\% \checkmark
+  \item Coverage JaCoCo: 22.0\%
   \item Technical Debt: $\sim$1h \checkmark
 \end{itemize}
 
@@ -1837,8 +1891,8 @@ T7 --- Archiviazione di un bug risolto & 4/5 & 80\% & 28s & 0.4 \\
 \vspace{0.3cm}
 \noindent\textbf{Note sui task falliti:}
 \begin{itemize}
-  \item \textbf{T4} --- P3 non ha individuato immediatamente il pulsante ``Assegna'' nella vista dettaglio del bug; ha cercato la funzione nel menu laterale.
-  \item \textbf{T7} --- P5 ha confuso il pulsante ``Archivia'' con ``Elimina'' e ha esitato prima di confermare l'azione.
+  \item \textbf{T4} --- P3 non ha individuato immediatamente il pulsante ``Assegna'' nella barra azioni della vista dettaglio del bug.
+  \item \textbf{T7} --- P5 ha confuso il pulsante ``Archivia'' con ``Elimina'' e ha esitato prima di procedere all'azione.
 \end{itemize}
 
 \subsection{Ispezione Euristica (Nielsen)}
@@ -1963,7 +2017,7 @@ AC-5 & Deadline senza calendario (feedback) & Integrare date picker visuale & Ba
 \end{tabular}
 
 \vspace{0.3cm}
-\noindent Le azioni AC-1 e AC-2 sono state implementate nella release corrente. Le restanti sono pianificate per iterazioni future.
+\noindent Le azioni AC-1 e AC-2 non risultano ancora implementate nella release corrente e restano priorit\`a esplicite per una successiva iterazione di miglioramento. Le restanti sono pianificate per iterazioni future.
 
 \end{document}
 
