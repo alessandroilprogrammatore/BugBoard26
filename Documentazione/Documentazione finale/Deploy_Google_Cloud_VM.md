@@ -1,87 +1,130 @@
-# Deploy Pubblico Economico su Google Cloud
+# Deploy HTTPS su Google Cloud VM
 
-Questa guida descrive il percorso piu' semplice ed economico per mostrare **BugBoard26** su public cloud:
+Questa guida descrive il percorso piu' semplice per pubblicare **BugBoard26** su una VM di **Google Compute Engine** con:
 
-- **1 VM pubblica su Google Compute Engine**
-- **Docker Compose**
-- **PostgreSQL containerizzato** con volume persistente
-- **frontend** e **backend** separati in container distinti
+- una sola VM pubblica
+- Docker Compose
+- PostgreSQL containerizzato con volume persistente
+- reverse proxy **Caddy**
+- certificato **HTTPS automatico** e rinnovo automatico
 
-Per il deploy pubblico si usa il file dedicato `docker-compose.cloud.yml`, piu' leggero del compose completo di sviluppo perche' esclude tooling non necessario alla demo.
+La configurazione usata e' quella presente in `docker-compose.cloud.yml`, `Caddyfile` e `.env.production.example`.
 
-## Quando scegliere questa strada
+## Quando usare questa guida
 
 Usala se vuoi:
 
-- spendere il meno possibile
-- fare deploy in fretta
-- restare molto aderente all'architettura gia' presente nel progetto
-
-## Nota sui costi
-
-Google Cloud offre credito iniziale ai nuovi account e una free tier su alcune VM molto piccole. In pratica:
-
-- per una **demo temporanea** puoi spesso stare dentro il credito iniziale
-- per una **demo stabile** con frontend + backend + database insieme, una `e2-micro` puo' essere troppo stretta
-- per stare piu' tranquillo, per pochi giorni di demo conviene spesso una `e2-small`
+- pubblicare il progetto con un URL vero e con il lucchetto HTTPS
+- evitare load balancer o servizi gestiti piu' costosi
+- restare aderente all'architettura gia' presente nel repository
 
 ## Architettura finale
 
 Sulla VM girano:
 
-- `bugboard-db` su PostgreSQL 16
-- `bugboard-backend` su porta `8081`
-- `bugboard-frontend` su porta `5173`
+- `bugboard-db` con PostgreSQL 16
+- `bugboard-backend` raggiungibile solo dalla rete Docker interna
+- `bugboard-frontend` con Caddy esposto sulle porte `80` e `443`
 
-Il backend resta il punto centrale di gestione dello stato, mentre il database persistente e' PostgreSQL in volume Docker.
+Il browser parla solo con Caddy. Caddy serve il frontend statico, inoltra `/api` al backend e gestisce automaticamente il certificato TLS per il dominio configurato.
 
 ## Prerequisiti
 
-1. account Google Cloud attivo
-2. progetto GCP creato
-3. [gcloud CLI](https://cloud.google.com/sdk/docs/install) installata
-4. repository disponibile su GitHub
+1. progetto Google Cloud attivo
+2. VM Compute Engine disponibile oppure possibilita' di crearne una nuova
+3. dominio o sottodominio disponibile
+4. DNS modificabile
+5. `gcloud` installato in locale
+6. repository disponibile su GitHub
 
-Esegui login:
+Esegui il login:
 
-```powershell
+```bash
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 ```
 
-## 1. Crea la VM
+## 1. Scegli dominio e IP statico
 
-```powershell
-gcloud compute instances create bugboard26-vm `
-  --zone=europe-west1-b `
-  --machine-type=e2-small `
-  --image-family=debian-12 `
-  --image-project=debian-cloud `
-  --boot-disk-size=20GB `
+Per ottenere un certificato pubblico valido serve un **dominio**, non basta l'IP.
+
+Puoi usare:
+
+- un dominio vostro
+- un sottodominio gratuito, ad esempio DuckDNS
+
+Conviene assegnare alla VM un **IP esterno statico**, cosi' il DNS non cambia.
+
+Esempio:
+
+```bash
+gcloud compute addresses create bugboard26-ip \
+  --region=europe-west1
+```
+
+Per leggere l'IP riservato:
+
+```bash
+gcloud compute addresses describe bugboard26-ip \
+  --region=europe-west1 \
+  --format="get(address)"
+```
+
+Salva il valore come `VM_STATIC_IP`.
+
+## 2. Crea la VM
+
+Se non hai ancora la VM:
+
+```bash
+gcloud compute instances create bugboard26-vm \
+  --zone=europe-west1-b \
+  --machine-type=e2-small \
+  --image-family=debian-12 \
+  --image-project=debian-cloud \
+  --boot-disk-size=20GB \
+  --address=VM_STATIC_IP \
   --tags=bugboard26,http-server,https-server
 ```
 
-## 2. Apri le porte necessarie
+Note:
 
-```powershell
-gcloud compute firewall-rules create bugboard26-frontend `
-  --allow tcp:5173 `
-  --target-tags=bugboard26 `
-  --description="Frontend BugBoard26"
+- `e2-small` e' piu' comoda per demo stabili
+- `e2-micro` costa meno, ma puo' essere stretta
 
-gcloud compute firewall-rules create bugboard26-backend `
-  --allow tcp:8081 `
-  --target-tags=bugboard26 `
-  --description="Backend BugBoard26"
+## 3. Apri solo HTTP e HTTPS
+
+Per il deploy sicuro **non** vanno esposte le porte `5173` e `8081` verso Internet.
+
+Apri solo `80` e `443`:
+
+```bash
+gcloud compute firewall-rules create bugboard26-web \
+  --allow tcp:80,tcp:443 \
+  --target-tags=bugboard26 \
+  --description="HTTP e HTTPS per BugBoard26"
 ```
 
-## 3. Collegati alla VM
+## 4. Punta il DNS alla VM
 
-```powershell
+Configura il record `A` del dominio o sottodominio verso `VM_STATIC_IP`.
+
+Esempi:
+
+- `bugboard26.example.com -> VM_STATIC_IP`
+- `bugboard26.duckdns.org -> VM_STATIC_IP`
+
+Aspetta la propagazione DNS prima di avviare Caddy, altrimenti il certificato potrebbe non essere emesso subito.
+
+## 5. Collegati alla VM
+
+```bash
 gcloud compute ssh bugboard26-vm --zone=europe-west1-b
 ```
 
-## 4. Installa Docker e Compose sulla VM
+## 6. Installa Docker e Compose
+
+Sulla VM:
 
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -92,129 +135,119 @@ docker --version
 docker compose version
 ```
 
-## 5. Clona il repository
+## 7. Clona il repository
 
 ```bash
 git clone https://github.com/alessandroilprogrammatore/BugBoard26.git
 cd BugBoard26
 ```
 
-## 6. Recupera l'IP pubblico della VM
+## 8. Crea il file ambiente di produzione
 
-Da locale:
-
-```powershell
-gcloud compute instances describe bugboard26-vm `
-  --zone=europe-west1-b `
-  --format="get(networkInterfaces[0].accessConfigs[0].natIP)"
-```
-
-Salva il valore come `VM_PUBLIC_IP`.
-
-## 7. Configura le variabili ambiente per il deploy pubblico
-
-Nella VM:
+Parti dal template:
 
 ```bash
-cat > .env.prod-demo <<EOF
-APP_FRONT_ORIGIN=http://VM_PUBLIC_IP:5173
-APP_COOKIE_SECURE=false
+cp .env.production.example .env.production
+```
+
+Poi modifica `.env.production` con valori reali:
+
+```dotenv
+APP_DOMAIN=bugboard26.example.com
+APP_JWT_SECRET=metti-un-segreto-casuale-lungo-almeno-32-caratteri
+POSTGRES_USER=bugboard
+POSTGRES_PASSWORD=metti-una-password-forte
+POSTGRES_DB=bugboard
+APP_SECURITY_EXPOSE_DOCS=false
+APP_COOKIE_SECURE=true
 APP_COOKIE_SAMESITE=Lax
-APP_JWT_SECRET=ScegliUnSegretoJWTMoltoLungoEDiversoDaQuelloLocale123456789
-EOF
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
 ```
 
-Poi sostituisci `VM_PUBLIC_IP` con il vero IP pubblico.
+`APP_DOMAIN` deve coincidere con il record DNS pubblico configurato prima.
 
-## 8. Avvia lo stack cloud
+## 9. Valida la configurazione
 
 ```bash
-set -a
-source .env.prod-demo
-set +a
-docker compose -f docker-compose.cloud.yml up -d --build
+docker compose --env-file .env.production -f docker-compose.cloud.yml config
 ```
 
-## 9. Verifica i container
+Se questo comando passa, il file ambiente e il compose sono coerenti.
+
+## 10. Avvia lo stack
 
 ```bash
-docker compose -f docker-compose.cloud.yml ps
-docker compose -f docker-compose.cloud.yml logs backend --tail=100
-docker compose -f docker-compose.cloud.yml logs frontend --tail=100
+docker compose --env-file .env.production -f docker-compose.cloud.yml up -d --build
 ```
 
-Dovresti vedere:
+## 11. Verifica il deploy
 
-- database `healthy`
-- backend in ascolto su `8081`
-- frontend in ascolto su `5173`
-
-## 10. Verifica dal browser
-
-Apri:
-
-- `http://VM_PUBLIC_IP:5173` per il frontend
-- `http://VM_PUBLIC_IP:8081/api/auth/login` come endpoint backend raggiungibile
-
-Nota: l'endpoint `/actuator/health` puo' risultare protetto dalla security, quindi per la demo e' piu' affidabile verificare direttamente il login e il funzionamento applicativo.
-
-## 11. Persistenza dei dati
-
-Nel progetto la persistenza distribuita usa **PostgreSQL**, definito nel compose cloud.
-
-Quindi la frase corretta da usare in discussione e':
-
-> In locale il backend puo' usare H2 file per sviluppo rapido, ma nella configurazione distribuita/containerizzata e nel deploy pubblico il sistema usa PostgreSQL come database persistente.
-
-Per non perdere i dati:
-
-- **non eliminare il volume Docker** `pgdata`
-- fai ripartire lo stack con `docker compose -f docker-compose.cloud.yml up -d`
-
-Verifica i volumi:
+Controlla i container:
 
 ```bash
-docker volume ls
+docker compose --env-file .env.production -f docker-compose.cloud.yml ps
+docker compose --env-file .env.production -f docker-compose.cloud.yml logs frontend --tail=100
+docker compose --env-file .env.production -f docker-compose.cloud.yml logs backend --tail=100
 ```
 
-## 12. Comandi utili per la demo
+Poi apri nel browser:
 
-### Riavvio stack
+```text
+https://APP_DOMAIN
+```
+
+Alla prima partenza Caddy prova a ottenere automaticamente il certificato. Se DNS, porta `80` e porta `443` sono corretti, il sito verra' servito in HTTPS.
+
+## 12. Cosa non esporre
+
+Con questa architettura non va esposto pubblicamente:
+
+- il backend sulla porta `8081`
+- il frontend Vite preview sulla porta `5173`
+- PostgreSQL sulla porta `5432`
+
+Il file `docker-compose.cloud.yml` e' gia' impostato in questo modo.
+
+## 13. Persistenza dei dati
+
+Il database usa il volume Docker `pgdata`.
+
+Per riavviare senza perdere i dati:
 
 ```bash
-docker compose -f docker-compose.cloud.yml up -d
+docker compose --env-file .env.production -f docker-compose.cloud.yml up -d
 ```
 
-### Stop
+Evita questo comando se vuoi conservare il database:
 
 ```bash
-docker compose -f docker-compose.cloud.yml down
+docker compose --env-file .env.production -f docker-compose.cloud.yml down -v
 ```
 
-### Stop distruttivo da evitare
+## 14. Troubleshooting rapido
+
+Se il browser mostra ancora `Non sicuro`:
+
+- verifica che il dominio punti davvero alla VM
+- verifica che `80` e `443` siano aperte in Google Cloud
+- verifica che `APP_DOMAIN` sia il dominio pubblico corretto
+- controlla i log di Caddy con:
 
 ```bash
-docker compose -f docker-compose.cloud.yml down -v
+docker compose --env-file .env.production -f docker-compose.cloud.yml logs frontend --tail=200
 ```
 
-Questo rimuove anche il volume del database.
+Se il certificato non viene emesso, quasi sempre il problema e':
 
-## 13. Come presentarlo al professore
+- DNS non propagato
+- dominio sbagliato in `.env.production`
+- porta `80` o `443` bloccata
 
-Durante la demo conviene mostrare:
+## 15. Riferimenti utili
 
-1. browser aperto su `http://VM_PUBLIC_IP:5173`
-2. login funzionante via frontend
-3. `docker compose -f docker-compose.cloud.yml ps` sulla VM
-4. `docker volume ls` per mostrare che la persistenza e' separata
-5. che frontend e backend sono due componenti distinti e comunicano via rete
+- Google Cloud: [Compute Engine pricing e free tier](https://cloud.google.com/products/compute?hl=en_US)
+- Google Cloud: [riserva di un IP esterno statico](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
+- Google Cloud: [firewall rules per HTTP/HTTPS](https://cloud.google.com/compute/docs/samples/compute-firewall-create)
+- Caddy: [Automatic HTTPS](https://caddyserver.com/docs/automatic-https)
 
-## 14. Evoluzione futura
-
-Se dopo la demo vuoi una soluzione piu' pulita:
-
-- frontend su Cloud Run o Cloud Storage + CDN
-- backend su Cloud Run
-- database su Cloud SQL PostgreSQL
-
-Ma per spendere poco e arrivare rapidamente al risultato, la VM con Docker Compose resta la strada piu' pratica.
+Per una demo universitaria questa soluzione e' una delle piu' semplici: una sola VM, dominio pubblico, HTTPS automatico e costi contenuti.
