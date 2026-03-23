@@ -79,6 +79,9 @@ tmp_req*.txt
 # ---------- Video / recording / tutorial assets ----------
 generated_*
 gemini_*
+make_tutorial_video.py
+record-video.mjs
+script_scenari_*
 tutorial_*
 tutorial_screenshots/
 tutorial_scripts/
