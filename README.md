@@ -78,7 +78,3 @@ docker compose --env-file .env.production -f docker-compose.cloud.yml up -d --bu
 - SRS finale: `Documentazione/Documentazione finale/SRS_BugBoard26.pdf`
 - report SonarQube: `Documentazione/Documentazione finale/SonarQube_Report.md`
 - diagrammi UML sorgente: `Documentazione/Secondo homework/diagrammi/`
-
-## Stato della Repository
-
-La repository e' stata ripulita per mantenere fuori dal versionamento file temporanei, log, backup automatici e artefatti locali di compilazione o debug.
