@@ -17,4 +17,4 @@ Questa cartella contiene la documentazione completa del progetto BugBoard26.
   - Test plan e strategie di testing
   - Report qualita del codice
 
-- `immagini/` - Diagrammi UML e screenshot mockup delle interfacce
+- `immagini/` - Diagrammi UML e i mockup delle interfacce
