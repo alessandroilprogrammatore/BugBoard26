@@ -131,4 +131,4 @@ For a Google Cloud VM deployment guide, see [Deploy_Google_Cloud_VM.md](Document
 ## Notes
 
 - The root of the repository intentionally keeps only project files and runtime configuration needed to build, run or document the application.
-- Local tutorial material, temporary exports, logs and explanation files are excluded from version control through `.gitignore`.
+
