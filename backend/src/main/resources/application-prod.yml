@@ -6,7 +6,7 @@ spring:
     console:
       enabled: false
   jpa:
-    open-in-view: false
+    open-in-view: true
 
 app:
   cookie:
