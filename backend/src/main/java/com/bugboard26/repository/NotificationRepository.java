@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
 
-    @Query("SELECT n FROM Notification n LEFT JOIN FETCH n.recipient LEFT JOIN FETCH n.sender WHERE n.recipient.id = :recipientId ORDER BY n.createdAt DESC")
+    @Query("SELECT n FROM Notification n LEFT JOIN FETCH n.recipient LEFT JOIN FETCH n.sender LEFT JOIN FETCH n.bug WHERE n.recipient.id = :recipientId ORDER BY n.createdAt DESC")
     List<Notification> findByRecipientIdOrderByCreatedAtDesc(@Param("recipientId") UUID recipientId);
 
     long countByRecipientIdAndReadFalse(UUID recipientId);
