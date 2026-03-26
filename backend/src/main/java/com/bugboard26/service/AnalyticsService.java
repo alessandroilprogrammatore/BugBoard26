@@ -13,6 +13,7 @@ import com.bugboard26.repository.BugRepository;
 import com.bugboard26.repository.HistoryRepository;
 import com.bugboard26.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class AnalyticsService {
 
     private final BugRepository bugRepository;
