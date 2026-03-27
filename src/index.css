@@ -121,4 +121,13 @@ All colors MUST be HSL.
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Glassmorphism utilities */
+  .glass {
+    @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-lg;
+  }
+  
+  .glass-hover {
+    @apply transition-all duration-300 hover:bg-card/80 hover:shadow-xl hover:-translate-y-0.5;
+  }
 }
