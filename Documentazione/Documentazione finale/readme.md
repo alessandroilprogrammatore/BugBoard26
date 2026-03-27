@@ -15,6 +15,6 @@ Questa cartella contiene la documentazione completa del progetto BugBoard26.
   - Design del sistema (architettura e scelte tecnologiche)
   - Design del software (schema DB, diagramma classi, scelte design)
   - Test plan e strategie di testing
-  - Report qualita del codice
+  - Report qualità del codice
 
 - `immagini/` - Diagrammi UML e i mockup delle interfacce
