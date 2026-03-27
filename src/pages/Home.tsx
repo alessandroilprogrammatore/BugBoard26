@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Bug, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '@/api/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
   const { user, isAdmin } = useAuth();
@@ -15,6 +16,7 @@ export default function Home() {
     resolved: 0,
     dueSoon: 0,
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadMetrics();
@@ -47,6 +49,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Failed to load metrics:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,7 +80,13 @@ export default function Home() {
               >
                 <div className="flex flex-col gap-2">
                   <Icon className={`h-6 w-6 ${stat.color}`} />
-                  <div className="text-3xl font-bold">{stat.value}</div>
+                  <div className="text-3xl font-bold">
+                    {isLoading ? (
+                      <Skeleton className="h-9 w-16" />
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               </Card>
