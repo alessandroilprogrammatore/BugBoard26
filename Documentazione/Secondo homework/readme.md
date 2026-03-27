@@ -31,5 +31,5 @@ Versioni grafiche dei diagrammi, incluse anche nel PDF della documentazione fina
 
 ## Strumenti utilizzati
 
-- **PlantUML / StarUML** per la modellazione UML
+- **StarUML** per la modellazione UML
 - Export in **PNG** per l'inclusione nella documentazione finale
