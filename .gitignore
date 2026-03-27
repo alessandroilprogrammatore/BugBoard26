@@ -36,7 +36,7 @@ backend/data/
 backend/uploads/
 backend/*.iml
 
-# ---------- LaTeX (i sorgenti restano, gli artefatti no) ----------
+# ---------- LaTeX (gli artefatti PDF non vanno su git) ----------
 *.aux
 *.out
 *.toc
@@ -66,10 +66,6 @@ debug_*.png
 tmp_*.png
 verify_*.png
 tmp_req*.txt
-*_spiegazione.tex
-*_spiegazione.pdf
-*_spiegazione.aux
-*_spiegazione.out
 **/inputs.txt
 *.bak_codex_*
 *.orig
@@ -78,7 +74,6 @@ tmp_req*.txt
 
 # ---------- Video / recording / tutorial assets ----------
 generated_*
-gemini_*
 make_tutorial_video.py
 record-video.mjs
 script_scenari_*
@@ -108,12 +103,13 @@ frame_*
 
 # ---------- REST API docs (local only) ----------
 rest_api_ita.js
-REST_API_Italiano.pdf
-REST_API_Italiano.tex
 
 # ---------- Misc ----------
 *.zip
-.claude/
+.agent/
+.temp/
+temp/
+tmp/
 *_record.log
 *_record.err.log
 *_check.log
