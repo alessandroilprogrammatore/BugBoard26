@@ -71,7 +71,7 @@ export default function Home() {
             return (
               <Card
                 key={stat.label}
-                className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+                className="p-4 cursor-pointer glass glass-hover"
                 onClick={() => navigate('/bugs')}
               >
                 <div className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ export default function Home() {
           <h2 className="text-lg font-semibold mb-3">Azioni rapide</h2>
           <div className="space-y-2">
             <Card
-              className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+              className="p-4 cursor-pointer glass glass-hover"
               onClick={() => navigate('/bugs')}
             >
               <div className="flex items-center justify-between">
@@ -97,7 +97,7 @@ export default function Home() {
               </div>
             </Card>
             <Card
-              className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+              className="p-4 cursor-pointer glass glass-hover"
               onClick={() => navigate('/bug/new')}
             >
               <div className="flex items-center justify-between">
@@ -107,7 +107,7 @@ export default function Home() {
             </Card>
             {user?.role === 'admin' && (
               <Card
-                className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+                className="p-4 cursor-pointer glass glass-hover"
                 onClick={() => navigate('/admin/users')}
               >
                 <div className="flex items-center justify-between">
