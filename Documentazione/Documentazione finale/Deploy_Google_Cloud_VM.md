@@ -206,7 +206,7 @@ Con questa architettura non va esposto pubblicamente:
 - il frontend Vite preview sulla porta `5173`
 - PostgreSQL sulla porta `5432`
 
-Il file `docker-compose.cloud.yml` e' gia' impostato in questo modo.
+Il file `docker-compose.cloud.yml` è gia' impostato in questo modo.
 
 ## 13. Persistenza dei dati
 
@@ -250,4 +250,3 @@ Se il certificato non viene emesso, quasi sempre il problema e':
 - Google Cloud: [firewall rules per HTTP/HTTPS](https://cloud.google.com/compute/docs/samples/compute-firewall-create)
 - Caddy: [Automatic HTTPS](https://caddyserver.com/docs/automatic-https)
 
-Per una demo universitaria questa soluzione e' una delle piu' semplici: una sola VM, dominio pubblico, HTTPS automatico e costi contenuti.
